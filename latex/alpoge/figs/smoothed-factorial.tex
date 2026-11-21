@@ -1,0 +1,35 @@
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, name=top, ymode=log, ymin=0.08, ymax=200,
+  xmin=0, xmax=101, xtick={2,11,23,37,53,71,97},
+  xlabel={prime $p$},
+  ylabel={exponent of $p$},
+  title={\small (a) $a=100$, $b=1$: Legendre exponent and its smoothing},
+  legend pos=north east, legend cell align=left]
+\addplot[biZero, only marks, mark=*, mark size=2pt]
+  table[x=p, y=leg] {\bidata{legendre.dat}};
+\addlegendentry{$\operatorname{ord}_p(100!)=\sum_i\lfloor 100/p^i\rfloor$}
+\addplot[biBound, only marks, mark=triangle*, mark size=2.2pt]
+  table[x=p, y=smooth] {\bidata{legendre.dat}};
+\addlegendentry{$\sum_i(100/p^i-1)_+$}
+\end{axis}
+\begin{axis}[bi axis, at={(top.south west)}, anchor=north west,
+  yshift=-2.1cm, xmode=log, xmin=2, xmax=1e5, ymin=-14, ymax=14,
+  xlabel={$a$ (logarithmic)},
+  ylabel={residual},
+  title={\small (b) main terms removed ($b=1$)},
+  legend style={at={(0.5,-0.32)}, anchor=north, legend columns=1},
+  legend cell align=left]
+\addplot[biOther, line width=0.9pt]
+  table[x=a, y=stirling] {\bidata{residuals.dat}};
+\addlegendentry{$\log a!-(a\log a-a)$ \;(floors: $\approx\tfrac12\log 2\pi a$)}
+\addplot[biZero, line width=0.45pt]
+  table[x=a, y=gz] {\bidata{residuals.dat}};
+\addlegendentry{$\mathrm{Sz}(a)-a(\log a-1-\gamma)=\mathrm{Gz}(a)$
+  \;(no floors)}
+\addplot[biRH, line width=0.8pt, domain=2:1e5, samples=200]
+  {1.837877+0.046191*sqrt(x)};
+\addlegendentry{$\log2\pi\pm c_0\sqrt a$ (RH)}
+\addplot[biRH, line width=0.8pt, domain=2:1e5, samples=200, forget plot]
+  {1.837877-0.046191*sqrt(x)};
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,65 @@
+\begin{tikzpicture}[sb, x=1cm, y=1cm,
+  fld/.style={font=\normalsize, inner sep=3pt},
+  note/.style={font=\footnotesize, text=sbInk!75, align=center},
+  inc/.style={sbInk, line width=0.7pt},
+  ext/.style={sbInk, line width=0.7pt},
+  brace/.style={decorate, decoration={brace, amplitude=5pt, raise=2pt},
+    sbInk, line width=0.6pt},
+  lab/.style={font=\footnotesize, inner sep=1.5pt},
+]
+\node[fld] (F)  at (0,0)   {$F_0=k(x)$};
+\node[fld] (K)  at (4.0,0) {$K$};
+\node[fld] (E)  at (8.0,0) {$E$};
+\node[fld] (Fn) at (0,3.2)   {$F_{0,n}=\F_{q^n}(x)$};
+\node[fld] (Kn) at (4.0,3.2) {$K_n=K\F_{q^n}$};
+\node[fld] (En) at (8.0,3.2) {$E_n=E\F_{q^n}$};
+\draw[inc] (F) -- node[lab, above] {$\subseteq$} (K);
+\draw[inc] (K) -- node[lab, above] {$\subseteq$} (E);
+\draw[inc] (Fn) -- node[lab, below] {$\subseteq$} (Kn);
+\draw[inc] (Kn) -- node[lab, below] {$\subseteq$} (En);
+\foreach \a/\b in {F/Fn, K/Kn, E/En}
+  \draw[ext, ->] (\a) -- node[lab, right] {$\cdot\,\F_{q^n}$} (\b);
+\node[note, below=1.5pt of F] {genus $0$\\ constants $\F_q$};
+\node[note, below=1.5pt of K] {genus $g$\\ constants $\F_q$};
+\node[note, below=1.5pt of E] {genus $g_E$\\ constants $k'=\F_{q^d}$};
+\node[note, above=1.5pt of Fn] {constants $\F_{q^n}$\\ genus $0$};
+\node[note, above=1.5pt of Kn] {$N_1(K_n)=N_n$\\ genus $g$};
+\node[note, above=1.5pt of En] {constants $\F_{q^n}$\\ genus $g_E$};
+\draw[brace] (8.4,-1.25) -- node[lab, below=7pt]
+  {$H=\Gal(E/K)$} (3.6,-1.25);
+\draw[brace] (8.4,-2.2) -- node[lab, below=7pt]
+  {$G=\Gal(E/F_0)$, $\lvert G\rvert=\gamma=[E:F_0]$} (-1.0,-2.2);
+\draw[brace] (-1.0,4.4) -- node[lab, above=7pt]
+  {$G_n=\Gal(E_n/F_{0,n})\hookrightarrow G$ (fact~\ref{S9}),
+  $\lvert G_n\rvert\le\gamma$} (8.4,4.4);
+\begin{scope}[shift={(11.6,0)}]
+  \node[font=\footnotesize\bfseries] at (0,4.5) {constant fields};
+  \node[fld] (c1) at (0,0)   {$\F_q$};
+  \node[fld] (c2) at (0,1.6) {$\F_{q^d}=k'$};
+  \node[fld] (c3) at (0,3.2) {$\F_{q^n}$};
+  \draw[ext] (c1) -- (c2);
+  \draw[ext] (c2) -- node[lab, right] {$d\mid n$} (c3);
+\end{scope}
+\node[sb box, font=\footnotesize, text width=13.4cm, align=left,
+  anchor=north] at (5.3,-3.45) {%
+  \textbf{The tower.} Take $n\in n_1\Z_{>0}$. Then $q^n$ is a square,
+  $q^{n/2}>(g_E+1)^2$ and $E_n$ has a place of degree one.
+  Theorem~\ref{thm:bombieri} for $E_n/\F_{q^n}$ bounds $N(E_n,\sigma)$ from
+  above for every $\sigma\in G_n$, and Theorem~\ref{thm:averaging} for
+  $E_n\supseteq K_n\supseteq F_{0,n}$ turns these into
+  $\lvert N_n-q^n-1\rvert\le\max(1,\gamma-1)(2g_E+1)q^{n/2}$
+  (Theorem~\ref{thm:two-sided}).};
+\end{tikzpicture}
+\caption{The fields of Section~\ref{sec:route1} and
+Subsection~\ref{subsec:closure}; inclusions run left to right, constant
+field extensions bottom to top. Bottom row: $K/\F_q$ is separable over
+$F_0=k(x)$, $k=\F_q$, and $E$ is its Galois closure, with $G=\Gal(E/F_0)$,
+$H=\Gal(E/K)$ and $\gamma=[E:F_0]$; the constant field of $E$ is
+$k'=\F_{q^d}$, which may be larger than $\F_q$. Top row: the constant field
+extensions to $\F_{q^n}$, $d\mid n$; $E_n/F_{0,n}$ is Galois with group
+$G_n\hookrightarrow G$ (fact~\ref{S9}), all three fields have full constant
+field $\F_{q^n}$, and $E_n$, $K_n$ have the genera $g_E$, $g$ of $E$, $K$
+(Proposition~\ref{prop:tower}). Theorem~\ref{thm:two-sided} applies
+Theorem~\ref{thm:averaging} to the top row for $n\in n_1\Z_{>0}$, as in the
+box; there $N_1(K_n)=N_n$ by fact~\ref{S4}. Schematic.}
+\label{fig:cover-twists}

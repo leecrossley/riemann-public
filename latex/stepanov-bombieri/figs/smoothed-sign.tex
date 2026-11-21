@@ -1,0 +1,88 @@
+\pgfmathsetmacro{\sbA}{(1+1)*sqrt(3)+2*1}
+\pgfmathsetmacro{\sbB}{2*1*(sqrt(9)+1)/(sqrt(9)-1)}
+\pgfmathsetmacro{\sbsA}{log10(1+\sbA)}
+\pgfmathsetmacro{\sbsB}{log10(1+\sbB)}
+\pgfmathsetmacro{\sbsW}{log10(1+2*1)}
+\pgfmathsetmacro{\sbtA}{log10(2)}
+\pgfmathsetmacro{\sbtB}{log10(11)}
+\pgfmathsetmacro{\sbtC}{log10(101)}
+\pgfmathsetmacro{\sbtD}{log10(1001)}
+\pgfplotsset{
+  sb symlog/.style={scale only axis, width=5.5cm, height=5.6cm,
+    xmin=0.5, xmax=10.5, ymin=-2.75, ymax=3.3,
+    xtick={1,...,10},
+    ytick={-\sbtC,-\sbtB,0,\sbtB,\sbtC,\sbtD},
+    yticklabels={$-100$,$-10$,$0$,$10$,$100$,$1000$},
+    title style={font=\small, yshift=2pt},
+    clip=false},
+  sb curve data/.style={sb weil plot, mark size=2.4pt},
+  sb cex data/.style={sb fail plot, mark=*, mark size=2.2pt,
+    mark options={solid, fill=white, draw=sbFail}},
+}
+\begin{tikzpicture}[sb]
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.3cm},
+  sb axis]
+\nextgroupplot[sb symlog, xlabel={$n$},
+  title={(a) $E_n/q^{n/2}$, \ $E_n=N_n-q^n-1$},
+  legend to name=sbsmoothlegend, legend columns=3,
+  legend style={/tikz/every even column/.append style={column sep=1em}}]
+\addplot[draw=none, fill=sbWeil!15, forget plot]
+  coordinates {(0.5,-\sbsW) (10.5,-\sbsW) (10.5,\sbsW) (0.5,\sbsW)}
+  -- cycle;
+\addplot[sb other line, forget plot] coordinates {(0.5,0) (10.5,0)};
+\addplot[sb bound line, forget plot] coordinates {(2,\sbsA) (10.5,\sbsA)};
+\addplot[sb curve data] table[x=T, y=sEcurve] {\sbdata{smoothed.dat}};
+\addlegendentry{the curve $y^2=x^3+ix^2+i$ over $\F_9$}
+\addplot[sb cex data] table[x=T, y=sEcex] {\sbdata{smoothed.dat}};
+\addlegendentry{$L^*=1-7t+9t^2$}
+\addlegendimage{sb bound line}
+\addlegendentry{upper bounds}
+\node[font=\scriptsize, sbWeil!70!black, anchor=north east, inner sep=2pt]
+  at (axis cs:10.45,-\sbsW) {Weil band $\pm2g$};
+\node[font=\scriptsize, sbBound!70!black, anchor=south east,
+  align=right, inner sep=2pt]
+  at (axis cs:10.45,\sbsA)
+  {$E_n\le(2\sqrt3+2)\,q^{n/2}$ for $n\ge2$\\
+   (Prop.~\ref{prop:all-q}): holds for both};
+\node[font=\scriptsize, sbFail!80!black, anchor=north west, inner sep=2pt]
+  at (axis cs:2.2,-2.05) {$L^*$: $-(\rho/3)^n-(\rho'/3)^n$};
+\nextgroupplot[sb symlog, xlabel={$T$},
+  title={(b) $G(T)/q^{T/2}$},
+  yticklabels={}]
+\addplot[sb other line, forget plot] coordinates {(0.5,0) (10.5,0)};
+\addplot[sb bound line, forget plot] coordinates {(0.5,\sbsB) (10.5,\sbsB)};
+\addplot[sb curve data] table[x=T, y=sGcurve] {\sbdata{smoothed.dat}};
+\addplot[sb cex data] table[x=T, y=sGcex] {\sbdata{smoothed.dat}};
+\node[font=\scriptsize, sbBound!70!black, anchor=north east,
+  align=right, inner sep=2pt] (sbGlab)
+  at (axis cs:10.45,-1.1)
+  {$G(T)\le4\,q^{T/2}$ (Thm.~\ref{thm:route2prime}\\
+   asks for some such bound): fails for $L^*$};
+\draw[sbBound!70!black, thin, -{Stealth[length=1.5mm]}]
+  (axis cs:9.6,-1.1) -- (axis cs:9.6,\sbsB);
+\node[font=\scriptsize, sbFail!80!black, anchor=south east, inner sep=2pt]
+  at (axis cs:5.6,2.25)
+  {$L^*$: $\frac83\bigl((\rho/3)^T+(\rho'/3)^T\bigr)$};
+\end{groupplot}
+\node[anchor=north] at ($(group c1r1.south)!0.5!(group c2r1.south)
+  + (0,-0.85)$) {\pgfplotslegendfromname{sbsmoothlegend}};
+\end{tikzpicture}
+\caption{The sign reversal of Proposition~\ref{prop:which-bound} for $q=9$,
+on a symmetric logarithmic scale ($v\mapsto\operatorname{sign}(v)\log_{10}
+(1+\lvert v\rvert)$, ticks labelled by $v$; both panels share it). Green
+diamonds: the curve of Figure~\ref{fig:counterexample-roots}, of genus
+$g=1$; purple dashed: $L^*$ of Proposition~\ref{prop:formal-cex}, with
+$\rho=(7+\sqrt{13})/2$ and $\rho'=9/\rho$. (a) $E_n/q^{n/2}$: the curve
+stays in the Weil band $\pm2g$ (green), and $L^*$ falls like
+$-(\rho/3)^n$. The upper bound $E_n\le(2\sqrt3+2)q^{n/2}$ of
+Proposition~\ref{prop:all-q} for $n\ge2$ (orange) holds for both, so it
+cannot tell them apart. (b) $G(T)/q^{T/2}$
+(Definition~\ref{def:smoothed-sum}): the curve stays bounded, and
+$G^*(T)=\frac83(\rho^T+\rho'^T)$ grows. Theorem~\ref{thm:route2prime}
+asks for an upper bound $G(T)\le Aq^{T/2}$; every such bound fails for
+$L^*$. The orange level $A=4=2g(\sqrt q+1)/(\sqrt q-1)$ is the one that
+the lower bound $E_n\ge-2gq^{n/2}$ gives through
+Proposition~\ref{prop:which-bound}, up to the term $\delta_Kq^{-T/2}$.
+Values computed from the explicit formula \eqref{eq:explicit-G}, which
+was checked against Definition~\ref{def:smoothed-sum} for the curve.}
+\label{fig:smoothed-sign}

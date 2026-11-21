@@ -1,0 +1,93 @@
+\begin{tikzpicture}[bi, x=1cm, y=1cm, font=\scriptsize,
+  nd/.style={draw=biInk, rounded corners=2pt, align=center,
+    inner sep=2.2pt, text width=1.5cm, minimum height=0.78cm},
+  st proof/.style={nd, fill=biRH!35, line width=1.1pt},
+  st outline/.style={nd, fill=biZero!16, line width=0.5pt},
+  st on/.style={nd, fill=biBound!28, dashed, line width=0.6pt},
+  st idea/.style={nd, fill=biFail!22, densely dotted, line width=0.8pt},
+  st cited/.style={nd, fill=biOther!14, double, double distance=0.9pt,
+    line width=0.35pt},
+  st none/.style={nd, fill=white, draw=biOther, densely dotted,
+    line width=0.9pt},
+  chip/.style={text width=1.08cm, minimum height=0.62cm, inner sep=1.5pt, font=\tiny},
+  ar/.style={->, line width=0.5pt, biInk!80},
+  stp/.style={circle, draw=biInk!70, fill=white, inner sep=0.6pt,
+    font=\tiny\bfseries, text=biInk!80},
+  opn/.style={font=\tiny, text=biPole!85!black, inner sep=0.5pt}]
+\node[st proof, text width=1.9cm] (main) at (6.0,0) {Theorem~\ref{thm:main}};
+\node[st proof, text width=1.75cm] (imp) at (4.4,-1.3) {imprimitive\\ \ref{bb:imprimitive}};
+\node[st cited] (fe) at (7.6,-1.3) {funct.\ equation\\ \ref{bb:fe}};
+\node[st proof, text width=2.1cm] (zf) at (6.0,-2.6) {zero-freeness for\\ primitive $\psi$, \ref{bb:zero-free-primitive}};
+\node[st proof] (lev) at (0.82,-4.1) {level criterion\\ \ref{bb:level-criterion}};
+\node[st outline] (wl) at (0.82,-5.6) {windowed Landau\\ \ref{bb:windowed-landau}};
+\node[st outline] (cheb) at (3.12,-4.1) {Chebyshev on windows \ref{bb:chebyshev-windows}};
+\node[st proof, chip] (bal) at (2.5,-5.55) {balance\\ \ref{bb:balance}};
+\node[st outline, chip] (gap) at (3.74,-5.55) {gap\\ \ref{bb:gap}};
+\node[st idea, chip] (frm) at (2.5,-6.3) {frame\\ \ref{bb:frame}};
+\node[st outline, chip] (core) at (3.74,-6.3) {core\\ \ref{bb:core-bound}};
+\node[st idea, chip] (avg) at (2.5,-7.05) {averaged\\ \ref{bb:averaged-hyps}};
+\node[st proof, chip] (sq) at (3.74,-7.05) {$m\approx\sqrt x$\\ \ref{bb:sqrtx}};
+\node[draw=biOther, dashed, rounded corners=3pt, inner sep=2.5pt,
+  fit=(bal)(gap)(avg)(sq)] (inside) {};
+\node[font=\tiny, text=biOther, anchor=north] at (inside.south)
+  {inside the box};
+\node[st outline] (tied) at (7.2,-4.1) {tied families\\ \ref{bb:tied-families}};
+\node[st outline] (host) at (9.55,-4.1) {host supply\\ \ref{bb:host-supply}};
+\node[st outline] (gp) at (11.65,-4.1) {good pairs\\ \ref{bb:good-pairs}};
+\node[st on] (sha) at (10.15,-5.6) {Sha bound\\ \ref{bb:sha-windows}};
+\node[st cited, text width=0.95cm] (grn) at (8.15,-5.6) {Green\\ \ref{bb:green}};
+\node[st idea, text width=0.9cm] (pab) at (5.35,-5.6) {(a),\,(b)};
+\node[st on, text width=0.55cm, anchor=west] (pc) at (pab.east) {(c)};
+\node[font=\scriptsize, anchor=south] at ($(pab.north east)$) {packages \ref{bb:packages}};
+\node[st on] (cov) at (5.45,-7.15) {covolume\\ \ref{bb:covolume}};
+\node[st none, text width=0.75cm] (ga) at (7.55,-7.15) {(a)};
+\node[st outline, text width=0.75cm, anchor=west] (gb) at (ga.east) {(b)};
+\node[font=\scriptsize, anchor=north, align=center] (glab) at ($(ga.south east)$) {Galois representations \ref{bb:galois-reps}};
+\draw[ar] (imp) -- (main);
+\draw[ar] (fe) -- (main);
+\draw[ar] (zf) -- node[pos=0.45, right=1pt, font=\tiny] {(H)} (imp);
+\draw[ar] (lev.north) |- ([yshift=-0.12cm]zf.west);
+\draw[ar] (cheb.north) |- ([yshift=0.12cm]zf.west);
+\draw[ar] (tied.north) -- ([xshift=0.35cm]zf.south);
+\draw[ar] (host.north) |- (zf.east);
+\draw[ar] (wl) -- (lev);
+\draw[ar] (inside.north) -- (cheb.south);
+\draw[ar] (pc.north) -- ([xshift=-0.3cm]tied.south);
+\draw[ar] (grn.north) -- ([xshift=0.35cm]tied.south);
+\draw[ar] (sha.north) -- ([xshift=0.3cm]host.south);
+\draw[ar] (gp) -- (host);
+\draw[ar] (cov.north) -- ([xshift=-0.07cm]pc.south);
+\draw[ar] (ga.north) -- ([xshift=0.15cm]pc.south);
+\draw[ar] (gb.north) -- (sha.south);
+\foreach \n/\s in {ga/1, sha/2, host/3, tied/4, zf/5, main/6}
+  \node[stp] at (\n.north west) {\s};
+\node[opn, anchor=north] at (wl.south) {open 1};
+\node[opn, anchor=south east] at (gp.north east) {open 2};
+\node[opn, anchor=south east] at (sha.north east) {open 3,\,4};
+\node[opn, anchor=north] at (cov.south) {open 5};
+\node[opn, anchor=north] at (glab.south) {open 5};
+\node[opn, anchor=south east] at ([yshift=0.0cm]host.north east) {open 6};
+\begin{scope}[shift={(0.6,-8.6)}, every node/.append style={font=\scriptsize}]
+\foreach \sty/\txt/\xx/\yy in {st proof/proof/0/0, st outline/proof (outline)/3.9/0,
+    st on/on the proof/7.8/0, st idea/idea of proof/0/-0.5,
+    st cited/cited/3.9/-0.5, st none/not outlined/7.8/-0.5}{
+  \node[\sty, text width=0.38cm, minimum height=0.3cm] (k) at (\xx,\yy) {};
+  \node[anchor=west] at (k.east) {\txt};}
+\node[stp] (k2) at (0,-1.0) {1};
+\node[anchor=west] at (k2.east) {box concluded by step (1)};
+\node[opn, font=\scriptsize] (k3) at (5.2,-1.0) {open 1};
+\node[anchor=west] at (k3.east) {item of Remark~\ref{rem:bb-open}};
+\end{scope}
+\end{tikzpicture}
+\caption{The black boxes of this chapter on the dependency structure of
+the proof of Theorem~\ref{thm:main}, filled by the kind of proof that
+Table~\ref{tab:bb-status} records (Remark~\ref{rem:bb-attribution}).
+An arrow points from a box to a box whose proof uses it, following
+steps (1)--(6) of that proof (compare Figure~\ref{fig:dag}); the six
+results restated inside the Chebyshev box are grouped without their
+internal arrows. A circled number~$k$ marks the box that step~$(k)$ of the proof of
+Theorem~\ref{thm:main} concludes, and a tag ``open~$k$'' is
+item~$(k)$ of Remark~\ref{rem:bb-open}. ``Proof'' means complete
+relative to the results quoted; nothing here establishes the boxes of
+the other kinds. Schematic.}
+\label{fig:bb-status-map}

@@ -1,0 +1,30 @@
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[bi]
+\fill[biRH, opacity=0.12] (3.4,-0.35) rectangle (11.6,0.35);
+\draw[->] (0,0) -- (12,0) node[right]{$\operatorname{Re}s$};
+\draw (1,0.12) -- (1,-0.12) node[below]{$\tfrac12$};
+\draw (11,0.12) -- (11,-0.12) node[below]{$1$};
+\draw[biRH, thick] (3.4,0.18) -- (3.4,-0.18);
+\node[biRH, font=\scriptsize, anchor=south east] at (3.35,0.25)
+  {$\sigma_0=\tfrac12+\tfrac{\mu}{2}$};
+\node[bi fail pt] at (5.8,0) {};
+\node[biFail, font=\scriptsize, anchor=south west] at (5.9,0.25)
+  {hypothetical zero $\rho$};
+\draw[biBound, thick, decorate, decoration={brace, amplitude=4pt, mirror}]
+  (1,-0.6) -- (5.8,-0.6) node[midway, below=5pt, font=\scriptsize]
+  {$\mu=\min(\operatorname{Re}\rho-\tfrac12,\tfrac12)$};
+\node[font=\scriptsize, biRH, anchor=north] at (8.9,-0.45) {zero-free if the
+  bound holds};
+\end{tikzpicture}}
+
+\smallskip
+\begin{minipage}{0.9\linewidth}\footnotesize
+Chebyshev inequality on windows: $G_{\lev}(x)\le
+x^{1/2+(e_D+e_L+7)\eps}$, with $e_D=2$ and $e_L=0$ for the families of
+Theorem~\ref{thm:tied-families}, so $x^{1/2+9\eps}$. Choosing
+$9\eps\le\mu/2$ makes the exponent at most
+$\sigma_0$; the windowed Landau theorem then rules out zeros in the shaded
+half-plane $\operatorname{Re}s>\sigma_0$, which contains $\rho$. The closer
+$\rho$ is to the line, the smaller $\eps$ must be.
+\bischematic
+\end{minipage}

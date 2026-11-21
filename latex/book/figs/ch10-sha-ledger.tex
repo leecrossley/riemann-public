@@ -1,0 +1,42 @@
+{\footnotesize
+\setlength{\tabcolsep}{4pt}%
+\renewcommand{\arraystretch}{1.15}%
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.75cm}
+  >{\raggedright\arraybackslash}p{5.3cm}
+  >{\raggedright\arraybackslash}p{2.1cm}
+  >{\raggedright\arraybackslash}p{2.5cm}@{}}
+\toprule
+part & bound as stated & source & $\log$ of the bound on a window\\
+\midrule
+$2$-part & $\sum_{e}\shalen_2(e)\le\exp(x^{4\eps/5})$
+  & Thm.~\ref{thm:windows-pigeonhole}\ref{item:pig-two}
+  & $x^{4\eps/5}$\\
+minus part, odd $l$ & $3d_Et^2\log(tN)+C\sum_{l\mid o}l\,d_E^2t^2\log(tlN)^2$
+  & Thm.~\ref{thm:minus} & $O(\log x)$\\
+Case~I & $\sum_l\log l\sum_\eta\bar h^1_{\mathcal O_l}(e,\eta)\le(N_{\mathfrak h}t)^C$ for each $e$
+  & Thm.~\ref{thm:plus} & $O(x^{\eps/5}\log^2x)$\\
+Cases II, III, Z, main V & $\bar h^1_{\mathcal O}(e,\eta)\log l\le(l\,N_{\mathfrak h}\,e)^C$ for each $(l,e,\eta)$
+  & Thm.~\ref{thm:remaining-counts} & $O(x^{\eps/5}\log^2x)$\\
+Case~IV & $\sum_e\shalen_l(e)\le\exp(x^{4\eps/5})$ for the tower
+  layer $L_1$, then restriction
+  & Thm.~\ref{thm:windows-pigeonhole}\ref{item:pig-bad}
+  & $x^{4\eps/5}$ for $L_1$; restriction not quantified\\
+Case~$V_s$ & at $e=1$: $\log|H^2|\le{}$\newline
+  $\exp\bigl((2[L:\Q])^{C_K}\log(2|\operatorname{disc}L|)\bigr)$ & Thm.~\ref{thm:h2-bound} & not quantified\\
+\midrule
+allowed total & $\exp(x^\eps)^{1/2}$ & Def.~\ref{def:sha-windows}
+  & $x^\eps/2$\\
+\bottomrule
+\end{tabular}}
+\caption{The pieces of the Sha budget of a $\psi$-field $E$ in the proof
+of Theorem~\ref{thm:sha-windows}, for $x$ in a window. There
+$t=\lfloor x^{401}\rfloor$, $[E:\Q]=d_E$ is about $x^{2+8\eps}$ and
+$\log N_{\mathfrak h}=O(x^{\eps/5}\log^2x)$, so the polynomial bounds
+have logarithm $O(x^{\eps/5}\log^2x)$ or less, against $x^\eps/2$ for the
+budget. The sums over $e<t$, over $\eta$ and, in Cases II, III, Z and main~V,
+over $l<2t$ or $l\in B_\psi$ (proof of
+Proposition~\ref{prop:cases-exhaustive}) multiply by
+factors polynomial in $t$ and $N_{\mathfrak h}$. The text does not state
+the size of the Case~$V_s$ contribution or of the restriction step in
+Case~IV on a window.}
+\label{fig:sha-ledger}

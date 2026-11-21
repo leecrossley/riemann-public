@@ -1,0 +1,40 @@
+% Blueprint of the Alpöge Lean archive: shared macros (hand-maintained).
+% Workers may use only these macros plus amsmath/amssymb.
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\Gz}{G_{\zeta}}
+\newcommand{\Sz}{S_{\zeta}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\rk}{\operatorname{rk}}
+\newcommand{\Kept}{\operatorname{Kept}}
+\newcommand{\Frob}{\operatorname{Frob}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\U}{\mathrm{U}}
+\newcommand{\GSp}{\mathrm{GSp}}
+\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Spec}{\operatorname{Spec}}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\degar}{\widehat{\deg}}
+% Lean archive path, as text: \arch{Formalism/StatementOC.lean}
+\newcommand{\arch}[1]{\texttt{#1}}

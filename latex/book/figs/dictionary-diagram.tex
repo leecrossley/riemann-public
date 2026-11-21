@@ -1,0 +1,96 @@
+\begin{tikzpicture}[sb, x=1cm, y=1cm,
+  lft/.style={draw=sbInk, rounded corners=1.5pt, font=\footnotesize,
+    text width=5.3cm, align=left, inner sep=2.5pt, minimum height=0.5cm,
+    anchor=east},
+  t5/.style={lft, fill=sbBound!15},
+  t9/.style={lft, fill=sbBound!15, dashed},
+  t6/.style={lft, fill=sbOther!18},
+  t8/.style={lft, fill=white},
+  t4/.style={lft, fill=white},
+  rgt/.style={draw=sbInk, rounded corners=1.5pt, font=\footnotesize,
+    text width=4.3cm, align=left, inner sep=2.5pt, anchor=west},
+  rnone/.style={rgt, draw=sbFail, dashed, text=sbInk!80},
+  sec/.style={font=\scriptsize, text=sbOther, anchor=east},
+  flag/.style={draw=sbFail, fill=sbFail!20, font=\scriptsize\bfseries,
+    text=sbInk, inner sep=1.2pt, rounded corners=1pt},
+  xmark/.style={draw=sbFail, solid, line width=1.3pt, cross out,
+    minimum size=6pt, inner sep=0pt},
+  hd/.style={font=\small\bfseries, align=center},
+]
+\def\xl{6.45}   % right edge of the left column
+\def\xr{9.45}   % left edge of the right column
+\def\dy{0.76}  % row spacing
+\foreach \i/\st/\sc/\txt in {
+  1/t5/{\S\ref{sec:upper}}/{nonzero section $w$ (Thm~\ref{thm:aux-section})},
+  2/t5/{\S\ref{sec:upper}}/{Step~1: Riemann--Roch, pigeonhole},
+  3/t5/{\S\ref{sec:upper}}/{Step~4: effective divisor, $\deg\ge0$},
+  4/t5/{\S\ref{sec:upper}}/{Step~3: multiplicity $M$ from $w^M$},
+  5/t9/{\S\ref{sec:variantJ}}/{chain of $\ell\approx\sqrt p$ derivatives},
+  6/t5/{\S\S\ref{sec:upper},\,\ref{sec:variantJ}}/{balance $(g+1)q/M+2gM$},
+  7/t5/{\S\S\ref{sec:upper},\,\ref{sec:variantJ}}/{non-vanishing},
+  8/t8/{\S\ref{sec:route2}}/{Landau--Pringsheim (Prop.~\ref{prop:landau})},
+  9/t8/{\S\ref{sec:route2}}/{dichotomy for $N_n$ (Thm~\ref{thm:dichotomy})},
+  10/t8/{\S\ref{sec:route2}}/{$G(T)$ criterion (Thm~\ref{thm:route2prime})},
+  11/t6/{\S\ref{sec:route1}}/{Route~1: class sum, averaging},
+  12/t6/{\S\ref{sec:route1}}/{roots of $L_E$ in $N(E,\mathrm{id})$: one sign},
+  13/t4/{\S\S\ref{sec:zeta},\,\ref{sec:rh}}/{the tower $K_n$},
+  14/t4/{\S\S\ref{sec:zeta},\,\ref{sec:rh}}/{functional equation,
+$\lvert\alpha\rvert\le\sqrt q$}}
+{
+  \node[\st] (L\i) at (\xl,-\dy*\i) {\txt};
+  \node[sec] at ($(L\i.west)+(-0.05,0)$) {\sc};
+}
+\node[rgt] (Riii) at (\xr,-\dy*2)
+  {(iii) period maps between Hermitian lattices, slope inequality;
+  no constructed sections};
+\node[rgt] (Riv) at (\xr,-\dy*5)
+  {(iv) $p$-adic divisibility of jets, chain of $m\approx\sqrt x$ steps};
+\node[rnone] (Rni) at (\xr,-\dy*7) {not identified};
+\node[rgt] (Ri) at (\xr,-\dy*9)
+  {(i) one-sided bound on $G_m$, windowed Landau theorem};
+\node[rgt] (Rii) at (\xr,-\dy*11.5)
+  {(ii) group of characters closed under inversion};
+\node[rgt] (Rv) at (\xr,-\dy*13) {(v) $2$-power cyclotomic tower};
+\node[rgt] (Rfe) at (\xr,-\dy*14) {functional equation (half-plane)};
+\node[hd, anchor=south] at ($(L1.north)+(0,0.15)$) {This chapter};
+\node[hd, anchor=south, text width=4.6cm] at ($(Riii.north)+(0,0.75)$)
+  {Alp\"oge's argument\\[-1pt]
+  {\footnotesize\mdseries components (i)--(v) of
+  Section~\ref{sec:dictionary}}};
+\foreach \i/\r/\rt in {1/Riii/loose, 2/Riii/none, 3/Riii/loose,
+    4/Riv/loose, 5/Riv/loose, 6/Riv/loose, 7/Rni/none,
+    8/Ri/exact, 9/Ri/none, 10/Ri/exact, 11/Rii/loose, 12/Rii/exact,
+    13/Rv/loose, 14/Rfe/exact}
+  \draw[sb \rt] (L\i.east) -- (\r.west)
+    coordinate[pos=0.3] (f\i) coordinate[pos=0.68] (x\i);
+\node[xmark] at (x2) {};
+\node[xmark] at (x7) {};
+\node[xmark] at (x9) {};
+\foreach \i/\b in {4/B1, 5/B1, 9/B2, 11/B3, 8/B4, 10/B5}
+  \node[flag] at (f\i) {\b};
+\begin{scope}[shift={(0.0,-\dy*15.3)}, font=\scriptsize]
+  \draw[sb exact] (0,0) -- (0.9,0);
+  \node[anchor=west] at (1.0,0) {exact};
+  \draw[sb loose] (2.1,0) -- (3.0,0);
+  \node[anchor=west] at (3.1,0) {loose};
+  \draw[sb none] (4.2,0) -- (5.1,0) node[xmark, midway] {};
+  \node[anchor=west] at (5.2,0) {none};
+  \node[flag] at (6.75,0) {B1};
+  \node[anchor=west] at (7.05,0) {a break, items (B1)--(B5)};
+  \node[anchor=west, text=sbInk!80] at (10.9,0)
+    {fill: \tikz[baseline=-0.6ex]\node[draw, fill=sbBound!15, inner sep=2pt]{};
+    \,Stepanov--Bombieri};
+\end{scope}
+\end{tikzpicture}
+\caption{The dictionary of Section~\ref{sec:dictionary} as a graph. Left:
+steps of this chapter, with their sections in grey; orange fill marks the
+Stepanov--Bombieri construction (dashed border: its derivative form,
+Section~\ref{sec:variantJ}), grey fill Route~1. Right: the components
+(i)--(v) of Alp\"oge's argument, with the functional equation and ``not
+identified''. Edges: solid
+black for an exact counterpart, dashed grey for a loose one, dotted purple
+with a cross for none; the ratings are judgments, as in the table. Purple
+flags: where the analogy breaks, items (B1)--(B5), placed on the edges they
+cut. Built from the table above; nothing here confirms or refutes
+Alp\"oge's claim.}
+\label{fig:dictionary-diagram}

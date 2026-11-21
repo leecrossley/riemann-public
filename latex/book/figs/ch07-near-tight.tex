@@ -1,0 +1,51 @@
+\begin{tikzpicture}[bi, scale=1.05]
+\begin{scope}
+  \draw[biOther, thin] (-1.9,0) -- (1.9,0);
+  \draw[biOther, thin] (0,-1.9) -- (0,1.9);
+  \draw[biBound, line width=0.9pt, dashed] (0,0) circle (1.5);
+  \foreach \a in {90,210,330}
+    \draw[->, biZero, line width=1.1pt] (0,0) -- (\a:1);
+  \node[font=\footnotesize] at (0,2.25) {(a) tight};
+  \node[font=\footnotesize, align=center, anchor=north] at (0,-2.0)
+    {angles $90^\circ,210^\circ,330^\circ$; lengths $1,1,1$\\[1pt]
+     $Q=\tfrac32\cdot1$, eigenvalues $1.5,\ 1.5$\\[1pt]
+     $\beta_1=0$,\quad HS defect $0$,\quad $\beta_2=0$\\[1pt]
+     $\beta_1+4\sqrt{\beta_2}=0$};
+\end{scope}
+\begin{scope}[xshift=6.3cm]
+  \draw[biOther, thin] (-1.9,0) -- (1.9,0);
+  \draw[biOther, thin] (0,-1.9) -- (0,1.9);
+  \draw[biBound, line width=0.9pt, dashed, rotate=22.03]
+    (0,0) ellipse (1.3142 and 1.6183);
+  \draw[biBound, thin, rotate=22.03] (-1.3142,0) -- (1.3142,0);
+  \draw[biBound, thin, rotate=22.03] (0,-1.6183) -- (0,1.6183);
+  \draw[->, biZero, line width=1.1pt] (0,0) -- (0,1.1);
+  \draw[->, biZero, line width=1.1pt] (0,0) -- (-0.9659,-0.2588);
+  \draw[->, biZero, line width=1.1pt] (0,0) -- (0.6511,-0.5464);
+  \node[font=\footnotesize] at (0,2.25) {(b) perturbed};
+  \node[font=\footnotesize, align=center, anchor=north] at (0,-2.0)
+    {angles $90^\circ,195^\circ,320^\circ$; lengths $1.1,\ 1,\ 0.85$\\[1pt]
+     eigenvalues of $Q$: $1.314,\ 1.618$\\[1pt]
+     $\beta_1=0.011$,\quad HS defect $0.121$,\quad $\beta_2=0.040$\\[1pt]
+     $\beta_1+4\sqrt{\beta_2}=0.81$};
+\end{scope}
+\node[font=\scriptsize, align=center, anchor=north] at (3.15,-3.85)
+  {\tikz\draw[->, biZero, line width=1.1pt] (0,0) -- (0.45,0);
+   columns $\widetilde B_i$\qquad
+   \tikz\draw[biBound, line width=0.9pt, dashed] (0,0) -- (15pt,0);
+   image of the unit circle under $Q$, with its eigen-axes};
+\end{tikzpicture}
+\caption{Two weighted families $(c_i,\widetilde B_i)_{i=1,2,3}$ as in
+Definition~\ref{def:frame-operator}, with $J=\{1,2\}$, no padding rows
+($J_1=\emptyset$, so $\beta_0=0$), $c_i=1$, and each $\widetilde B_i$ a
+single column with real entries. The values shown are the smallest
+$\beta_1$ and $\beta_2$ allowed by hypothesis~(d) of
+Theorem~\ref{thm:frame}: $1+\beta_1=|J|\operatorname{tr}(Q^2)/
+(\operatorname{tr}Q)^2$, and $\beta_2$ is the Hilbert--Schmidt defect
+$\sum_i(\|\widetilde B_i\|^2-1)^2$ divided by $\sum_i\rk N_i=3$. In~(a)
+$Q$ is scalar and every column has length $1$. In~(b) the eigenvalues
+of $Q$ are close together, so $\beta_1$ is small, but $4\sqrt{\beta_2}$
+is already $0.80$: in this example the factor $\beta_1+4\sqrt{\beta_2}$ of $\Delta$ in
+the conclusion of the theorem comes mostly from the lengths of
+the columns.}
+\label{fig:near-tight}

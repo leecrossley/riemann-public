@@ -1,0 +1,54 @@
+\begin{tikzpicture}[bi, x=0.98cm, y=1cm,
+  lab/.style={font=\scriptsize, align=center},
+  rowlab/.style={font=\footnotesize, anchor=east},
+  forced/.style={biZero, line width=2.2pt},
+  needed/.style={biRH, line width=2.2pt, dash pattern=on 4pt off 2pt},
+  gap/.style={pattern=north east lines, pattern color=biFail}]
+\foreach \v in {0,1}
+  \draw[biOther, densely dotted] (\v,-0.75) -- (\v,3.4);
+\draw[->] (-2.5,-0.75) -- (7.3,-0.75) node[right, font=\footnotesize]
+  {$\log_x$};
+\foreach \v in {-2,-1,0,1,2,3,4,5,6,7}
+  \draw (\v,-0.68) -- (\v,-0.82) node[below, font=\scriptsize] {$\v$};
+\node[rowlab] at (-2.55,2.8) {$k$};
+\draw[biOther, line width=0.6pt] (1.49,2.65) -- (1.49,2.95);
+\node[lab, biOther!70!black, anchor=north east, inner sep=1pt] at (1.6,2.6)
+  {$\tfrac32-\eps$ (Prop.~\ref{prop:sqrtx})};
+\draw[forced, -{Stealth[length=2.6mm]}] (2.08,2.8) -- (7.3,2.8);
+\draw[biZero, line width=0.6pt] (2.08,2.65) -- (2.08,2.95);
+\node[lab, anchor=south west, inner sep=1pt] at (1.95,3.0)
+  {$\ge2+8\eps$ (frame, $2|A|\le k$)};
+\node[rowlab] at (-2.55,1.2) {$x'=x/k$};
+\fill[gap] (-1.08,1.05) rectangle (0,1.35);
+\draw[forced, {Stealth[length=2.6mm]}-] (-2.5,1.2) -- (-1.08,1.2);
+\draw[needed, -{Stealth[length=2.6mm]}] (0,1.2) -- (7.3,1.2);
+\node[lab, anchor=south] at (-1.8,1.4) {$\le-1-8\eps$};
+\node[lab, biRH!70!black, anchor=south] at (3.6,1.4)
+  {needed: $x'$ in a window $[Y,Y^2]$, $Y$ large};
+\node[lab, biFail!80!black, anchor=north] at (-0.54,1.0) {empty};
+\node[rowlab] at (-2.55,0) {$W$};
+\fill[gap] (-1.08,-0.15) rectangle (6.24,0.15);
+\draw[forced, {Stealth[length=2.6mm]}-] (-2.5,0) -- (-1.08,0);
+\draw[needed, -{Stealth[length=2.6mm]}] (6.24,0) -- (7.3,0);
+\node[lab, anchor=south] at (-1.8,0.2) {$kW\le x$};
+\node[lab, biRH!70!black, anchor=south] at (6.5,0.2)
+  {$W\ge k^3$:\\ $\ge6+24\eps$};
+\node[lab, biFail!80!black, fill=white, inner sep=1.5pt] at (2.6,0)
+  {empty};
+\draw[forced] (-2.3,-1.65) -- (-1.7,-1.65);
+\node[font=\scriptsize, anchor=west] at (-1.6,-1.65)
+  {forced by the definitions};
+\draw[needed] (2.4,-1.65) -- (3.0,-1.65);
+\node[font=\scriptsize, anchor=west] at (3.1,-1.65)
+  {needed by the candidate};
+\end{tikzpicture}
+\caption{The rescaling candidate of Remark~\ref{rem:window-exponent},
+on the axis of $\log_x$ of each quantity. The frame and the ranks force
+$k\ge2x^{2+8\eps}$, which is stronger than the bound $k\ge x^{3/2-\eps}$
+from Proposition~\ref{prop:sqrtx}. Then $x=kx'$ forces $x'<1$, and
+$kW\le x$ is incompatible with $W\ge k^3$. The constants $2$ and $8$ are
+dropped; they only strengthen the bounds drawn. Drawn to scale for
+$\eps=0.01$. The figure rules out
+this candidate only; Question~\ref{q:window-exponent} remains open
+(Remark~\ref{rem:bb-open}).}
+\label{fig:window-exponent}

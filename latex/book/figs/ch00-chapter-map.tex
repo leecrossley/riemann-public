@@ -1,0 +1,95 @@
+\vtwofit{%
+\begin{tikzpicture}[bi, font=\scriptsize,
+  box/.style={bi box, font=\scriptsize, inner sep=2.5pt},
+  mk/.style={circle, draw=biInk, fill=biBound!35, inner sep=0.4pt,
+    font=\tiny\bfseries, minimum size=8.5pt}]
+\def\cmk#1{\tikz[baseline=(cm.base)]\node[mk](cm){#1};}
+\node[box, fill=white, text width=2.2cm] (c1) at (1.2,0)
+  {Ch.~\ref{ch:idea}: the basic idea};
+\node[box, fill=white, text width=2.6cm] (c2) at (3.9,0)
+  {Ch.~\ref{ch:function-fields}: the function-field model};
+\node[box, fill=white, line width=0.8pt, text width=4.4cm] (c3)
+  at (9.4,0)
+  {Ch.~\ref{ch:assembly}: proof of Theorem~\ref{thm:main}\\
+  with twenty black boxes};
+\node[font=\tiny\itshape, color=biOther, anchor=north] at (2.52,-0.42)
+  {not logical inputs to later chapters};
+\node[font=\tiny\itshape, color=biOther, anchor=north] at (9.4,-0.42)
+  {Chapters~\ref{ch:landau}--\ref{ch:families} treat the black boxes};
+\def\yh{-1.05}
+\def\ytop{-1.95}
+\foreach \x/\t in {1.2/{Part 1\\analytic end},
+    4.95/{Part 2\\the inequality},
+    8.55/{Part 3\\arithmetic inputs},
+    11.15/{Part 4\\existence}} {
+  \node[font=\scriptsize\bfseries, align=center, anchor=north]
+    at (\x,\yh) {\t};
+}
+\node[box, fill=biAux!18, text width=2.2cm, anchor=north] (c4)
+  at (1.2,\ytop)
+  {Ch.~\ref{ch:landau}\\ windowed Landau criterion
+  (Thms.~\ref{thm:windowed-landau}, \ref{thm:level-criterion})\\[3pt]
+  \cmk{6} primitive $\Rightarrow$ all characters, critical line
+  (Prop.~\ref{prop:imprimitive})};
+\tikzset{p2/.style={box, fill=white, text width=2.1cm,
+  minimum height=1.4cm, anchor=north}}
+\node[p2] (c5) at (3.75,\ytop)
+  {Ch.~\ref{ch:hosts}: host fields, good pairs};
+\node[p2] (c6) at (6.15,\ytop)
+  {Ch.~\ref{ch:balance}: balance identity, core bound};
+\node[p2] (c7) at (3.75,\ytop-1.55)
+  {Ch.~\ref{ch:theta}: theta tower, frame theorem};
+\node[p2] (c8) at (6.15,\ytop-1.55)
+  {Ch.~\ref{ch:covolume}:\\ covolume bound};
+\node[box, fill=white, text width=4.15cm, anchor=north] (c9)
+  at (4.95,\ytop-3.45)
+  {Ch.~\ref{ch:chebyshev}: gap bound; Chebyshev inequality on windows
+  (Thm.~\ref{thm:chebyshev-windows}),
+  $G_{\lev_\psi}(x)\le x^{1/2+9\eps}$};
+\node[draw=biOther, dashed, rounded corners=3pt, inner sep=2.5pt,
+  fit=(c5)(c8)] (g2) {};
+\draw[v2 arr] (g2.south) -- (c9.north);
+\node[box, fill=biAux!18, text width=1.95cm, anchor=north] (c10)
+  at (8.55,\ytop)
+  {Ch.~\ref{ch:sha}\\ \cmk{2} Sha bound on windows
+  (Thm.~\ref{thm:sha-windows})};
+\node[box, fill=biAux!18, text width=1.95cm, anchor=north] (c11)
+  at (8.55,\ytop-2.0)
+  {Ch.~\ref{ch:galois}\\ \cmk{1} Galois representations
+  (Thm.~\ref{thm:galois-reps})};
+\draw[v2 arr] (c11.north) -- (c10.south);
+\node[box, fill=biAux!18, text width=2.2cm, anchor=north] (c12)
+  at (11.15,\ytop)
+  {Ch.~\ref{ch:families}\\
+  \cmk{3} host supply (Thm.~\ref{thm:host-supply})\\[1pt]
+  packages (Thm.~\ref{thm:packages})\\[1pt]
+  \cmk{4} tied families (Thm.~\ref{thm:tied-families})\\[3pt]
+  \cmk{5} zero-free for primitive~$\psi$
+  (Thm.~\ref{thm:zero-free-primitive}), from these, Ch.~\ref{ch:chebyshev}
+  and Ch.~\ref{ch:landau}};
+\def\yb{-7.1}
+\node[font=\scriptsize, anchor=west] (ordl) at (0.05,\yb)
+  {Order of the proof (\S\ref{sec:proof-main}):};
+\node[mk, right=4pt of ordl] (o1) {1};
+\node[font=\tiny, below=0pt of o1] {Ch.~\ref{ch:galois}};
+\foreach \i/\p/\c in {2/1/ch:sha, 3/2/ch:families, 4/3/ch:families,
+    5/4/ch:families, 6/5/ch:landau} {
+  \node[mk, right=0.62cm of o\p] (o\i) {\i};
+  \node[font=\tiny, below=0pt of o\i] {Ch.~\ref{\c}};
+  \draw[->, line width=0.5pt] (o\p) -- (o\i);
+}
+\node[right=0.62cm of o6, font=\scriptsize] (thm)
+  {Theorem~\ref{thm:main}};
+\draw[->, line width=0.5pt] (o6) -- (thm);
+\node[anchor=north west, align=left, text width=12cm] at (0.05,\yb-0.55)
+  {\bischematic[schematic; shaded: the chapters that hold the six steps
+  of the proof; arrows: ``is used by'' where the Introduction states
+  it]};
+\end{tikzpicture}}%
+\caption{A reading map of the book. Chapters~\ref{ch:landau}--%
+\ref{ch:families} are grouped by the four parts of the proof. The
+numbered marks give the order of the six steps of the proof of
+Theorem~\ref{thm:main} in Section~\ref{sec:proof-main}, which is not
+the order of the chapters. Figure~\ref{fig:dag} gives the
+dependencies between the theorems. Schematic.}
+\label{fig:chapter-map}

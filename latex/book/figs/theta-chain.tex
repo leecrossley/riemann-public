@@ -1,0 +1,44 @@
+\begin{tikzpicture}[bi]
+\node[bi aux box, text width=3.3cm] (ff) at (0,2.6)
+  {$g$ regular at $P$,\\ $g(P)=0$};
+\node[bi zero box, text width=3.6cm] (ff2) at (7.4,2.6)
+  {$f=g^{m}$, $m=p^\mu$:\\ $\operatorname{ord}_P f\ge m$ at every $P$};
+\draw[->, line width=0.9pt] (ff) -- node[above, font=\footnotesize]
+  {one Frobenius power} (ff2);
+\node[font=\small, anchor=east] at (-2.1,2.6) {over $\mathbb F_q$};
+\node[font=\small, anchor=east] at (-2.1,0) {over $\mathbb Z$};
+\foreach \i/\x/\n in {0/-1.2/3, 1/1.0/4, 2/3.2/5, 4/7.6/6} {
+  \node[draw=biInk, rounded corners=2pt, minimum width=1.25cm,
+    minimum height=1.1cm] (S\i) at (\x,0) {};
+  \foreach \k in {1,...,\n} {
+    \fill[biAux] ($(S\i.center)+({0.38*cos(360*\k/\n+20)},
+      {0.3*sin(360*\k/\n+20)})$) circle (2pt);
+  }
+}
+\node[font=\footnotesize, below=1pt] at (S0.south) {$S_0$};
+\node[font=\footnotesize, below=1pt] at (S1.south) {$S_1$};
+\node[font=\footnotesize, below=1pt] at (S2.south) {$S_2$};
+\node[font=\footnotesize, below=1pt] at (S4.south) {$S_m$};
+\node at (5.4,0) {$\cdots$};
+\foreach \a/\b/\j in {S0/S1/1, S1/S2/2} {
+  \draw[->, line width=0.9pt] (\a) -- node[above, font=\scriptsize]
+    {$K_{\j}$} (\b);
+}
+\draw[->, line width=0.9pt] (5.8,0) -- node[above, font=\scriptsize]
+  {$K_m$} (S4);
+\draw[decorate, decoration={brace, amplitude=4pt}]
+  (-0.55,0.75) -- node[above=4pt, font=\footnotesize, biZero!70!black,
+  align=center] {each lift: forced divisibility at every $p$ again
+  ($\times m$ in all)} (7.0,0.75);
+\draw[decorate, decoration={brace, amplitude=4pt, mirror}]
+  (-0.55,-0.95) -- node[below=4pt, font=\footnotesize, biPole!70!black,
+  align=center] {each lift: size cost bounded by Rallis, Siegel mass,
+  Weyl\\ integral after $\times D_j$} (7.0,-0.95);
+\node[bi bound box, anchor=west] at (8.5,0)
+  {chain length\\ $m\approx\sqrt x$};
+\node[font=\footnotesize, anchor=west] at (8.5,-0.95)
+  {(as $m\approx\sqrt q$)};
+\node[anchor=north west] at (-2.6,-2.25) {\bischematic[schematic; the
+  note's steps 8--12, with the interpretation of
+  Section~\ref{subsec:lifts-derivatives}]};
+\end{tikzpicture}

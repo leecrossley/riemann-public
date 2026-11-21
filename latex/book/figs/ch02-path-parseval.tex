@@ -1,0 +1,67 @@
+\begin{tikzpicture}[sb,
+    vx/.style={circle, draw=sbInk, fill=white, line width=0.6pt,
+      minimum size=15pt, inner sep=0pt, font=\footnotesize},
+    ed/.style={sbZero, line width=1.1pt},
+    lab/.style={font=\footnotesize, inner sep=1.5pt},
+    pstep/.style={->, sbBound, line width=0.8pt, shorten >=1pt,
+      shorten <=1pt}]
+  \def\dx{2.05}
+  \node[font=\small, anchor=west] at (-0.35,1.05)
+    {(a) path form $Q=x_1x_2+x_2x_3+\cdots+x_5x_6$};
+  \foreach \i in {1,...,6} \node[vx] (a\i) at ({(\i-1)*\dx},0) {$x_{\i}$};
+  \foreach \i/\j in {1/2,2/3,3/4,4/5,5/6}{%
+    \draw[ed] (a\i) -- (a\j)
+      node[midway, above, lab, font=\scriptsize, text=sbZero] {$e_q(hx_{\i}x_{\j})$};}
+  \foreach \i/\j in {1/2,2/3,3/4,4/5}{%
+    \draw[pstep] ([yshift=-11pt]a\i.south east) --
+      node[below, lab, text=sbBound!70!black] {$\times c\sqrt q$}
+      ([yshift=-11pt]a\j.south west);}
+  \draw[pstep] ([yshift=-11pt]a5.south east) --
+    node[below, lab, text=sbBound!70!black] {$\times c\,q$}
+    ([yshift=-11pt]a6.south west);
+  \foreach \i in {1,...,5}
+    \node[lab, below=1pt of a\i] {$g_{\i}$};
+  \node[lab, below=1pt of a6] {$\textstyle\sum g_6$};
+  \node[lab, anchor=north, align=center] at ({2.5*\dx},-1.25)
+    {each step: $g_j(y)=t(y)\,\widehat{g_{j-1}}(hy)$ and Parseval,
+     $\|g_j\|_2\le c\sqrt q\,\|g_{j-1}\|_2$;\\
+     last step: Cauchy--Schwarz and Parseval};
+  \node[lab, anchor=north] at ({2.5*\dx},-2.12)
+    {per $h\ne0$:\enspace
+     $\|g_1\|_2\le c\sqrt q
+      \;\longrightarrow\; \cdots \;\longrightarrow\;
+      \bigl|\textstyle\sum_y g_6(y)\bigr|\le c^6q^{7/2}=c^kq^{(k+1)/2}$};
+  \begin{scope}[yshift=-4.2cm]
+    \node[font=\small, anchor=west] at (-0.35,1.05)
+      {(b) hyperbolic form $Q'=x_1x_2+x_3x_4+x_5x_6$};
+    \foreach \i in {1,...,6} \node[vx] (b\i) at ({(\i-1)*\dx},0) {$x_{\i}$};
+    \foreach \i/\j in {1/2,3/4,5/6}{%
+      \draw[ed] (b\i) -- (b\j)
+        node[midway, above, lab, font=\scriptsize, text=sbZero] {$e_q(hx_{\i}x_{\j})$};
+      \draw[sbInk, line width=0.5pt, decorate,
+        decoration={brace, amplitude=4pt, mirror}]
+        ([yshift=-3pt]b\i.south west) -- ([yshift=-3pt]b\j.south east)
+        node[midway, below=4pt, lab] {$B(h)$, $|B(h)|\le c^2q^{3/2}$};}
+    \node[lab, anchor=north] at ({2.5*\dx},-0.95)
+      {per $h\ne0$:\enspace $B(h)^{3}=B(h)^{k/2}$,\enspace
+       bound $c^6q^{9/2}=c^kq^{3k/4}$};
+  \end{scope}
+  \node[anchor=north east, inner sep=1pt] at ({5*\dx+0.35},-5.6)
+    {\sbschematic[schematic, $k=6$]};
+\end{tikzpicture}
+\caption{The two readings of the note's form for $k=6$, drawn as graphs: each
+edge $\{i,j\}$ is a factor $e_q(hx_ix_j)$ of the phase $e_q(hQ(x))$.
+(a) The path form of Definition~\ref{def:sign-sums}. Every vertex except the
+two ends lies on two edges, so the variables can be summed one at a time from
+one end; each summation is a Fourier transform, and Parseval costs a factor
+$c\sqrt q$ in $\|g_j\|_2$ (orange arrows). The last step is
+Cauchy--Schwarz and Parseval. This gives the bound $c^kq^{(k+1)/2}$ for each
+$h\ne0$, and $\lvert R\rvert\le c^kq^{(k+3)/2}$
+(Proposition~\ref{lem:parseval}). (b) The hyperbolic form of
+Remark~\ref{rem:hyperbolic}. Every variable lies on one edge, the sum
+splits into $k/2$ equal factors $B(h)$, and in the bound
+$\lvert R'\rvert\le c^kq^{3k/4+1}$ the exponent cannot be improved. Against the size
+$c^kq^{k/2}$ of $M^k$ if $\lvert M\rvert\le c\sqrt q$, the path loses the
+fixed factor $q^{3/2}$, the matching a factor of order $q^{k/4+1}$.
+Schematic.}
+\label{fig:path-parseval}

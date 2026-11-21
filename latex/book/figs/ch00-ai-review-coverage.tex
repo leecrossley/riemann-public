@@ -1,0 +1,51 @@
+{\footnotesize\setlength{\tabcolsep}{3pt}%
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.17\linewidth}%
+>{\raggedright\arraybackslash}p{0.23\linewidth}%
+>{\raggedright\arraybackslash}p{0.23\linewidth}%
+>{\raggedright\arraybackslash}p{0.08\linewidth}%
+>{\raggedright\arraybackslash}p{0.22\linewidth}@{}}
+\toprule
+Part of the book & Source (drafter, date) & Review of the source
+  & Writer & Review in the book's run\\
+\midrule
+Chapter~\ref{ch:idea}
+  & account of the idea (\texttt{opus}, 2026-11-20)
+  & \texttt{critical-review} (\texttt{opus})
+  & \texttt{fable} & referee (\texttt{fable})\\[2pt]
+Chapter~\ref{ch:function-fields}, Stepanov--Bombieri
+  & Stepanov--Bombieri account (\texttt{opus}, 2026-11-20, from a
+    \texttt{fable} research report)
+  & \texttt{fp-finder-latex} (\texttt{opus}); revised by the reviewer
+  & \texttt{fable} & referee (\texttt{fable})\\[2pt]
+Chapter~\ref{ch:function-fields}, sign-only
+  & sign-only account (\texttt{opus}, 2026-11-21)
+  & \emph{none}
+  & \texttt{fable} & referee (\texttt{fable}); adversarial check by a
+    subagent (\texttt{fable})\\[2pt]
+Chapter~\ref{ch:assembly}
+  & survey$^{*}$ & survey reviews$^{\dagger}$
+  & \texttt{fable} & referee (\texttt{fable})\\[2pt]
+Chapters~\ref{ch:landau}--\ref{ch:families}
+  & survey$^{*}$ & survey reviews$^{\dagger}$
+  & \texttt{opus} & \emph{none}\\[2pt]
+Appendix~\ref{ch:ai}
+  & the project's records & --
+  & \texttt{opus} & audit by its own drafter\\
+\midrule
+\multicolumn{5}{@{}p{0.97\linewidth}@{}}{$^{*}$Rewritten by
+\texttt{opus} agents on 2026-11-21 from an earlier report of
+2026-11-20, which rested on readings of the archive by \texttt{fable}
+agents; the statement of Theorem~\ref{thm:main} was drafted for it by
+an agent with GPT-6. $^{\dagger}$Of the earlier report: seven
+simulated referee reviews with \texttt{fp-finder-latex}, and further
+reviews and checks. Of the rewrite: a review of its outline and an
+integrated review of its body.}\\
+\bottomrule
+\end{tabular}}
+\caption{Who wrote and who reviewed each part of the book. Model
+names omit the prefix \texttt{claude-} and the version. All reviews
+were by agents of the same model family as the drafters, and no
+human has reviewed any part
+(Sections~\ref{sec:ai-typesetting}--\ref{sec:ai-reviews}
+and~\ref{sec:ai-statement}).}
+\label{fig:ai-review-coverage}

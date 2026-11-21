@@ -1,0 +1,87 @@
+\begin{tikzpicture}[sb,
+    lab/.style={font=\footnotesize, inner sep=1.5pt}]
+  \begin{scope}
+    \def\s{4.2}   % side of the square
+    \def\nb{6}    % branches of Gamma drawn (schematic, not q)
+    \def\c{0.2}
+    \node[font=\small, anchor=south west] at (0,\s+0.1)
+      {(a) Weil: the surface $C\times C$};
+    \draw[sbInk, line width=0.6pt, fill=sbOther!8] (0,0) rectangle (\s,\s);
+    \node[lab, below] at (\s/2,0) {$C$};
+    \node[lab, left] at (0,\s/2) {$C$};
+    \foreach \k in {0,...,\nb}{%
+      \pgfmathsetmacro\xa{max(0,(\k-\c)/\nb)}%
+      \pgfmathsetmacro\xb{min(1,(\k+1-\c)/\nb)}%
+      \draw[sbOther, line width=0.9pt]
+        (\xa*\s,{(\nb*\xa+\c-\k)*\s}) -- (\xb*\s,{(\nb*\xb+\c-\k)*\s});}
+    \draw[sbInk, line width=0.9pt] (0,0) -- (\s,\s);
+    \node[lab, anchor=north west] at (0.72*\s,0.70*\s) {$\Delta$};
+    \node[lab, anchor=west, text=sbOther] at (\s,\c*\s) {$\Gamma$};
+    \foreach \k in {1,...,5}{%
+      \pgfmathsetmacro\xx{(\k-\c)/(\nb-1)}%
+      \node[sb zero, minimum size=5pt] at (\xx*\s,\xx*\s) {};}
+    \node[lab, align=left, anchor=north west] at (0,-0.45)
+      {$\Gamma$: graph of the $q$-power Frobenius\\
+       $\Delta\cap\Gamma$: the $N_1$ rational points\\
+       Castelnuovo--Severi (Hodge index)\\
+       bounds $\Delta\cdot\Gamma=N_1$ from both sides};
+    \node[anchor=north east, inner sep=1pt] at (\s,-0.02)
+      {\sbschematic[schematic]};
+    \begin{scope}[yshift=-3.0cm]
+      \draw[sbInk, ->, line width=0.5pt] (0,0) -- (\s+0.3,0)
+        node[lab, right] {$N_1$};
+      \fill[sbWeil!25] (1.1,-0.13) rectangle (3.1,0.13);
+      \draw[sb weil line] (1.1,-0.17) -- (1.1,0.17);
+      \draw[sb weil line] (3.1,-0.17) -- (3.1,0.17);
+      \draw[sb weil line] (1.1,0) -- (3.1,0);
+      \node[lab, below] at (2.1,-0.15) {$q+1\pm2g\sqrt q$};
+      \node[lab, above, text=sbWeil] at (2.1,0.15) {two-sided};
+    \end{scope}
+  \end{scope}
+  \begin{scope}[xshift=8.3cm]
+    \def\rx{2.6}\def\ry{1.5}
+    \node[font=\small, anchor=south west] at (-\rx-0.6,4.3)
+      {(b) Stepanov--Bombieri: the curve $C$};
+    \begin{scope}[yshift=2.1cm]
+      \draw[sbInk, line width=0.8pt] (0,0) ellipse ({\rx} and {\ry});
+      \coordinate (P0) at ({\rx*cos(170)},{\ry*sin(170)});
+      \node[sb pole, minimum size=6.5pt] at (P0) {};
+      \node[lab, left=6pt, text=sbPole, align=right] at (P0)
+        {$P_0$: only pole\\of $w$};
+      \foreach \a in {60,105,230,280,330}
+        \node[sb zero, minimum size=5pt] at ({\rx*cos(\a)},{\ry*sin(\a)}) {};
+      \node[lab, text=sbZero, align=center] at (0.35,0)
+        {zeros of $w$ at the\\Frobenius places $P\ne P_0$};
+      \node[anchor=north east, inner sep=1pt] at (\rx+0.3,-\ry-0.1)
+        {\sbschematic[schematic]};
+    \end{scope}
+    \node[lab, align=left, anchor=north west] at (-\rx,-0.45)
+      {$N-1\le\deg(w)_0=\deg(w)_\infty\le a+M'b$:\\
+       a nonzero section has as many zeros as poles,\\
+       which bounds the count from above only;\\
+       the lower bound comes from averaging};
+    \begin{scope}[yshift=-3.0cm, xshift=-\rx cm]
+      \draw[sbInk, ->, line width=0.5pt] (0,0) -- (4.5,0)
+        node[lab, right] {$N$};
+      \fill[sbBound!25] (0,-0.13) rectangle (3.3,0.13);
+      \draw[sb bound line] (0,0) -- (3.3,0);
+      \draw[sbBound, line width=0.9pt] (3.3,-0.17) -- (3.3,0.17);
+      \node[lab, below] at (3.3,-0.15) {$1+a+M'b$};
+      \node[lab, above, text=sbBound] at (1.65,0.15) {one-sided};
+    \end{scope}
+  \end{scope}
+\end{tikzpicture}
+\caption{Where the positivity lives. (a) Weil's proof: on the surface
+$C\times C$, the diagonal $\Delta$ (black) and the graph $\Gamma$ of the
+$q$-power Frobenius (grey) meet in the $N_1$ rational points (blue), and the
+Castelnuovo--Severi inequality, a form of the Hodge index theorem, bounds
+$\Delta\cdot\Gamma$ from both sides, giving the interval
+$\lvert N_1-q-1\rvert\le2g\sqrt q$ (green;
+Section~\ref{sec:remarks}). (b) This proof: on $C$ itself, the auxiliary
+section $w$ has its only pole at $P_0$ (vermillion cross) and vanishes at
+the $\sigma$-Frobenius places $P\ne P_0$ (blue), and
+$\deg(w)_0=\deg(w)_\infty$ bounds their number from above only,
+$N(K,\sigma)\le1+a+M'b$ (orange); the lower bound comes from averaging
+(Section~\ref{sec:route1}). Schematic: dimensions reduced, positions
+arbitrary, and the number of branches of $\Gamma$ is not $q$.}
+\label{fig:weil-vs-sb}

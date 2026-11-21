@@ -1,0 +1,54 @@
+\begin{tikzpicture}[sb]
+\begin{axis}[sb axis,
+  xmode=log, log basis x=2, ymode=log, log basis y=2,
+  xmin=1.4, xmax=1.9e5, ymin=0.25, ymax=6000,
+  xtick={2,4,16,64,256,4096,16384,65536},
+  xticklabels={$2^{1}$,$2^{2}$,$2^{4}$,$2^{6}$,$2^{8}$,$2^{12}$,$2^{14}$,
+    $2^{16}$},
+  extra x ticks={1024}, extra x tick labels={$2^{10}=\sqrt q$},
+  extra x tick style={tick label style={font=\footnotesize\bfseries,
+    yshift=-1.2ex}, grid=major, major grid style={sbOther, thin}},
+  ytick={0.25,1,4,16,64,256,1024,4096},
+  yticklabels={$\tfrac14$,$1$,$4$,$16$,$64$,$256$,$1024$,$4096$},
+  xlabel={$M$ (logarithmic)},
+  ylabel={error $/\sqrt q$ (logarithmic)},
+  height=0.56\linewidth,
+  legend style={at={(0.5,-0.2)}, anchor=north, legend columns=2,
+    /tikz/every even column/.append style={column sep=0.8em}},
+  legend cell align=left,
+  unbounded coords=jump, clip mode=individual,
+]
+\addplot[sb other plot] table[x=M, y=twogM] {\sbdata{valley.dat}};
+\addlegendentry{$2gM/\sqrt q$: bound of the price of (S)}
+\addplot[sbOther, line width=0.9pt, dashed]
+  table[x=M, y=t1] {\sbdata{valley.dat}};
+\addlegendentry{$(g+1)M'/\sqrt q$: price of (N)}
+\addplot[sbOther, line width=0.9pt, densely dotted, mark=*,
+  mark size=1pt, mark options={solid}]
+  table[x=M, y expr={\thisrow{t2}>0 ? \thisrow{t2} : nan}]
+  {\sbdata{valley.dat}};
+\addlegendentry{$M'\lfloor Mg/(M'-1-g)\rfloor/\sqrt q$: price of (S)}
+\addplot[sb bound plot, solid] table[x=M, y=err] {\sbdata{valley.dat}};
+\addlegendentry{total $(1+a+M'b-q)/\sqrt q$}
+\addplot[sb weil line, domain=1.4:1.9e5, samples=2] {6};
+\addlegendentry{Weil: $2g=6$}
+\node[sbBound!70!black, font=\footnotesize, anchor=south, fill=white,
+  inner sep=1pt] (min) at (axis cs:1024,40) {min.\ $7$ at $M=\sqrt q$};
+\draw[sbBound!70!black, thin, ->, shorten >=3pt] (min.south) --
+  (axis cs:1024,7);
+\end{axis}
+\end{tikzpicture}
+\caption{The error of Proposition~\ref{prop:balancing}, divided by $\sqrt q$,
+for $q=2^{20}$, $g=3$ and $M=2^1,\dots,2^{17}$, $M'=q/M$, on logarithmic
+axes. Orange triangles: the total $(1+a+M'b-q)/\sqrt q$ of
+\eqref{eq:balancing}. Grey dashed: its falling part $(g+1)M'/\sqrt q$, the
+price of (N), which caps $a$ below $M'$. Grey dotted: its rising part
+$M'\lfloor Mg/(M'-1-g)\rfloor/\sqrt q$, the price of (S); it is $0$ for
+$M<\sqrt q$, where the total equals the falling part. Thin grey: the bound
+$2gM/\sqrt q$ of the rising part from
+Proposition~\ref{prop:balancing}. The minimum, $7$,
+is at $M=\sqrt q$; by Proposition~\ref{prop:sqrtq-forced}, an error
+$O(\sqrt q)$ requires $M\asymp_g\sqrt q$ when $g\ge2$. Green: Weil's constant
+$2g=6$. Data: the closed formula
+\eqref{eq:balancing}.}
+\label{fig:sqrtq-valley}

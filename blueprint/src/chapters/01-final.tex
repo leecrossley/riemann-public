@@ -1,0 +1,555 @@
+\chapter{The final statements and the assembly}\label{ch:fin}
+
+The archive's file \arch{Main.lean} states five theorems about Mathlib's
+Riemann zeta function and Mathlib's Dirichlet $L$-functions. Each is a one-line
+term built from a single nonvanishing statement: no Dirichlet $L$-function
+vanishes in the half plane $\Re s>1/2$, with the pole of $\zeta$ excluded. This
+chapter transcribes the five statements, the elementary deductions that turn the
+nonvanishing statement into the other four, and the short chain of implications
+by which the archive derives the nonvanishing statement. The chain ends at the
+windowed analytic criterion, the supply of host fields, the Chebyshev inequality
+on windows, the Tate--Shafarevich budget \texttt{VWin}, and the existence of
+geometric families, which later chapters treat.
+
+\section{The final statements}
+
+\begin{definition}[Mathlib's Riemann hypothesis]\label{fin:rh-def}
+\lean{RiemannHypothesis, RiemannZetaZerosOnLine, Claim.Zeta}
+Let $\zeta$ denote Mathlib's \texttt{riemannZeta}, a function
+$\CC\to\CC$ that equals the analytic continuation of the Riemann zeta function
+on $\CC\setminus\{1\}$ and has some value at $s=1$. The \emph{Riemann
+hypothesis} is the statement: for every $s\in\CC$ with $\zeta(s)=0$, with
+$s\ne -2(n+1)$ for all $n\in\Z_{\ge0}$, and with $s\ne1$, one has $\Re s=1/2$.
+The archive's \texttt{RiemannZetaZerosOnLine} (in \arch{Statements.lean}) and
+\texttt{Claim.Zeta} have the same body as Mathlib's \texttt{RiemannHypothesis}.
+\end{definition}
+
+\begin{lemma}[the three forms agree]\label{fin:zeta-iff}
+\lean{Claim.zeta_iff}
+\uses{fin:rh-def}
+$\texttt{Claim.Zeta}\iff\texttt{RiemannHypothesis}$.
+\end{lemma}
+\begin{proof}
+\uses{fin:rh-def}
+The two propositions are definitionally equal; the archive's proof is
+reflexivity. The same holds for \texttt{RiemannZetaZerosOnLine}, which
+\arch{Main.lean} proves with the term that proves \texttt{RiemannHypothesis}.
+\end{proof}
+
+\begin{definition}[nonvanishing right of $1/2$]\label{fin:every-character}
+\lean{DirichletLNonvanishingRightOfHalf, UpperTheory.EveryCharacter, Claim.HalfPlane}
+For $N\ge1$ and a Dirichlet character $\chi$ modulo $N$ (with values in $\CC$),
+let $L(s,\chi)$ denote Mathlib's \texttt{DirichletCharacter.LFunction}, the
+meromorphic continuation of $\sum_{n\ge1}\chi(n)n^{-s}$, which is entire unless
+$\chi$ is the trivial character, and has a junk value at $s=1$ in that case. The
+statement $\mathrm{EC}$ is: for every $N\ge1$, every Dirichlet character $\chi$
+modulo $N$ and every $s\in\CC$ with $\Re s>1/2$ and ($\chi\ne1$ or $s\ne1$),
+$L(s,\chi)\ne0$. The three Lean names have literally the same body.
+\end{definition}
+
+\begin{definition}[zeros in the strip]\label{fin:strip-def}
+\lean{DirichletLZerosOnLine, Claim.Strip}
+The statement: for every $N\ge1$, every Dirichlet character $\chi$ modulo $N$
+and every $s$ with $0<\Re s<1$ and $L(s,\chi)=0$, one has $\Re s=1/2$.
+\end{definition}
+
+\begin{definition}[zeros in the strip, primitive characters]\label{fin:prim-def}
+\lean{PrimitiveDirichletLZerosOnLine}
+The statement: for every $N\ge1$, every \emph{primitive} Dirichlet character
+$\chi$ modulo $N$ and every $s$ with $0<\Re s<1$ and $L(s,\chi)=0$, one has
+$\Re s=1/2$.
+\end{definition}
+
+\begin{remark}[fidelity]\label{fin:rem-fidelity}
+The file \arch{Statements.lean} imports only Mathlib and uses only Mathlib's
+\texttt{riemannZeta}, \texttt{DirichletCharacter}, \texttt{LFunction} and
+\texttt{IsPrimitive}. Mathlib's \texttt{RiemannHypothesis} was read in a Mathlib
+checkout of a different revision from the pinned one
+(\arch{Mathlib/NumberTheory/LSeries/RiemannZeta.lean}); its body there matches
+the one transcribed above. The statement \texttt{RiemannZetaZerosOnLine} excludes
+exactly the trivial zeros and the point $1$; the nonvanishing statement
+excludes only the pair (trivial character, $s=1$), for every modulus $N$. Since
+$L(s,\chi)$ for the trivial character modulo $N$ is $\zeta(s)\prod_{p\mid N}(1-p^{-s})$,
+the nonvanishing statement at $\chi=1$ is the Riemann hypothesis in the form
+``$\zeta(s)\ne0$ for $\Re s>1/2$, $s\ne1$''.
+\end{remark}
+
+\begin{theorem}[the five theorems of \arch{Main.lean}]\label{fin:main}
+\lean{riemannHypothesis, riemannZeta_eq_zero_re, LFunction_ne_zero_of_half_lt_re, LFunction_eq_zero_re, LFunction_eq_zero_re_of_isPrimitive}
+\uses{fin:rh-def, fin:every-character, fin:strip-def, fin:prim-def}
+The following hold.
+\begin{enumerate}
+\item The Riemann hypothesis (\texttt{riemannHypothesis}), and the same
+statement in the form \texttt{RiemannZetaZerosOnLine}
+(\texttt{riemannZeta\_eq\_zero\_re}).
+\item The nonvanishing statement $\mathrm{EC}$
+(\texttt{LFunction\_ne\_zero\_of\_half\_lt\_re}).
+\item The zeros of every $L(s,\chi)$ in $0<\Re s<1$ lie on $\Re s=1/2$
+(\texttt{LFunction\_eq\_zero\_re}).
+\item The same for primitive $\chi$ (\texttt{LFunction\_eq\_zero\_re\_of\_isPrimitive}).
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+\uses{fin:kernels}
+Each item is one of the kernel terms: (1) is \texttt{rhOfAll} (used twice, at
+two definitionally equal types), (2) is \texttt{allChi}, (3) is the second
+component of \texttt{claimAll}, and (4) is \texttt{critAll}.
+\end{proof}
+
+\begin{theorem}[the kernel terms]\label{fin:kernels}
+\lean{allChi, rhOfAll, critAll, claimAll}
+\uses{fin:every-character, fin:rh-def, fin:strip-def, fin:prim-def}
+The statement $\mathrm{EC}$ holds (\texttt{allChi}); the Riemann hypothesis holds
+(\texttt{rhOfAll}); the primitive strip statement holds (\texttt{critAll}); and
+the conjunction of $\mathrm{EC}$, the strip statement and \texttt{Claim.Zeta}
+holds (\texttt{claimAll}).
+\end{theorem}
+\begin{proof}
+\uses{fin:every-character-thm, fin:rh-of-every, fin:crit-line, fin:strip, fin:zeta}
+In \arch{Supplements/Kernels/MainTheorems.lean}: \texttt{allChi} is the
+archive's theorem $\mathrm{EC}$ (Theorem~\ref{fin:every-character-thm});
+\texttt{rhOfAll} applies Lemma~\ref{fin:rh-of-every} to it; \texttt{critAll}
+applies Lemma~\ref{fin:crit-line} to it; \texttt{claimAll} is the triple
+$(\texttt{allChi},\ \text{Lemma~\ref{fin:strip}}(\texttt{allChi}),\ \text{Lemma~\ref{fin:zeta}}(\texttt{allChi}))$.
+All of the content therefore lies in the single statement $\mathrm{EC}$.
+\end{proof}
+
+\section{From nonvanishing to the other statements}
+
+The deductions in this section are elementary consequences of Mathlib's
+functional equations and Euler products; their Lean proofs were read in full.
+
+\begin{lemma}[Riemann hypothesis from nonvanishing on the right]\label{fin:rh-of-right}
+\lean{Formalism.VW.rh_of_right}
+\uses{fin:rh-def}
+Assume $\zeta(s)\ne0$ for every $s$ with $\Re s>1/2$ and $s\ne1$. Then the
+Riemann hypothesis holds.
+\end{lemma}
+\begin{proof}
+\uses{fin:rh-def}
+Let $\zeta(s)=0$ with $s$ not a trivial zero and $s\ne1$. If $\Re s>1/2$ the
+hypothesis is contradicted. Suppose $\Re s<1/2$. Then $s\ne0$ because
+$\zeta(0)=-1/2$, so $1-s\ne1$, and $\Re(1-s)>1/2$, so $1-s$ is not a
+nonpositive integer. Mathlib's functional equation \texttt{riemannZeta\_one\_sub},
+applied at $1-s$, gives
+\[
+\zeta(s)=2\,(2\pi)^{-(1-s)}\,\Gamma(1-s)\,\cos\!\big(\pi(1-s)/2\big)\,\zeta(1-s).
+\]
+The power of $2\pi$ is nonzero, $\Gamma(1-s)\ne0$ since $\Re(1-s)>0$, and
+$\zeta(1-s)\ne0$ by hypothesis. If $\cos(\pi(1-s)/2)=0$ then $s=-2k$ for an
+integer $k$: $k\le-1$ contradicts $\Re s<1/2$, $k=0$ gives $s=0$, and $k\ge1$
+makes $s$ a trivial zero. Hence the right side is nonzero, a contradiction. So
+$\Re s=1/2$.
+\end{proof}
+
+\begin{lemma}[the Riemann hypothesis from EC]\label{fin:rh-of-every}
+\lean{Formalism.VW.rh_of_every}
+\uses{fin:every-character, fin:rh-def}
+Assume $\mathrm{EC}$. Then the Riemann hypothesis holds.
+\end{lemma}
+\begin{proof}
+\uses{fin:rh-of-right}
+Apply $\mathrm{EC}$ with $N=1$ and $\chi$ the unique character modulo $1$, using
+$s\ne1$. Mathlib's \texttt{LFunction\_modOne\_eq} identifies $L(s,\chi)$ with
+$\zeta(s)$. Conclude with Lemma~\ref{fin:rh-of-right}.
+\end{proof}
+
+\begin{lemma}[gamma factors on the right half plane]\label{fin:gamma}
+\lean{Formalism.VW.gammaFactor_ne_zero, Claim.gamma_ne_zero}
+For every Dirichlet character $\chi$ and every $s$ with $\Re s>0$, the gamma
+factor $\Gamma_{\R}(s+a_{\chi})$ of $\chi$ (Mathlib's \texttt{gammaFactor}, with
+$a_{\chi}=0$ for even and $a_{\chi}=1$ for odd $\chi$) is nonzero. The second name
+requires $N\ge1$.
+\end{lemma}
+\begin{proof}
+Split by parity of $\chi$ and use $\Gamma_{\R}(t)\ne0$ for $\Re t>0$.
+\end{proof}
+
+\begin{lemma}[the critical line for primitive characters]\label{fin:crit-line}
+\lean{Formalism.VW.critLine}
+\uses{fin:every-character, fin:prim-def}
+Assume $\mathrm{EC}$. Let $N\ge1$, let $\chi$ be a primitive character modulo
+$N$, and let $0<\Re s<1$ with $L(s,\chi)=0$. Then $\Re s=1/2$.
+\end{lemma}
+\begin{proof}
+\uses{fin:gamma}
+Here $s\ne0,1$. If $\Re s>1/2$, $\mathrm{EC}$ (with $s\ne1$) is contradicted.
+Suppose $\Re s<1/2$. Since $L(s,\chi)=\Lambda(s,\chi)/\Gamma_{\R}(s+a_{\chi})$ with
+$\Lambda$ Mathlib's \texttt{completedLFunction}, and the gamma factor is
+nonzero (Lemma~\ref{fin:gamma}), $\Lambda(s,\chi)=0$. The character $\chi^{-1}$
+is primitive (its conductor equals that of $\chi$). Mathlib's functional
+equation for primitive characters gives
+$\Lambda(1-s,\chi^{-1})=\varepsilon\,\Lambda(s,\chi)=0$ for a root number
+$\varepsilon$, so $L(1-s,\chi^{-1})=0$. As $\Re(1-s)>1/2$ and $1-s\ne1$, this
+contradicts $\mathrm{EC}$ for $\chi^{-1}$ modulo $N$.
+\end{proof}
+
+\begin{lemma}[Euler factors]\label{fin:euler-factor}
+\lean{Claim.factor_ne_zero}
+Let $\psi$ be a Dirichlet character modulo some $M$, let $\Re s>0$ and let $p$
+be prime. Then $1-\psi(p)p^{-s}\ne0$.
+\end{lemma}
+\begin{proof}
+$|\psi(p)|\le1$ and $|p^{-s}|=p^{-\Re s}<1$.
+\end{proof}
+
+\begin{lemma}[passing to the primitive character]\label{fin:prim-zero}
+\lean{Claim.prim_zero}
+\uses{fin:euler-factor}
+Let $N\ge1$, let $\chi$ be a character modulo $N$ and $\chi^{\ast}$ the primitive
+character inducing it (Mathlib's \texttt{primitiveCharacter}, of level the
+conductor of $\chi$). If $0<\Re s<1$ and $L(s,\chi)=0$, then $L(s,\chi^{\ast})=0$.
+\end{lemma}
+\begin{proof}
+\uses{fin:euler-factor}
+Since $s\ne1$, Mathlib's \texttt{LFunction\_changeLevel} gives
+$L(s,\chi)=L(s,\chi^{\ast})\prod_{p\mid N}(1-\chi^{\ast}(p)p^{-s})$. The product is
+nonzero by Lemma~\ref{fin:euler-factor}.
+\end{proof}
+
+\begin{lemma}[reflection]\label{fin:prim-reflect}
+\lean{Claim.prim_reflect}
+\uses{fin:gamma}
+Let $\psi$ be primitive modulo $M\ge1$, let $0<\Re s<1$ and $L(s,\psi)=0$. Then
+$L(1-s,\psi^{-1})=0$.
+\end{lemma}
+\begin{proof}
+\uses{fin:gamma}
+As in the proof of Lemma~\ref{fin:crit-line}: the completed $L$-function
+vanishes at $s$, the functional equation for the primitive character
+$\psi^{-1}$ moves the zero to $1-s$, and $1-s\ne0$ lets one divide by the gamma
+factor again.
+\end{proof}
+
+\begin{lemma}[the strip statement]\label{fin:strip}
+\lean{Claim.strip}
+\uses{fin:every-character, fin:strip-def}
+Assume $\mathrm{EC}$. Then the strip statement holds for all characters.
+\end{lemma}
+\begin{proof}
+\uses{fin:prim-zero, fin:prim-reflect}
+Let $L(s,\chi)=0$ with $0<\Re s<1$. If $\Re s>1/2$, $\mathrm{EC}$ is
+contradicted. If $\Re s<1/2$, Lemma~\ref{fin:prim-zero} gives
+$L(s,\chi^{\ast})=0$, Lemma~\ref{fin:prim-reflect} gives
+$L(1-s,(\chi^{\ast})^{-1})=0$, and since $\Re(1-s)>1/2$ and $1-s\ne1$ this
+contradicts $\mathrm{EC}$ at the modulus equal to the conductor of $\chi$.
+\end{proof}
+
+\begin{lemma}[the zeta statement]\label{fin:zeta}
+\lean{Claim.zeta}
+\uses{fin:every-character, fin:rh-def}
+Assume $\mathrm{EC}$. Then \texttt{Claim.Zeta}, i.e.\ the Riemann hypothesis,
+holds.
+\end{lemma}
+\begin{proof}
+\uses{fin:strip}
+Let $\zeta(s)=0$, $s$ not a trivial zero, $s\ne1$; then $s\ne0$. For
+$0<\Re s<1$ apply Lemma~\ref{fin:strip} to the character modulo $1$. For
+$\Re s\ge1$ use Mathlib's nonvanishing $\zeta(s)\ne0$ on $\Re s\ge1$. For
+$\Re s\le0$: $\Gamma_{\R}(s)\ne0$ because $s$ is neither $0$ nor a trivial zero,
+so the completed zeta function vanishes at $s$, hence at $1-s$ by its functional
+equation, so $\zeta(1-s)=0$ with $\Re(1-s)\ge1$, a contradiction. This
+component of \texttt{claimAll} is not used by \arch{Main.lean}.
+\end{proof}
+
+\begin{lemma}[a second derivation of the Riemann hypothesis]\label{fin:rh-of-everychar}
+\lean{UpperTheory.zeta_ne_zero_of_everyCharacter, UpperTheory.riemannHypothesis_of_everyCharacter, UpperTheory.FinalTheorems.riemannHypothesis}
+\uses{fin:every-character, fin:rh-def}
+Assume $\mathrm{EC}$. Then $\zeta(s)\ne0$ for $\Re s>1/2$, $s\ne1$, and the
+Riemann hypothesis holds. In particular the Riemann hypothesis holds
+unconditionally in the archive (\texttt{UpperTheory.FinalTheorems.riemannHypothesis}).
+\end{lemma}
+\begin{proof}
+\uses{fin:every-character-thm}
+The first claim is $\mathrm{EC}$ modulo $1$. For the second, a zero with
+$\Re s<1/2$ is reflected through the functional equation of the completed zeta
+function $\xi(s)=\Gamma_{\R}(s)\zeta(s)$; the case $\Gamma_{\R}(s)=0$ forces $s=0$
+or a trivial zero. The third name applies this to
+Theorem~\ref{fin:every-character-thm}. None of these three declarations is used
+by \arch{Main.lean}, which goes through Lemma~\ref{fin:rh-of-every}.
+\end{proof}
+
+\section{Primitive characters and the imprimitive step}
+
+
+
+
+
+\begin{remark}[the trivial character at $s=1$]\label{fin:rem-junk}
+$\mathrm{ZeroFreeAll}$ has no exception at $s=1$. For the trivial primitive
+character it asserts $L(1,1)=\zeta(1)\ne0$, where $\zeta(1)$ is Mathlib's junk
+value $(\gamma-\log4\pi)/2$, which is indeed nonzero. So $\mathrm{ZeroFreeAll}$
+is slightly stronger than the primitive case of $\mathrm{EC}$, and whatever
+proves it must, somewhere, bound the value Mathlib assigns at the pole. This was
+not traced.
+\end{remark}
+
+\begin{lemma}[the imprimitive step]\label{fin:imprimitive}
+\lean{UpperTheory.Top.imprimitive}
+\uses{an:zerofree, fin:every-character}
+Assume $\mathrm{ZeroFreeAll}$. Then $\mathrm{EC}$ holds.
+\end{lemma}
+\begin{proof}
+\uses{an:pchar, fin:euler-factor}
+Let $\chi$ be a character modulo $N\ge1$, $\Re s>1/2$, and ($\chi\ne1$ or
+$s\ne1$). $\mathrm{ZeroFreeAll}$ at $\mathrm{of}(\chi)$ gives
+$L(s,\chi^{\ast})\ne0$. If $\chi\ne1$ then $\chi^{\ast}\ne1$, since the trivial
+character changes level to the trivial character; so ($\chi^{\ast}\ne1$ or
+$s\ne1$), which is the hypothesis of Mathlib's \texttt{LFunction\_changeLevel}:
+$L(s,\chi)=L(s,\chi^{\ast})\prod_{p\mid N}(1-\chi^{\ast}(p)p^{-s})$. Each factor is
+nonzero as in Lemma~\ref{fin:euler-factor} (the archive repeats that argument
+inline).
+\end{proof}
+
+\section{The assembly chain}
+
+\begin{definition}[the literature record]\label{fin:open-lit}
+\lean{UpperTheory.LiteratureTheorems.OpenLiteratureStatements}
+% uses-lean: UpperTheory.One.M.Row, UpperTheory.Zero.LLC.RecTExists
+\uses{fam:one-m-row, fam:rect-exists} % resolved
+The proposition $\mathrm{OLS}$ is the conjunction of three fields:
+\begin{enumerate}
+\item \texttt{caraianiLocalGlobalDual}: the proposition \texttt{UpperTheory.One.M.Row};
+\item \texttt{localLanglandsExists}: the proposition \texttt{UpperTheory.Zero.LLC.RecTExists};
+\item \texttt{galoisRepOfPolarizedPairLit}: the proposition \texttt{UpperTheory.One.M.Row} again.
+\end{enumerate}
+Here \texttt{One.M.Row} is \texttt{UpperTheory.GalStar.Row0b} at the recognition
+notion \texttt{IsRecT}: for every CM field $E$, prime $\ell$, isomorphism
+$\overline{\Q}_{\ell}\cong\CC$, $a\ge1$, cuspidal $\pi$ of $\mathrm{GL}_a$ over $E$
+and Hecke character $\chi$ of the maximal totally real subfield with $\pi$
+regular algebraic and $(\pi,\chi)$ polarized, there is a Galois representation
+$r:G_E\to\GL_a(\overline{\Q}_{\ell})$ with weights and Hodge--Tate data satisfying
+the archive's property list \texttt{PropsB}. \texttt{RecTExists} says that at
+every finite place of every number field there is a map from irreducible
+representations of $\GL_n$ to Weil--Deligne representations satisfying the
+archive's laws \texttt{LawsT}. Both are treated in the chapter on Galois
+representations.
+\end{definition}
+
+\begin{remark}[the record is weaker than its names]\label{fin:rem-olit-names}
+The field names suggest Caraiani's local-global compatibility, the local
+Langlands correspondence, and the existence of Galois representations for
+polarized pairs. In fact fields (1) and (3) have the same type, and field (2)
+states only the existence of a map with the laws \texttt{LawsT}, with no
+uniqueness and no bijectivity (the archive states uniqueness separately as
+\texttt{RecTUnique}, which this record does not contain). Nothing in the record
+is left open: Theorem~\ref{fin:every-character-of-row} fills all three fields
+with in-archive theorems. A second, unrelated declaration named
+\texttt{RecTExists} exists in
+\arch{Development/AbelianVarietyTheory/Definitions/NonGaloisDescent/RecTExists.lean};
+the one used here is in namespace \texttt{UpperTheory.Zero.LLC}.
+\end{remark}
+
+\begin{lemma}[where the record's fields are used]\label{fin:lit-fields}
+\lean{UpperTheory.LiteratureTheorems.local_langlands_recT_exists_of_literature, UpperTheory.LiteratureTheorems.local_langlands_gl_recT_exists_of_literature, UpperTheory.LiteratureTheorems.pair_u_of_literature, UpperTheory.LiteratureTheorems.carU_local_global_of_literature}
+\uses{fin:open-lit}
+% uses-lean: UpperTheory.Zero.LLC.RecTExists, UpperTheory.One.M.New.llOf_alt, UpperTheory.GalS.field_of_starFull_alt, UpperTheory.GalS.ofDual_star_alt
+\uses{fam:ll-of-alt, fam:rect-exists} % resolved
+Assume $\mathrm{OLS}$. Then \texttt{RecTExists} holds (in two ways, the first the
+field itself and the second obtained from it through \texttt{llOf\_alt} together
+with a dozen in-archive published statements of local representation theory),
+and the archive's propositions \texttt{PairUAlt} and \texttt{CarUAlt} hold.
+\end{lemma}
+\begin{proof}
+\uses{fin:open-lit}
+The four declarations project the fields of $\mathrm{OLS}$: the first returns
+field (2); the second feeds it to \texttt{llOf\_alt}; \texttt{pair\_u} feeds
+field (2) and field (3) to \texttt{field\_of\_starFull\_alt}; \texttt{carU\_local\_global}
+feeds field (1) to \texttt{ofDual\_star\_alt}. Field (1) is also projected once
+more, into the record \texttt{GlobalAutomorphicGaloisHypotheses'} built by
+\texttt{literature\_automorphy}. These are the only direct projections of
+$\mathrm{OLS}$ in \arch{.../ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean}.
+\end{proof}
+
+\begin{remark}[the of-literature file]\label{fin:rem-plumbing}
+The file \arch{.../ThirdPlaceSeries/EveryCharacterOfLiteratureOfVWin.lean}
+contains $195$ theorems, each taking $\mathrm{OLS}$ as argument. Most return an
+in-archive theorem and ignore the argument; for instance
+\texttt{deligne\_ribet\_of\_literature} is the archive's
+\texttt{PositivityTheory.PfDR.deligneRibet\_holds}. Only the four declarations
+of Lemma~\ref{fin:lit-fields} project a field directly; others reach the fields
+by calling those. The file carries no mathematics of its own.
+\end{remark}
+
+\begin{lemma}[the literature records]\label{fin:lit-records}
+\lean{UpperTheory.LiteratureTheorems.published_results_eigen, UpperTheory.LiteratureTheorems.published_results_first, UpperTheory.LiteratureTheorems.theta_integrals_agree_and_local_matching_of_literature}
+\uses{fin:open-lit, fin:lit-fields}
+% uses-lean: GlobalTheory.Fc.S0.UnitaryGroupThirdPlaceHypotheses, GlobalTheory.FunPr.ThetaLocalInputs, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching
+Assume $\mathrm{OLS}$. Then the hypothesis records
+\texttt{UnitaryGroupThirdPlaceHypotheses} (about $60$ fields named after
+published theorems of automorphic representation theory, among them Green's
+regular characters and the record \texttt{nLink}) and \texttt{ThetaLocalInputs}
+hold, and \texttt{ThetaIntegralsAgree} and \texttt{LocalMatching} hold.
+\end{lemma}
+\begin{proof}
+\uses{fin:lit-fields}
+% uses-lean: PositivityTheory.ThKR.theoremK_head2
+Each field of each record is filled by an of-literature theorem of the same
+file. The pair \texttt{ThetaIntegralsAgree}, \texttt{LocalMatching} comes from
+\texttt{theoremK\_head2} applied to two further of-literature theorems
+(\texttt{eis\_bl}, \texttt{siegel\_weil\_std}). The field
+\texttt{localGlobalAboveL} uses \texttt{carU\_above\_l\_of\_literature}, which uses
+Lemma~\ref{fin:lit-fields}.
+\end{proof}
+
+\begin{theorem}[EC from the green parametrisation, VWin and a hypothesis record]\label{fin:every-green}
+\lean{UpperTheory.Top.zero_free_all_of_green_v_win, UpperTheory.Top.every_character_of_green_v_win}
+\uses{an:zerofree, fin:every-character}
+% uses-lean: GlobalTheory.GLq.Green, UpperTheory.Top.VWin, GlobalTheory.Fc.HypsAlt, GlobalTheory.Fc.DefiniteSideCondition, Formalism.MainNotions.Closed, Formalism.MainNotions.LinkN
+\uses{fam:green, fam:hyps-alt, geob:closed, sha:vwin} % resolved
+Assume \texttt{Green} (the archive's parametrisation statement, treated with the
+families), $\mathrm{VWin}$ (Tate--Shafarevich budgets on windows with constant
+$401$ for every primitive character), and that the hypothesis record
+$\texttt{HypsAlt}(N,\texttt{DefiniteSideCondition})$ is inhabited, where
+$N(\mathcal C)$ says that the link predicate \texttt{LinkN} is closed on the
+class of families $\mathcal C$. Then $\mathrm{ZeroFreeAll}$ holds, and hence
+$\mathrm{EC}$ holds.
+\end{theorem}
+\begin{proof}
+\uses{fin:imprimitive}
+% uses-lean: UpperTheory.Top.zeroFreeAll_of_topG, GlobalTheory.Fc.forall_goal_of_shape_of_hyps, UpperTheory.Top.shape_closed_link_n_of_green, UpperTheory.Top.supplyChi, UpperTheory.Top.TopG, UpperTheory.Top.GChi, GlobalTheory.EX.HostExW
+\uses{an:zerofreeall-topg, fam:goal-of-shape, fam:shape-closed, geob:topg, host:gchi, host:host-exw, host:supply-chi} % resolved
+Take an element $h$ of the hypothesis record. The windowed analytic criterion
+\texttt{zeroFreeAll\_of\_topG} with $\lambda=3/2$ needs two inputs. The first is
+the Chebyshev inequality at window scale \texttt{TopG}; it is obtained from
+\texttt{shape\_closed\_link\_n\_of\_green} applied to \texttt{Green}, which
+produces the shape statement $\texttt{TopShapeAlt}(\text{true},\text{true},N,\texttt{TopG})$,
+and \texttt{forall\_goal\_of\_shape\_of\_hyps}, which discharges that shape with
+$h$. The second is $\texttt{HostExW}(3/2,G_{\psi})$ for every primitive $\psi$,
+obtained from \texttt{supplyChi} applied to the $\psi$-component of
+$\mathrm{VWin}$. This gives $\mathrm{ZeroFreeAll}$; the second name then applies
+Lemma~\ref{fin:imprimitive}.
+\end{proof}
+
+\begin{theorem}[EC from the theta-integral records]\label{fin:theta-local}
+\lean{UpperTheory.Lit.every_character_of_theta_integrals_local_matching}
+\uses{fin:every-character}
+% uses-lean: GlobalTheory.Fc.S0.UnitaryGroupThirdPlaceHypotheses, GlobalTheory.FunPr.ThetaLocalInputs, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching, GlobalTheory.CovTop.CovolumeBoundOfX, UpperTheory.Zero.LLC.RecTExists, UpperTheory.Top.VWin
+\uses{fam:rect-exists, geob:covolbound, sha:vwin} % resolved
+Assume the records \texttt{UnitaryGroupThirdPlaceHypotheses} ($P$) and
+\texttt{ThetaLocalInputs} ($F$), the statements \texttt{ThetaIntegralsAgree},
+\texttt{LocalMatching}, the covolume bound \texttt{CovolumeBoundOfX},
+\texttt{RecTExists} and $\mathrm{VWin}$. Then $\mathrm{EC}$ holds.
+\end{theorem}
+\begin{proof}
+\uses{fin:every-green}
+% uses-lean: GlobalTheory.GreenBridge.green_of_regular, UpperTheory.Lit.nonempty_hyps_definite_side_of_closed_bound, UpperTheory.N.boundAtTwoThree_linked_of_recT, GlobalTheory.Mem.Top.Bl.parametersOfDependence
+\uses{fam:nonempty-hyps} % resolved
+Apply Theorem~\ref{fin:every-green}. \texttt{Green} comes from
+\texttt{green\_of\_regular} applied to the field
+\texttt{greenRegularCharacters} of $P$. The hypothesis record comes from
+\texttt{nonempty\_hyps\_definite\_side\_of\_closed\_bound}, applied to all seven
+inputs except $\mathrm{VWin}$ and to the family of statements, indexed by
+$c\in\R$, that \texttt{boundAtTwoThree\_linked\_of\_recT} produces from the field
+\texttt{nLink} of $P$ at the parameters \texttt{parametersOfDependence} of the
+local Langlands input at $c$. That construction is the archive's existence of
+geometric families and is treated in the chapter on families.
+\end{proof}
+
+\begin{theorem}[EC from the literature record and VWin]\label{fin:every-lit-vwin}
+\lean{UpperTheory.LiteratureTheorems.every_character_of_literature_of_vWin}
+\uses{fin:open-lit, fin:every-character}
+% uses-lean: UpperTheory.Top.VWin
+\uses{sha:vwin} % resolved
+Assume $\mathrm{OLS}$ and $\mathrm{VWin}$. Then $\mathrm{EC}$ holds.
+\end{theorem}
+\begin{proof}
+\uses{fin:theta-local, fin:lit-records, fin:lit-fields}
+% uses-lean: SelfIntersectionVolumeEstimates.topCovolSlim2_use_alt_alt
+\uses{geob:covolsupply} % resolved
+Apply Theorem~\ref{fin:theta-local}. The records $P$, $F$ and the pair of
+theta statements come from Lemma~\ref{fin:lit-records}. The covolume bound is
+\texttt{topCovolSlim2\_use\_alt\_alt} applied to fifteen of-literature theorems
+of arithmetic geometry (resolution and principalisation in characteristic zero,
+Poincar\'e--Lelong, arithmetic Hilbert--Samuel and Moriwaki bigness,
+toroidal compactifications, Grothendieck deformation and others).
+\texttt{RecTExists} is the second declaration of Lemma~\ref{fin:lit-fields}.
+\end{proof}
+
+\begin{theorem}[EC from a row]\label{fin:every-character-of-row}
+\lean{UpperTheory.FinalTheorems.everyCharacter_of_row}
+\uses{fin:open-lit, fin:every-character}
+% uses-lean: UpperTheory.GalStar.Row0b, UpperTheory.Zero.LLC.IsRecT
+\uses{fam:laws-t, fam:props-b} % resolved
+Assume \texttt{Row0b} at the recognition notion \texttt{IsRecT}, i.e.\ the
+proposition \texttt{One.M.Row} of Definition~\ref{fin:open-lit}. Then
+$\mathrm{EC}$ holds.
+\end{theorem}
+\begin{proof}
+\uses{fin:every-lit-vwin}
+% uses-lean: UpperTheory.Zero.LLC.recTExists, UpperTheory.One.vwin_of_row
+\uses{fam:rect-exists-thm, sha:vwin-of-row} % resolved
+Let $h$ be the hypothesis. The record $\mathrm{OLS}$ is
+$\langle h,\ \texttt{recTExists},\ h\rangle$: the row fills both row fields, and
+the in-archive theorem \texttt{recTExists} fills the local Langlands field.
+$\mathrm{VWin}$ is \texttt{vwin\_of\_row}$(h)$. Apply
+Theorem~\ref{fin:every-lit-vwin}.
+\end{proof}
+
+\begin{theorem}[EC]\label{fin:every-character-thm}
+\lean{UpperTheory.FinalTheorems.everyCharacter}
+\uses{fin:every-character}
+The statement $\mathrm{EC}$ holds.
+\end{theorem}
+\begin{proof}
+\uses{fin:every-character-of-row}
+% uses-lean: UpperTheory.Gal.Int.galoisLocalGlobalStrong_recParameter
+\uses{fam:gal-strong} % resolved
+Apply Theorem~\ref{fin:every-character-of-row} to the in-archive theorem
+\texttt{galoisLocalGlobalStrong\_recParameter}, which proves \texttt{Row0b} at
+the notion \texttt{recT}, the archive's name for $(h,\mathrm{rc})\mapsto\texttt{IsRecT}\,h\,\mathrm{rc}$.
+\end{proof}
+
+\begin{remark}[the chain, and where its content is]\label{fin:rem-chain}
+Reading downward from \arch{Main.lean}:
+$\text{Theorem~\ref{fin:main}}\leftarrow\text{Theorem~\ref{fin:kernels}}\leftarrow
+\text{Theorem~\ref{fin:every-character-thm}}\leftarrow
+\text{Theorem~\ref{fin:every-character-of-row}}\leftarrow
+\text{Theorem~\ref{fin:every-lit-vwin}}\leftarrow
+\text{Theorem~\ref{fin:theta-local}}\leftarrow
+\text{Theorem~\ref{fin:every-green}}$, plus Lemma~\ref{fin:imprimitive} and
+the elementary deductions of the second section. Every step above is a one-line
+term or a short elementary proof. The mathematical content sits in the inputs
+named in \texttt{uses-lean} comments: the windowed analytic criterion and its
+\texttt{FormB} input, the host fields of \texttt{supplyChi} and
+\texttt{HostExW}, the Chebyshev inequality \texttt{TopG} with
+\texttt{level\_gm\_le\_on\_family\_scales}, the budget $\mathrm{VWin}$ from
+\texttt{vwin\_of\_row}, and the row \texttt{One.M.Row}, \texttt{RecTExists} and
+the family construction behind \texttt{shape\_closed\_link\_n\_of\_green} and
+\texttt{nonempty\_hyps\_definite\_side\_of\_closed\_bound}.
+\end{remark}
+
+\begin{theorem}[an unused copy of the top of the chain]\label{fin:plug}
+\lean{UpperTheory.Top.plugWin, UpperTheory.Top.plugAll, UpperTheory.Lit.everyE₂}
+\uses{an:zerofree, fin:every-character}
+% uses-lean: GlobalTheory.GLq.Green, UpperTheory.Top.VWin, GlobalTheory.Fc.Hyps, GlobalTheory.Fc.DRS
+\uses{fam:green, fam:top-shape-old, sha:vwin} % resolved
+Assume \texttt{Green}, $\mathrm{VWin}$, and that the record
+$\texttt{Hyps}(N,\texttt{DRS})$ is inhabited, with $N$ as in
+Theorem~\ref{fin:every-green}. Then $\mathrm{ZeroFreeAll}$ holds
+(\texttt{plugWin}) and $\mathrm{EC}$ holds (\texttt{plugAll}). Further,
+\texttt{everyE₂} derives $\mathrm{EC}$ from records \texttt{HypothesesUE},
+\texttt{Hypotheses₂}, the two theta statements, \texttt{CovolX},
+\texttt{LocalLanglandsGL} and $\mathrm{VWin}$.
+\end{theorem}
+\begin{proof}
+\uses{fin:imprimitive}
+% uses-lean: UpperTheory.Top.zeroFreeAll_of_topG, GlobalTheory.Fc.shape_of, UpperTheory.Top.shapeWin, UpperTheory.Top.supplyChi, UpperTheory.Lit.hypsE₂
+\uses{an:zerofreeall-topg, fam:shape-win, host:supply-chi} % resolved
+\texttt{plugWin} is the proof of Theorem~\ref{fin:every-green} with
+\texttt{shapeWin} and \texttt{shape\_of} in place of
+\texttt{shape\_closed\_link\_n\_of\_green} and
+\texttt{forall\_goal\_of\_shape\_of\_hyps}; \texttt{plugAll} composes it with
+Lemma~\ref{fin:imprimitive}; \texttt{everyE₂} applies \texttt{plugAll} to
+\texttt{green\_of\_regular} and \texttt{hypsE₂}.
+\end{proof}
+
+\begin{remark}[the copy is not on the path from \arch{Main.lean}]\label{fin:rem-deadcopy}
+A textual search of the archive finds \texttt{plugWin} used only by
+\texttt{plugAll}, \texttt{plugAll} used only by \texttt{everyE₂}, and no use of
+\texttt{everyE₂}. The path from \arch{Main.lean} goes through
+\arch{.../ThirdPlaceSeries/TopPlug.lean} (Theorem~\ref{fin:every-green}) and
+\arch{.../ThirdPlaceSeries/SiegelEisensteinSecondTermHypotheses.lean}
+(Theorem~\ref{fin:theta-local}). The definition $\mathrm{EC}$ itself lives in
+the file of the copy, \arch{Development/AutomorphicArithmetic/CharacterBoxes/EveryCharacter.lean}.
+\end{remark}

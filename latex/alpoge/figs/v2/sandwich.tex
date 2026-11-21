@@ -1,0 +1,31 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, x=1.55cm, y=1cm]
+\draw[->, line width=0.6pt] (-0.4,0) -- (8.4,0)
+  node[right, font=\footnotesize] {slopes};
+\foreach \p/\l in {0.6/{$\mu_{\min}(R^\vee)$}, 3.6/{$\mu(R^\vee)$},
+  6.6/{$\mu_{\max}(R^\vee)$}}
+  {\draw (\p,0.12) -- (\p,-0.12); \node[below=3pt, font=\footnotesize]
+  at (\p,0) {\l};}
+\node[bi zero, label={[font=\footnotesize]below:$s$}] (s) at (2.3,0) {};
+\draw[decorate, decoration={brace, amplitude=5pt, mirror},
+  biFail] (0.6,-0.75) -- (2.3,-0.75)
+  node[midway, below=5pt, font=\scriptsize, align=center]
+  {spread $\le\Delta_R$\\ (clause (x))};
+\draw[biPole, ->, line width=0.9pt] (5.0,1.5) -- (3.7,0.18);
+\node[bi pole box, anchor=south, text width=5.3cm] at (5.4,1.5)
+  {clause (ii): $\mu(R^\vee)\le A(u)-h(u)+\Fo+\text{err}$
+  (archimedean side)};
+\draw[biZero, ->, line width=0.9pt] (1.9,1.5) -- (3.5,0.18);
+\node[bi zero box, anchor=south, text width=4.4cm] at (1.3,1.5)
+  {clause (ix): $s-\log|\Words|-\text{slack}\le\mu(R^\vee)$};
+\draw[biOther, dashed, ->] (6.6,-1.25) -- (6.6,-0.68);
+\node[biOther, font=\scriptsize, align=center, anchor=north]
+  at (6.6,-1.25) {Bost: $\mu(N_u)\le\mu_{\max}(R^\vee)+h_u$\\
+  (maximal slope; not what\\ clause (ix) states)};
+\node[bi bound box, anchor=north, text width=7cm] at (3.0,-2.0)
+  {subtracting: $\mu(R^\vee)$ and the heights $h(u)$ cancel, leaving
+  $\Ga\le\Main+\log|\Words|+\cdots$};
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

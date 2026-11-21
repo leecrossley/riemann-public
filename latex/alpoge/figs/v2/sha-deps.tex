@@ -1,0 +1,31 @@
+\vtwofit{%
+\begin{tikzpicture}[bi, font=\footnotesize,
+  every node/.append style={text width=2.9cm}]
+\node[v2 step] (gal) at (-3.2,0)
+  {Theorem~\ref{thm:galois-reps}\ref{item:gr-lgc}\\ truncated
+  local--global compatibility};
+\node[v2 step] (plus) at (-4.8,-1.9)
+  {Theorems~\ref{thm:plus-gk}, \ref{thm:plus}\\ plus part, Case~I};
+\node[v2 step] (rem) at (-1.6,-1.9)
+  {Theorem~\ref{thm:remaining-counts}\\ Cases~II, III, Z, main~V};
+\node[v2 step] (minus) at (1.6,-1.9)
+  {Theorem~\ref{thm:minus}\\ minus part};
+\node[v2 step] (pig) at (4.8,-1.9)
+  {Theorems~\ref{thm:h2-bound}, \ref{thm:windows-pigeonhole}\\
+  windows; Case~IV, $V_s$};
+\node[v2 input] (cl) at (4.8,-4.0)
+  {Poitou--Tate and local duality; case split
+  (Proposition~\ref{prop:cases-exhaustive})};
+\node[v2 step] (sha) at (0,-5.7)
+  {Theorem~\ref{thm:sha-windows}\\ the Sha bound on windows};
+\node[v2 step] (host) at (0,-7.4)
+  {Theorem~\ref{thm:host-supply}\\ supply of hosts};
+\draw[v2 arr] (gal) -- (plus);
+\draw[v2 arr] (gal) -- (rem);
+\draw[v2 arr] (plus) -- (sha);
+\draw[v2 arr] (rem) -- (sha);
+\draw[v2 arr] (minus) -- (sha);
+\draw[v2 arr] (pig) -- (sha);
+\draw[v2 arr] (cl) -- (sha);
+\draw[v2 arr] (sha) -- (host);
+\end{tikzpicture}}

@@ -1,0 +1,107 @@
+\pgfplotsset{
+  sb keep pole/.style 2 args={x filter/.append code={%
+    \edef\sbtmpa{\thisrow{panel}\thisrow{kind}}\edef\sbtmpb{#1#2}%
+    \ifx\sbtmpa\sbtmpb\else\def\pgfmathresult{nan}\fi}},
+  sb tplane/.style={axis equal image, scale only axis, width=5.2cm,
+    xmin=-0.42, xmax=0.42, ymin=-0.42, ymax=0.42,
+    axis lines=middle, xtick={0.25}, xticklabels={}, ytick=\empty,
+    xlabel={$\Real t$}, ylabel={$\operatorname{Im}t$},
+    xlabel style={anchor=north west, at={(ticklabel* cs:1)},
+      font=\footnotesize},
+    ylabel style={anchor=south, at={(ticklabel* cs:1)},
+      font=\footnotesize},
+    title style={font=\footnotesize, align=center, yshift=2pt}, clip=false},
+  sb signs/.style={scale only axis, width=5.2cm, height=2.0cm,
+    xmin=0.3, xmax=30.7, ymin=-2.3, ymax=2.3,
+    xtick={1,5,10,15,20,25,30}, ytick={-2,-1,0,1,2},
+    xlabel={$k$}, ylabel={$a_k/4^k$},
+    xlabel style={font=\footnotesize, yshift=3pt},
+    ylabel style={font=\footnotesize, yshift=-4pt},
+    ybar, bar width=0.7, bar shift=0pt},
+  sb pos bar/.style={fill=sbZero, draw=sbZero, line width=0.3pt},
+  sb neg bar/.style={draw=sbFail, line width=0.4pt,
+    pattern={north east lines}, pattern color=sbFail},
+}
+\begin{tikzpicture}[sb]
+\begin{groupplot}[group style={group size=2 by 2, horizontal sep=1.9cm,
+  vertical sep=1.1cm}, sb axis]
+\nextgroupplot[sb tplane,
+  title={(a) $a_k=4^k+2\Real\bigl((3e^{i\pi/3})^k\bigr)$\\
+    $a_k\ge0$; dominant pole on the positive axis}]
+\addplot[draw=sbOther, fill=sbOther!20, domain=0:360, samples=121,
+  smooth] ({0.25*cos(x)},{0.25*sin(x)}) -- cycle;
+\addplot[sb pole plot, only marks, mark size=2.4pt, sb keep pole={a}{sub}]
+  table[x=re, y=im] {\sbdata{landau_poles.dat}};
+\addplot[sb pole plot, only marks, mark size=3.6pt, line width=1.3pt,
+  sb keep pole={a}{dom}]
+  table[x=re, y=im] {\sbdata{landau_poles.dat}};
+\node[font=\footnotesize, anchor=north west, inner sep=2pt]
+  at (axis cs:0.25,0) {$\tfrac14$};
+\node[font=\footnotesize, anchor=south west, inner sep=3pt]
+  at (axis cs:0.166667,0.288675) {$\tfrac13e^{i\pi/3}$};
+\node[font=\footnotesize, anchor=north west, inner sep=3pt]
+  at (axis cs:0.166667,-0.288675) {$\tfrac13e^{-i\pi/3}$};
+\nextgroupplot[sb tplane,
+  title={(b) $a_k=2\Real\bigl((4e^{i\pi/3})^k\bigr)+3^k$\\
+    dominant poles off the axis; $a_k<0$ often}]
+\addplot[draw=sbOther, fill=sbOther!20, domain=0:360, samples=121,
+  smooth] ({0.25*cos(x)},{0.25*sin(x)}) -- cycle;
+\addplot[sb fail plot, only marks, mark size=5pt,
+  mark options={solid, fill=none, line width=0.9pt},
+  sb keep pole={b}{dom}]
+  table[x=re, y=im] {\sbdata{landau_poles.dat}};
+\addplot[sb pole plot, only marks, mark size=2.4pt, sb keep pole={b}{sub}]
+  table[x=re, y=im] {\sbdata{landau_poles.dat}};
+\addplot[sb pole plot, only marks, mark size=3.6pt, line width=1.3pt,
+  sb keep pole={b}{dom}]
+  table[x=re, y=im] {\sbdata{landau_poles.dat}};
+\node[font=\footnotesize, anchor=south west, inner sep=5pt]
+  at (axis cs:0.125,0.216506) {$\tfrac14e^{i\pi/3}$};
+\node[font=\footnotesize, anchor=north west, inner sep=5pt]
+  at (axis cs:0.125,-0.216506) {$\tfrac14e^{-i\pi/3}$};
+\node[font=\footnotesize, anchor=north, inner sep=3pt]
+  at (axis cs:0.333333,-0.01) {$\tfrac13$};
+\nextgroupplot[sb signs]
+\addplot[sb pos bar, x filter/.expression={\thisrow{nonneg}==1 ? x : nan}]
+  table[x=k, y=norm] {\sbdata{landau_a.dat}};
+\addplot[sb neg bar, x filter/.expression={\thisrow{nonneg}==0 ? x : nan}]
+  table[x=k, y=norm] {\sbdata{landau_a.dat}};
+\draw[sbInk, thin] (axis cs:0.3,0) -- (axis cs:30.7,0);
+\nextgroupplot[sb signs]
+\addplot[sb pos bar, x filter/.expression={\thisrow{nonneg}==1 ? x : nan}]
+  table[x=k, y=norm] {\sbdata{landau_b.dat}};
+\addplot[sb neg bar, x filter/.expression={\thisrow{nonneg}==0 ? x : nan}]
+  table[x=k, y=norm] {\sbdata{landau_b.dat}};
+\draw[sbInk, thin] (axis cs:0.3,0) -- (axis cs:30.7,0);
+\end{groupplot}
+\matrix[anchor=north, font=\footnotesize, column sep=4pt, row sep=2pt,
+  matrix of nodes, nodes={anchor=west, inner sep=1pt}]
+  at ($(group c1r2.south)!0.5!(group c2r2.south) + (0,-0.85)$) {
+  \tikz\node[sb pole, minimum size=6pt]{}; &
+  poles $1/\beta_j$ of $\sum_ka_kt^k$ &
+  \tikz\fill[sbOther!20, draw=sbOther] (0,0) circle (3.5pt); &
+  disc of convergence $\lvert t\rvert<\tfrac14$ \\
+  \tikz\draw[sbFail, line width=0.9pt] (0,0) circle (3.5pt); &
+  dominant poles off the positive axis &
+  \tikz{\fill[sbZero] (0,0) rectangle (5pt,8pt);
+    \draw[sbFail, line width=0.4pt, pattern={north east lines},
+      pattern color=sbFail] (8pt,0) rectangle (13pt,8pt);} &
+  $a_k\ge0$ (blue), $a_k<0$ (purple, hatched) \\
+};
+\end{tikzpicture}
+\caption{Proposition~\ref{prop:landau} in the $t$-plane. Each column shows
+a sequence $a_k=\sum_jc_j\beta_j^k$, the poles $t=1/\beta_j$ of
+$\sum_ka_kt^k=\sum_jc_j\beta_jt/(1-\beta_jt)$ (vermillion crosses, the
+dominant ones larger), the disc of convergence $\lvert t\rvert<1/4$
+(grey), and below it the values $a_k/4^k$ for $k=1,\dots,30$ (blue bar:
+$a_k\ge0$; purple hatched bar: $a_k<0$). (a) $a_k=4^k+2\Real
+\bigl((3e^{i\pi/3})^k\bigr)$ is nonnegative for every $k\ge1$, and the
+pole on the boundary of the disc is on the positive real axis, at $1/4$,
+with positive coefficient, as the proposition requires. (b)
+$a_k=2\Real\bigl((4e^{i\pi/3})^k\bigr)+3^k$ has its poles on the boundary
+of the disc at $e^{\pm i\pi/3}/4$, off the real axis (purple circles), and
+$a_k<0$ whenever $k\equiv2,3,4\pmod6$, so on every window of three
+consecutive $k$. The proposition excludes this configuration for a
+sequence that is nonnegative on arbitrarily long intervals. Values from
+the closed formulas.}
+\label{fig:landau-poles}

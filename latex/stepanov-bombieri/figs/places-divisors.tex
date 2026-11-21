@@ -1,0 +1,87 @@
+\begin{tikzpicture}[sb,
+    geo/.style={circle, fill=sbInk, minimum size=3.4pt, inner sep=0pt},
+    fr/.style={->, sbInk, line width=0.6pt,
+      >={Stealth[length=1.8mm]}, shorten <=2pt, shorten >=2pt},
+    lab/.style={font=\footnotesize, inner sep=2pt}]
+  \def\rx{2.45}\def\ry{1.45}
+  \begin{scope}
+    \node[font=\small, anchor=south west] at (-\rx-0.4,\ry+0.55)
+      {(a) the geometric points $C(\overline{\F}_q)$};
+    \draw[sbInk, line width=0.8pt] (0,0) ellipse ({\rx} and {\ry});
+    \foreach \n/\a in {P0/180, Q1/112, Q2/68, R1/228, R2/256, R3/284}
+      \coordinate (a\n) at ({\rx*cos(\a)},{\ry*sin(\a)});
+    \foreach \n in {P0,Q1,Q2,R1,R2,R3} \node[geo] at (a\n) {};
+    \node[lab, left]        at (aP0) {$P_0$};
+    \node[lab, above left]  at (aQ1) {$Q_1$};
+    \node[lab, above right] at (aQ2) {$Q_2$};
+    \node[lab, below left]  at (aR1) {$R_1$};
+    \node[lab, below]       at (aR2) {$R_2$};
+    \node[lab, below right] at (aR3) {$R_3$};
+    \draw[fr, shorten <=1pt, shorten >=1pt] (aP0)
+      .. controls +(1.0,0.75) and +(1.0,-0.75) .. (aP0);
+    \node[lab, right] at ($(aP0)+(0.75,0)$) {$\Fr$};
+    \draw[fr] (aQ1) to[bend right=35] (aQ2);
+    \draw[fr] (aQ2) to[bend right=35] (aQ1);
+    \node[lab] at (0,0.95) {$\Fr$};
+    \draw[fr] (aR1) to[bend left=30] (aR2);
+    \draw[fr] (aR2) to[bend left=30] (aR3);
+    \draw[fr] (aR3) to[bend right=40] (aR1);
+    \node[lab] at (-0.55,-0.6) {$\Fr$};
+    \node[anchor=north west, inner sep=0pt] at (-\rx-0.35,-\ry-0.12)
+      {\sbschematic[schematic]};
+    \node[align=left, font=\footnotesize, anchor=north west]
+      at (-\rx-0.4,-\ry-0.55) {%
+      $\deg P_0=1$: $P_0$ fixed by every $\Fr^n$\\
+      $\deg Q=2$: $Q_1,Q_2$ fixed by $\Fr^n$ iff $2\mid n$\\
+      $\deg R=3$: $R_1,R_2,R_3$ fixed by $\Fr^n$ iff $3\mid n$\\[2pt]
+      $N_n=\#\{\text{points fixed by }\Fr^n\}=\sum_{d\mid n}dB_d$};
+  \end{scope}
+  \begin{scope}[xshift=8.6cm]
+    \node[font=\small, anchor=south west] at (-\rx-0.4,\ry+0.55)
+      {(b) a section $f\in\calL(D)$, $D=2P_0+Q$};
+    \draw[sbInk, line width=0.8pt] (0,0) ellipse ({\rx} and {\ry});
+    \foreach \n/\a in {P0/180, Q1/112, Q2/68, S1/250, S2/285, T1/318, T2/350}
+      \coordinate (b\n) at ({\rx*cos(\a)},{\ry*sin(\a)});
+    \foreach \n in {P0,Q1,Q2} \node[sb pole, minimum size=6.5pt] at (b\n) {};
+    \node[lab, left=3pt, text=sbPole, align=right] at (bP0)
+      {$P_0$\\order $2$};
+    \node[lab, above left, text=sbPole]  at (bQ1) {$Q_1$, order $1$};
+    \node[lab, above right, text=sbPole] at (bQ2) {$Q_2$, order $1$};
+    \foreach \n in {S1,S2,T1,T2} \node[sb zero, minimum size=4.8pt] at (b\n) {};
+    \node[lab, below left, text=sbZero]  at (bS1) {$S_1$};
+    \node[lab, below, text=sbZero]       at (bS2) {$S_2$};
+    \node[lab, below right, text=sbZero] at (bT1) {$T$};
+    \node[lab, right, text=sbZero]       at (bT2) {$T'$};
+    \draw[fr] (bS1) to[bend left=40] (bS2);
+    \draw[fr] (bS2) to[bend right=-40] (bS1);
+    \node[lab] at (-0.1,-0.7) {$\Fr$};
+    \node[anchor=north west, inner sep=0pt] at (-\rx-0.35,-\ry-0.12)
+      {\sbschematic[schematic]};
+    \node[align=left, font=\footnotesize, anchor=north west]
+      at (-\rx-0.4,-\ry-0.55) {%
+      poles: $(f)_\infty=2P_0+Q\le D$\\
+      zeros: $(f)_0=S+T+T'$, with $\deg S=2$\\
+      \phantom{zeros: }and $\deg T=\deg T'=1$\\[2pt]
+      $\deg(f)_0=\deg(f)_\infty\le\deg D=4$};
+  \end{scope}
+  \node[font=\footnotesize, anchor=north] at (4.3,-4.55) {%
+    \tikz\node[geo]{}; geometric point\qquad
+    \tikz\draw[fr, shorten <=0pt, shorten >=0pt](0,0)--(0.5,0);
+      Frobenius $\Fr$\qquad
+    \tikz\node[sb pole, minimum size=6.5pt]{}; pole of $f$ (order printed)\qquad
+    \tikz\node[sb zero, minimum size=4.8pt]{}; zero of $f$};
+\end{tikzpicture}
+\caption{Closed points, a divisor and a section on a curve $C$ over $\F_q$
+(Definition~\ref{def:function-field}). (a) The geometric points
+$C(\overline{\F}_q)$, drawn as a loop; Frobenius $\Fr$ (black arrows) fixes
+$P_0$, swaps $Q_1,Q_2$ and cycles $R_1,R_2,R_3$, so $P_0$, $Q$, $R$ are
+places of degree $1$, $2$, $3$. A place of degree $d$ contributes its $d$
+geometric points to $N_n=\#C(\F_{q^n})$ exactly when $d\mid n$; this is
+$N_n=\sum_{d\mid n}dB_d$. (b) A nonzero $f\in\calL(D)$ for
+$D=2P_0+Q$: its poles (vermillion crosses, orders printed) are bounded by
+$D$, and its zeros (blue dots; here a place $S$ of degree $2$ and two
+places $T,T'$ of degree $1$) have total degree
+$\deg(f)_0=\deg(f)_\infty\le\deg D=4$ (fact~\ref{S2}). Schematic: the curve
+is drawn with one real dimension and no genus, and the positions are
+arbitrary.}
+\label{fig:places-divisors}

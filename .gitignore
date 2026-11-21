@@ -1,0 +1,17 @@
+# LaTeX and Lean build output. The two PDFs at the root are tracked on
+# purpose: GitHub Pages serves them from here.
+latex/build/
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+lean/.lake/
+blueprint/web/
+blueprint/print/
+blueprint/src/web.paux
+blueprint/lean_decls

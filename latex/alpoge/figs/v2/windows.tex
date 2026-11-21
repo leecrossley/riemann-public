@@ -1,0 +1,28 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, x=1.15cm, y=1cm]
+\draw[->] (0,0) -- (13.6,0) node[right, font=\footnotesize]
+  {$\log\log x$};
+\draw[decorate, decoration={brace, amplitude=5pt}] (1,1.95) -- (12.4,1.95)
+  node[midway, above=5pt, font=\scriptsize] {a range
+  $[X^{1/J},X]$: width $\log J$};
+\foreach \a/\b/\n in {2.2/3.6/1, 5.0/6.0/2, 9.4/11.0/3}
+  {\fill[pattern=north east lines, pattern color=biFail] (\a,0.15)
+  rectangle (\b,1.4);
+   \node[biFail!80!black, font=\scriptsize] at ({(\a+\b)/2},1.65)
+  {twist $e_{\n}$ too large};}
+\fill[biZero!25] (6.5,0.15) rectangle (8.9,1.6);
+\draw[biZero, line width=0.9pt] (6.5,0.15) rectangle (8.9,1.6);
+\node[font=\scriptsize, align=center] at (7.7,1.17) {$[Y,Y^2]$:\\
+width $\log 2$};
+\draw[biBound, line width=1.4pt] (6.9,0.68) -- (8.2,0.68)
+  node[pos=0.5, below=1pt, font=\scriptsize, inner sep=1pt]
+  {$[W,W^{3/2}]$};
+\draw[biRH, line width=1.4pt, dashed] (6.9,-0.35) -- (7.5,-0.35);
+\node[biRH!70!black, font=\scriptsize, anchor=west] at (7.6,-0.35)
+  {Landau needs only $[Y',Y'^{1+\delta}]$};
+\node[anchor=north west] at (0,-0.7) {\bischematic[schematic; $R=3$,
+  positions and widths illustrative]};
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

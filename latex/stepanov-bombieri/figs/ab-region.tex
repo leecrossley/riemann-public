@@ -1,0 +1,54 @@
+\begin{tikzpicture}[sb]
+\begin{axis}[sb axis, height=0.66\linewidth,
+  xmin=-0.5, xmax=15.5, ymin=-0.8, ymax=31,
+  xtick={0,2,...,14}, ytick={0,5,...,30},
+  extra x ticks={11}, extra x tick labels={$M'$},
+  extra x tick style={tick label style={font=\footnotesize, yshift=-1.4ex}},
+  xlabel={$a$}, ylabel={$b$},
+  legend style={at={(0.03,0.03)}, anchor=south west},
+  legend cell align=left,
+  clip mode=individual,
+]
+\fill[pattern={north east lines}, pattern color=sbOther]
+  (axis cs:11,-0.8) rectangle (axis cs:15.5,31);
+\addlegendimage{empty legend}
+\addlegendentry{\hspace{-0.6cm}generic values $\ell(jP_0)=\max(1,j+1-g)$:}
+\addplot[sbOther, only marks, mark=*, mark size=0.8pt,
+  restrict expr to domain={\thisrow{adm}}{0:0}]
+  table[x=a, y=b] {\sbdata{ab_points.dat}};
+\addlegendentry{not admissible}
+\addplot[sb bound plot, only marks,
+  restrict expr to domain={\thisrow{adm}}{1:1}, mark size=2.5pt]
+  table[x=a, y=b] {\sbdata{ab_points.dat}};
+\addlegendentry{admissible: (N) and (S)}
+\addplot[sb bound line] table[x=a, y=b] {\sbdata{ab_hyperbola.dat}};
+\addlegendentry{boundary of (S): $(a-g)(b+1-g)=Ma$}
+\addplot[sb bound line, forget plot] coordinates {(11,-0.8) (11,31)};
+\addplot[sbOther, line width=0.6pt, domain=-0.5:15.5, samples=2]
+  {(176-1-x)/11};
+\addlegendentry{level $1+a+M'b=176$}
+\addplot[sb weil line, domain=-0.5:15.5, samples=2] {(166-1-x)/11};
+\addlegendentry{level $166=q+1+2g\sqrt q$ (Weil)}
+\addplot[sbBound, only marks, mark=star, mark size=4pt, line width=1pt,
+  forget plot, restrict expr to domain={\thisrow{value}}{176:176}]
+  table[x=a, y=b] {\sbdata{ab_special.dat}};
+\node[font=\footnotesize, anchor=north east, fill=white, inner sep=1.5pt]
+  (opt) at (axis cs:9.3,12.6) {$(a,b)=(10,15)$: $N\le176$};
+\draw[sbInk, thin, ->, shorten >=3pt] (opt.north east) -- (axis cs:10,15);
+\node[font=\footnotesize, text=sbInk!70, fill=white, inner sep=1.5pt,
+  align=center] at (axis cs:13.25,22) {(N) fails:\\ $a\ge M'$};
+\end{axis}
+\end{tikzpicture}
+\caption{The admissible pairs of Definition~\ref{def:admissible} for
+$q=121$, $g=2$, $M=M'=11$, $\sigma=\mathrm{id}$, with the generic
+Riemann--Roch values $\ell(jP_0)=\max(1,j+1-g)$. Condition (N) is $a<11$;
+the region where it fails is hatched. Condition (S) holds strictly above
+the orange dash-dot curve $(a-g)(b+1-g)=Ma$ of \eqref{eq:siegel-margin}.
+Orange triangles: admissible pairs; grey dots: the others. The level lines
+of the bound $1+a+M'b$ have slope $-1/M'$, so the best pair takes $a$ as
+large as (N) allows and then $b$ as small as (S) allows: $(10,15)$ (star),
+with $N\le176$. It is both the pair of Proposition~\ref{prop:balancing} and
+Bombieri's pair (Theorem~\ref{thm:bombieri}). Green: the level
+$166=q+1+2g\sqrt q$ of the Weil bound, below every admissible pair.
+Computed by enumerating the lattice points.}
+\label{fig:ab-region}

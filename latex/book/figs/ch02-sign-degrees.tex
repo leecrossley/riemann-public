@@ -1,0 +1,74 @@
+\begin{tikzpicture}[sb,
+    cell/.style={draw=sbInk, line width=0.5pt, minimum height=0.62cm,
+      inner sep=1pt, font=\footnotesize, align=center},
+    live/.style={cell, fill=sbZero!15, draw=sbZero, line width=0.9pt},
+    auto/.style={cell, fill=sbOther!15, draw=sbOther},
+    hyp/.style={cell, fill=sbFail!12, draw=sbFail, dashed, line width=0.8pt},
+    lab/.style={font=\footnotesize, inner sep=1.5pt},
+    rowlab/.style={font=\small, anchor=south west, inner sep=1pt}]
+  \def\w{1.05}
+  \newcommand\cellat[5]{%
+    \node[#1, minimum width={(#3-#2+1)*\w cm}] (#5) at
+      ({(#2+#3)/2*\w},#4) {};}
+  \foreach \c/\t in {0/0,1/1,2/2,3/\cdots,4/k-2,5/k-1,6/k,7/k+1,8/\cdots,
+      9/2k-2}
+    \node[lab, text=sbOther!70!black] at ({\c*\w},0.55) {$\t$};
+  \node[lab, anchor=east, text=sbOther!70!black] at (-0.5*\w,0.55)
+    {degree $i$};
+  \node[rowlab] at (-0.5*\w,-0.42)
+    {$H^i_c(\mathbb A^1_{\Fb},j_!\cF)$: gives $M_n$};
+  \cellat{cell}{0}{0}{-0.8}{r1a}\node[lab] at (r1a) {$0$};
+  \cellat{live}{1}{1}{-0.8}{r1b}\node[lab] at (r1b) {$\alpha_j$};
+  \cellat{cell}{2}{2}{-0.8}{r1c}\node[lab] at (r1c) {$0$};
+  \node[lab, anchor=west, align=left] at ({2.6*\w},-0.8)
+    {$0$ in degrees $0,2$ by \ref{H1};\enspace
+     degree $1$:\enspace $M_n=-\sum_j\alpha_j^n$};
+  \node[rowlab] at (-0.5*\w,-1.72)
+    {$k$-fold product: gives $M_n^k$};
+  \cellat{live}{6}{6}{-2.1}{r2}\node[lab] at (r2) {$\alpha_I$};
+  \node[lab, anchor=east, align=right] at ({5.4*\w},-2.1)
+    {degree $k$, sign $(-1)^k$:\enspace
+     $M_n^k=(-1)^k\sum_I\alpha_I^n$};
+  \node[rowlab] at (-0.5*\w,-3.12)
+    {$H^i_c\bigl(Z_{\Fb},(j_!\cF)^{\boxtimes k}|_Z\bigr)$: gives $N_n$};
+  \cellat{auto}{0}{4}{-3.5}{r3a}
+  \node[lab, align=center] at (r3a)
+    {$0$: automatic};
+  \cellat{live}{5}{5}{-3.5}{r3b}\node[lab] at (r3b) {$\beta_j$};
+  \cellat{hyp}{6}{9}{-3.5}{r3c}
+  \node[lab, align=center, text=sbFail!70!black] at (r3c)
+    {$0$: \ref{H2}, assumed};
+  \node[lab, below=2pt of r3b, text=sbZero!80!black] {middle};
+  \node[lab, below=2pt of r3c, text=sbFail!70!black]
+    {can fail (Remark~\ref{rem:h2-fails})};
+  \node[lab, below=2pt of r3a, text=sbOther!70!black, align=center]
+    {Artin vanishing, Poincar\'e duality\\
+     (Remark~\ref{rem:h2-half}; uses $0\notin U$)};
+  \draw[<->, sbInk, line width=0.7pt] (r3b.north) to[out=90, in=-90]
+    (r2.south);
+  \node[lab, font=\footnotesize\itshape, anchor=west] at ({6.55*\w},-2.8)
+    {one off};
+  \node[lab, anchor=north, align=center] at ({4.5*\w},-4.95)
+    {degree $k-1$:\enspace $q^nN_n=(-1)^{k-1}\sum_j(q\beta_j)^n$,
+     \enspace hence\\[3pt]
+     $R_n=q^nN_n-M_n^k=(-1)^{k-1}
+      \Bigl(\sum_j(q\beta_j)^n+\sum_I\alpha_I^n\Bigr)$:\\[2pt]
+     every eigenvalue enters $R_n$ with the same sign, and none
+     cancels};
+  \node[anchor=south east, inner sep=1pt] at ({9.55*\w},0.8)
+    {\sbschematic[schematic, generic $k$]};
+\end{tikzpicture}
+\caption{Where the sign is: the cohomological degrees in the proof of
+Theorem~\ref{thm:sign}. Blue cells hold the eigenvalues of $\Fr$ that occur:
+the $\alpha_j$ on $H^1_c$ of the curve, their products $\alpha_I$ in degree
+$k$ of the $k$-fold product, and the $\beta_j$ on the middle degree $k-1$ of
+the quadric $Z$, which has dimension ${k-1}$. The white cells of the curve,
+degrees $0$ and $2$, vanish by Hypothesis~\ref{H1}. The grey cells, below the
+middle for $Z$, vanish because $0\notin U$ (Remark~\ref{rem:h2-half}). The dashed cells, the degrees $k,\dots,2k-2$ above
+the middle, vanish only by Hypothesis~\ref{H2}, which is assumed for
+infinitely many $k$, not proved, and fails for the plain path quadric at
+$k=3$ in simple cases. The degrees $k$ and $k-1$ differ by one, the note's
+``one off''; the minus sign in $R_n=q^nN_n-M_n^k$ then gives all
+eigenvalues the sign $(-1)^{k-1}$ (Steps~3 and~4 of the proof), so
+Proposition~\ref{lem:growth} applies. Schematic.}
+\label{fig:sign-degrees}

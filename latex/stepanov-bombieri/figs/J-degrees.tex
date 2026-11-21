@@ -1,0 +1,71 @@
+\begin{tikzpicture}[sb, x=0.18cm, y=0.62cm,
+    rblk/.style={draw=sbInk!80, line width=0.5pt, fill=sbAux!55},
+    sblk/.style={draw=sbInk!80, line width=0.5pt, fill=sbAux!20},
+    lab/.style={font=\footnotesize, inner sep=1pt}]
+  \def\p{67}\def\Q{4}
+  \pgfplotstableread{\sbdata{jdegrees.dat}}\sbJTab
+  \pgfplotstablegetrowsof{\sbJTab}%
+  \pgfmathtruncatemacro\sbJLast{\pgfplotsretval-1}%
+  \foreach \r in {0,...,\Q}{%
+    \draw[sbOther!60, line width=0.3pt] (0,\r) rectangle (\p,\r+1);
+    \node[lab, anchor=east] at (-0.6,\r+0.5) {$\r$};}
+  \foreach \c in {8,16,...,64}
+    \draw[sbOther!35, line width=0.3pt] (\c,0) -- (\c,\Q+1);
+  \fill[sbOther!18] (64,0) rectangle (\p,\Q+1);
+  \foreach \i in {0,...,\sbJLast}{%
+    \pgfplotstablegetelem{\i}{kind}\of\sbJTab \let\kk\pgfplotsretval
+    \pgfplotstablegetelem{\i}{j}\of\sbJTab \let\jj\pgfplotsretval
+    \pgfplotstablegetelem{\i}{quotient}\of\sbJTab \let\qq\pgfplotsretval
+    \pgfplotstablegetelem{\i}{reslo}\of\sbJTab \let\lo\pgfplotsretval
+    \pgfplotstablegetelem{\i}{reshi}\of\sbJTab \let\hi\pgfplotsretval
+    \pgfmathtruncatemacro\hip{\hi+1}%
+    \if r\kk
+      \draw[rblk] (\lo,\qq+0.12) rectangle (\hip,\qq+0.88);
+      \ifnum\jj=0 \node[lab] at ({(\lo+\hip)/2},\qq+0.5) {$r_0$};
+      \else \node[lab] at ({(\lo+\hip)/2},\qq+0.5) {\ifnum\jj=1 $r_1X^{p}$\else$r_{\jj}X^{\jj p}$\fi};\fi
+    \else
+      \draw[sblk] (\lo,\qq+0.12) rectangle (\hip,\qq+0.88);
+      \fill[pattern={north east lines}, pattern color=sbOther]
+        (\lo,\qq+0.12) rectangle (\hip,\qq+0.88);
+      \ifnum\jj=0 \node[lab, fill=white, inner sep=1.5pt]
+          at ({(\lo+\hip)/2},\qq+0.5) {$s_0f^c$};
+      \else \node[lab, fill=white, inner sep=1.5pt]
+          at ({(\lo+\hip)/2},\qq+0.5) {\ifnum\jj=1 $s_1f^cX^{p}$\else$s_{\jj}f^cX^{\jj p}$\fi};\fi
+    \fi}
+  \node[lab, rotate=90, anchor=south] at (-3.2,{(\Q+1)/2})
+    {quotient by $p$};
+  \foreach \c in {0,8,...,64}{%
+    \draw[sbInk] (\c,0) -- (\c,-0.12);
+    \node[lab, below] at (\c,-0.12) {$\c$};}
+  \draw[sbInk] (\p,0) -- (\p,-0.12) node[lab, below] {$\p$};
+  \node[lab, anchor=north] at ({\p/2},-0.75) {residue of the degree modulo $p$};
+  \draw[decorate, decoration={brace, amplitude=4pt}, sbInk]
+    (0,\Q+1.1) -- (32,\Q+1.1)
+    node[midway, above=5pt, lab, align=center]
+    {$\deg r_j\le D-1=31$};
+  \draw[decorate, decoration={brace, amplitude=4pt}, sbInk]
+    (32,\Q+1.1) -- (64,\Q+1.1)
+    node[midway, above=5pt, lab, align=center]
+    {$\deg(s_jf^cX^{jp})=(j+1)p+D+\deg s_j$, as $cd=p+D$};
+  \node[lab, anchor=west, align=left, text=sbInk!80] at (\p+0.8,{(\Q+1)/2})
+    {residues\\$2D,\dots,p-1$\\never used:\\$2D-1=63<p$};
+  \node[font=\footnotesize, anchor=north, align=center] at ({\p/2},-1.45) {%
+    \tikz\draw[rblk](0,0) rectangle (0.4cm,0.22cm); possible degrees of
+    $r_jX^{jp}$ (row $j$)\qquad
+    \tikz{\draw[sblk](0,0) rectangle (0.4cm,0.22cm);
+      \fill[pattern={north east lines}, pattern color=sbOther]
+      (0,0) rectangle (0.4cm,0.22cm);} possible degrees of $s_jf^cX^{jp}$
+    (row $j+1$)};
+\end{tikzpicture}
+\caption{Why the auxiliary polynomial $r$ of Definition~\ref{def:aux-poly}
+is nonzero (Proposition~\ref{prop:J-nonvanishing}), for $p=67$, $d=3$, so
+$D=32$, $c=33$, $J=4$. The degree of each nonzero term of
+$\sum_j(r_j+s_jf^c)X^{jp}$ is placed by its quotient (row) and residue
+(column) modulo $p$; it lies in the block shown. Terms $r_jX^{jp}$ (solid
+sky blue) lie in row $j$, residues $0$ to $D-1$; terms $s_jf^cX^{jp}$
+(hatched) lie in row $j+1$, residues $D$ to $2D-1<p$; residues $2D$ to
+$p-1$ (grey) are never used. Two terms of the same kind differ in the row,
+two of different kinds in the column, so distinct nonzero terms have
+distinct degrees and cannot cancel. Compare Figure~\ref{fig:residues}:
+degrees at infinity play the role of pole orders at $P_0$.}
+\label{fig:J-degrees}

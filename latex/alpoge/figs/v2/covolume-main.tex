@@ -1,0 +1,38 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, ybar, width=0.46\linewidth, height=0.42\linewidth,
+  bar width=7pt, ymin=0, ymax=13, xmin=0.4, xmax=4.6,
+  xtick={1,2,3,4}, xlabel={lift index $j$},
+  ylabel={signature entries}, title={\small (a) $W_j$: $(p_j,q_j)$,
+  small example
+  $k=8$, $m=4$},
+  legend style={at={(0.5,-0.3)}, anchor=north, legend columns=2,
+    draw=none, fill=none}]
+\addplot[fill=biZero!60, draw=biZero] coordinates
+  {(1,8) (2,9) (3,10) (4,11)};
+\addlegendentry{$p_j=k+j-1$}
+\addplot[fill=biPole!25, draw=biPole, postaction={pattern=north east
+  lines, pattern color=biPole}] coordinates {(1,3) (2,2) (3,1) (4,0)};
+\addlegendentry{$q_j=m-j$}
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}[bi, node distance=0.35cm,
+  t/.style={bi box, font=\scriptsize, text width=4.0cm}]
+\node[t] (th) {resolution; arithmetic Hilbert--Samuel; Moriwaki;
+  toroidal compactifications; Kawamata--Viehweg; Nadel;
+  Grothendieck--Messing};
+\node[font=\small, above=2pt of th] {(b) the inputs of
+  Theorem~\ref{thm:covolume}};
+\node[t, below=of th, fill=biBound!15] (cb)
+  {Theorem~\ref{thm:covolume}:\\
+  $\log\operatorname{covol}(M_j)/\deg$\\
+  ${}\le\sum_\rho(p_j-q_j)w(j,\rho)\log\Omega$\\
+  ${}+CB_0\log\log x$};
+\node[t, below=of cb, fill=biPole!12] (div) {divisor-bound term
+  $-m\,a_\tau\log\Omega$ (upper link)};
+\draw[->] (th) -- (cb);
+\draw[->, dashed] (cb) -- (div);
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

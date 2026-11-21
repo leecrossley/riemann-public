@@ -1,0 +1,33 @@
+\begin{tikzpicture}[bi, scale=0.62]
+\foreach \x in {-1,...,8} \foreach \y in {-1,...,5} {
+  \fill[biOther] (\x,\y) circle (1.6pt);
+}
+\foreach \x in {0,2,...,8} \foreach \y in {0,2,4} {
+  \draw[biBound, line width=0.8pt] (\x,\y) circle (5pt);
+}
+\fill[biZero!18] (0,0) -- (4,0) -- (6,2) -- (2,2) -- cycle;
+\draw[biZero, line width=1pt] (0,0) -- (4,0) -- (6,2) -- (2,2) -- cycle;
+\draw[->, biZero, line width=1.1pt] (0,0) -- (4,0)
+  node[below, font=\footnotesize] {$\varphi(e_1)=(4,0)$};
+\draw[->, biZero, line width=1.1pt] (0,0) -- (2,2)
+  node[above left, font=\footnotesize] {$\varphi(e_2)=(2,2)$};
+\node[biZero!70!black, font=\footnotesize] at (3,1)
+  {$\operatorname{covol}\varphi(L)=8$};
+\begin{scope}[xshift=-4.2cm]
+  \fill[biAux!25] (0,0) rectangle (1,1);
+  \draw[biAux, line width=1pt] (0,0) rectangle (1,1);
+  \node[font=\footnotesize, align=center] at (0.5,-0.8)
+    {$L=\mathbb Z^2$\\ covol $1$};
+  \draw[->, line width=0.8pt] (1.4,0.5) -- node[above, font=\footnotesize]
+    {$\varphi$} (3.4,0.5);
+\end{scope}
+\node[anchor=north west, font=\footnotesize, align=left] at (-4.5,-1.6)
+  {\tikz\fill[biOther] (0,0) circle (1.6pt); $M=\mathbb Z^2$ \quad
+   \tikz\draw[biBound, line width=0.8pt] (0,0) circle (3pt); $dM=2\mathbb
+   Z^2\supseteq\varphi(L)$\\[2pt]
+   $\kappa=\|\varphi\|=2\sqrt{3+\sqrt5}\approx4.58$, \quad
+   $8\le\kappa^2\cdot1\approx20.9$\\[2pt]
+   Proposition~\ref{prop:slope}\eqref{item:slope-div}: $\log d=\log
+2\approx0.69\ \le\
+   \mu_{\max}(M)-\mu(L)+\log\kappa=0-0+1.52$};
+\end{tikzpicture}

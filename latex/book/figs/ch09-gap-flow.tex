@@ -1,0 +1,59 @@
+\begin{tikzpicture}[bi, x=1cm, y=1cm,
+  sp/.style={v2 step, font=\scriptsize, align=flush center, inner sep=3pt},
+  tg/.style={font=\scriptsize\bfseries, anchor=south, inner sep=2pt},
+  cn/.style={font=\scriptsize\itshape, text=biOther, align=center}]
+\node[sp, text width=2.2cm] (s1) at (-4.95,-0.3)
+  {clause (viii):\\ $\PS\le\Ga+\Lo_P$};
+\node[tg] at (s1.north) {step (1)};
+\node[sp, text width=5.4cm] (s2a) at (-0.75,0)
+  {clauses (vii), (ii), averaged:\\
+  $s\ge\Ga+\mu_R-\langle A+\Cg+\Lo_Q-\mu_M\rangle-E_{\mathrm{div}}$\\
+  {\itshape\color{biOther}$\Fo$ cancels}};
+\node[tg] at (s2a.north) {step (2)};
+\node[sp, text width=4.5cm] (s2b) at (-0.35,-1.7)
+  {clause (ix); its hypotheses hold\\ by clauses (i), (x), (xi):\\
+  $s\le\mu_R+\sigma$};
+\node[sp, text width=5.4cm, fill=biAux!30] (s2) at (-0.75,-3.3)
+  {subtracting:\\
+  $\Ga\le\sigma+E_{\mathrm{div}}+\langle A+\Cg+\Lo_Q-\mu_M\rangle$\\
+  {\itshape\color{biOther}$\mu_R$ and the heights $h(u)$ cancel}};
+\draw[v2 arr] (s2b) -- (s2b |- s2.north);
+\draw[v2 arr] ([xshift=4mm]s2a.south west) -- ([xshift=4mm]s2a.south west |- s2.north);
+\node[sp, text width=3.5cm] (s3) at (4.35,-1.4)
+  {clauses (v), (iii):\\
+  $A+\Cg\le\Main(u_0)$\\ $+\,c_{\mathrm{cg}}mB_0$\\
+  $+\,c_{\mathrm{ct}}\Sigma a\bigl(\Upsilon_a+m^2\Upsilon_a/k\bigr)$\\
+  {\itshape\color{biOther}the terms in $m\,\Sigma a\log(\pi/v)$,
+  $m\,\Sigma a\log(v/\pi)$ and $\pm m\,\Sigma a\,\lgv$ cancel}\\[3pt]
+  clause (vi):\\
+  $-\mu_M\le c_{\mathrm{fs}}n_Ta\Upsilon_a(1+m/k)$};
+\node[tg] at (s3.north) {step (3)};
+\node[sp, text width=11.6cm, fill=biAux!30] (s4) at (-0.1,-5.0)
+  {step (4), combining:\quad
+  $\PS\le\Main(u_0)+\Lo_P+\sigma+E_{\mathrm{div}}+c_{\mathrm{cg}}mB_0
+  +\langle\Lo_Q\rangle
+  +c_{\mathrm{ct}}\Sigma a\bigl(\Upsilon_a+\frac{m^2\Upsilon_a}k\bigr)
+  +c_{\mathrm{fs}}n_Ta\Upsilon_a\bigl(1+\frac mk\bigr)$};
+\draw[v2 arr] (s1) -- (s1 |- s4.north);
+\draw[v2 arr] (s2) -- (s2 |- s4.north);
+\draw[v2 arr] (s3) -- (s3 |- s4.north);
+\node[v2 input, font=\scriptsize, text width=7.0cm, align=flush center]
+  (lin) at (-2.4,-6.6)
+  {estimation of the errors by linear arithmetic, under the window
+  conditions and the bounds on $B_0$, $N_c$; uses again (viii)
+  ($\IO\le\Lo_P$) and (v) ($\log T(u)\le c_{\mathrm{ct}}m\Upsilon$)
+  inside $\Lo_Q$; \emph{not written out}};
+\node[bi bound box, font=\scriptsize] (res) at (4.25,-6.6)
+  {$\gap(u_0)=\PS-\Main(u_0)$\\
+  $\le x^{(e_{\mathrm{div}}+e_{\mathrm{loss}}+3)\eps}\Err$};
+\draw[v2 arr] (s4.south -| lin) -- (lin);
+\draw[v2 arr] (lin) -- (res);
+\end{tikzpicture}
+\caption{The outline proof of the gap bound, Theorem~\ref{thm:gap}
+(schematic). Roman numerals are the clauses of
+Definition~\ref{def:size-data}; the steps are those of the proof. In
+step~(2) the slope $\mu_R$ of the test lattice and the heights cancel
+(Remark~\ref{rem:cancel}, Figure~\ref{fig:sandwich}); in step~(3) what remains of the
+archimedean sum and of the weights in clause~(v) is $\Main(u_0)$. Clauses (v) and (viii) are used twice. The last
+estimation is not written out.}
+\label{fig:gap-flow}

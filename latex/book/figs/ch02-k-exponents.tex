@@ -1,0 +1,64 @@
+\begin{tikzpicture}[sb]
+\begin{axis}[sb half axis, name=A,
+  width=0.5\linewidth, height=0.5\linewidth,
+  xmin=1.5, xmax=16.5, ymin=0, ymax=18,
+  xtick={2,4,8,12,16}, ytick={0,4,8,12,16},
+  xlabel={$k$}, ylabel={exponent of $q$},
+  title={\small (a) the remainder against $M^k$},
+  legend style={at={(0.5,-0.3)}, anchor=north, legend columns=1},
+  legend cell align=left]
+\addplot[sb other plot, mark=*, mark size=1pt]
+  coordinates {(2,3.0000) (3,4.0000) (4,5.0000) (5,6.0000) (6,7.0000) (7,8.0000) (8,9.0000) (9,10.0000) (10,11.0000) (11,12.0000) (12,13.0000) (13,14.0000) (14,15.0000) (15,16.0000) (16,17.0000)};
+\addlegendentry{trivial bound for $R$: $k+1$}
+\addplot[sbFail, line width=0.9pt, dashed, mark=o, mark size=1.6pt]
+  coordinates {(2,2.5000) (4,4.0000) (6,5.5000) (8,7.0000) (10,8.5000) (12,10.0000) (14,11.5000) (16,13.0000)};
+\addlegendentry{$R'$, hyperbolic form: $\tfrac{3k}4+1$}
+\addplot[sbFail, only marks, mark=*, mark size=2pt, forget plot]
+  coordinates {(4,4.0000) (8,7.0000) (12,10.0000) (16,13.0000)};
+\addplot[sb bound plot, mark size=1.6pt]
+  coordinates {(2,2.5000) (3,3.0000) (4,3.5000) (5,4.0000) (6,4.5000) (7,5.0000) (8,5.5000) (9,6.0000) (10,6.5000) (11,7.0000) (12,7.5000) (13,8.0000) (14,8.5000) (15,9.0000) (16,9.5000)};
+\addlegendentry{$R$, path form: $\tfrac{k+3}2$}
+\addplot[sb weil plot, mark size=1.6pt]
+  coordinates {(2,1.0000) (3,1.5000) (4,2.0000) (5,2.5000) (6,3.0000) (7,3.5000) (8,4.0000) (9,4.5000) (10,5.0000) (11,5.5000) (12,6.0000) (13,6.5000) (14,7.0000) (15,7.5000) (16,8.0000)};
+\addlegendentry{$M^k$ if $\lvert M\rvert\le c\sqrt q$: $\tfrac k2$}
+\draw[sbInk, {Stealth[length=1.2mm]}-{Stealth[length=1.2mm]}, line width=0.5pt] (axis cs:14,7.1) -- (axis cs:14,8.4)
+  node[midway, right, font=\scriptsize] {$\tfrac32$};
+\end{axis}
+\begin{axis}[sb half axis, at={(A.east)}, anchor=west, xshift=1.0cm,
+  width=0.5\linewidth, height=0.5\linewidth,
+  xmin=1.5, xmax=16.5, ymin=0.4, ymax=1.3,
+  xtick={2,4,8,12,16}, ytick={0.5,0.75,1,1.25},
+  yticklabels={$\tfrac12$,$\tfrac34$,$1$,$\tfrac54$},
+  xlabel={$k$}, ylabel={exponent of $q$},
+  title={\small (b) the bound on $\lvert\alpha_j\rvert$},
+  legend style={at={(0.5,-0.3)}, anchor=north, legend columns=1},
+  legend cell align=left]
+\addplot[sbFail, line width=0.9pt, dashed, mark=o, mark size=1.6pt]
+  coordinates {(2,1.2500) (4,1.0000) (6,0.9167) (8,0.8750) (10,0.8500) (12,0.8333) (14,0.8214) (16,0.8125)};
+\addlegendentry{hyperbolic: $\tfrac34+\tfrac1k\rightarrow\tfrac34$}
+\addplot[sb bound plot, mark size=1.6pt]
+  coordinates {(2,1.2500) (3,1.0000) (4,0.8750) (5,0.8000) (6,0.7500) (7,0.7143) (8,0.6875) (9,0.6667) (10,0.6500) (11,0.6364) (12,0.6250) (13,0.6154) (14,0.6071) (15,0.6000) (16,0.5938)};
+\addlegendentry{path: $\tfrac12+\tfrac3{2k}\rightarrow\tfrac12$}
+\addplot[sbFail, line width=0.4pt, domain=1.5:16.5, samples=2, forget plot]
+  {0.75};
+\addplot[sbWeil, line width=0.9pt, domain=1.5:16.5, samples=2]
+  {0.5};
+\addlegendentry{$\lvert\alpha_j\rvert\le\sqrt q$}
+\end{axis}
+\end{tikzpicture}
+\caption{The role of $k$. Exponents of $q$, with the factors $c^k$
+suppressed, against the number $k$ of variables. (a) Bounds for the
+remainder: the trivial bound $k+1$, the bound $(k+3)/2$ for the path form
+(Proposition~\ref{lem:parseval}), and the bound $3k/4+1$ for the hyperbolic
+form, $k$ even (Remark~\ref{rem:hyperbolic}); the filled circles, $4\mid k$,
+mark where the latter is attained up to constants, for a quadratic
+character. Green: the size $k/2$ of $M^k$ if $M$ has the square-root size
+that is to be proved. The path bound exceeds it by the fixed $3/2$; the
+hyperbolic bound by $k/4+1$. (b) The bounds on $\lvert\alpha_j\rvert$ that
+Step~5 of the proof of Theorem~\ref{thm:sign} gives from them, as exponents
+of $q$: $1/2+3/(2k)$ for the path form and, if the proof is run with $Q'$
+under the hypothesis corresponding to \ref{H2}, $3/4+1/k$ for the hyperbolic
+form.
+The theorem uses only the $k$ allowed by \ref{H2}, which is assumed, and lets
+$k\to\infty$ through them.}
+\label{fig:k-exponents}

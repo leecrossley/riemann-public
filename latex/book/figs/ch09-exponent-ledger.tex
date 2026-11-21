@@ -1,0 +1,51 @@
+\begin{tikzpicture}[bi, x=1cm, y=1cm,
+  st/.style={v2 step, text width=5.6cm, font=\footnotesize, align=flush center},
+  nt/.style={font=\scriptsize, align=left, text width=6.3cm, anchor=west, execute at begin node=\raggedright,
+    text=biInk!75},
+  ex/.style={bi bound box, font=\footnotesize, inner sep=3pt}]
+\node[v2 input, text width=5.6cm, font=\footnotesize, align=flush center] (tie) at (0,0)
+  {tie at $x\in\Win$, $x\ge x_0$ (Def.~\ref{def:tied}):\\
+  a slope record and the data $D,\ell,N,\Top,\Top_2,a,w,\dots$};
+\node[st] (gap) at (0,-2.55)
+  {gap bound, Thm.~\ref{thm:gap} (outline):\\
+  $\gap(u_0)\le x^{(e_{\mathrm{div}}+e_{\mathrm{loss}}+3)\eps}\Err$\\
+  $\le x^{(e_D+e_L+3)\eps}\Err$};
+\node[st] (core) at (0,-4.95)
+  {core bound, Thm.~\ref{thm:core-bound},\\ with $C=e_D+e_L+3$:\\
+  $G_A(x)\le x^{1/2+(C+3)\eps}+\Sigma_A(x)$};
+\node[st] (avg) at (0,-6.3)
+  {Thm.~\ref{thm:averaged-hyps}:\\
+  $G_A=G_\lev$,\quad $\Sigma_A(x)\le4o\,x^{1/2+\eps}$};
+\node[bi bound box, text width=5.6cm, font=\footnotesize, align=flush center] (fin) at (0,-7.75)
+  {Thm.~\ref{thm:chebyshev-windows}:\\
+  $G_\lev(x)\le x^{1/2+(e_D+e_L+6)\eps}+4o\,x^{1/2+\eps}$\\
+  $\le x^{1/2+(e_D+e_L+7)\eps}$ for large $x$};
+\foreach \a/\b in {tie/gap, gap/core, core/avg, avg/fin}
+  \draw[v2 arr] (\a) -- (\b);
+\node[nt] at (0.15,-1.28) {drop the ties and the bound on the values
+  at $x$; $e_{\mathrm{div}}\le e_D$, $e_{\mathrm{loss}}\le e_L$;
+  $x$ large in terms of $c_W,c_S,e_K$};
+\node[nt] at (0.15,-3.75) {Prop.~\ref{prop:sqrtx}:
+  $\Err/(n_Tmb)\le10\,x^{1/2+13\eps/8}$; the extra factor
+  $2/\delta_2\le2x^\eps$; constants from
+  Def.~\ref{def:uniform-ef} and the level, so one $x_1$ for all $x$};
+\node[ex] (e1) at (7.55,-2.55) {$x^{(e_D+e_L+3)\eps}\,\Err$};
+\node[ex] (e2) at (7.55,-4.95) {$x^{1/2+(e_D+e_L+6)\eps}$};
+\node[ex] (e3) at (7.55,-7.75) {$x^{1/2+(e_D+e_L+7)\eps}$};
+\node[font=\scriptsize\itshape, text=biOther] at (7.55,-1.75)
+  {exponent of $x$};
+\draw[v2 arr, biBound!80!black] (e1) -- node[right=1pt, font=\scriptsize,
+  align=left] {$\Err$ traded for\\ $x^{1/2}$, and $+3\eps$} (e2);
+\draw[v2 arr, biBound!80!black] (e2) -- node[right=1pt, font=\scriptsize,
+  align=left] {$+\eps$: absorbs\\ $4o\,x^{1/2+\eps}$} (e3);
+\foreach \a/\b in {gap/e1, core/e2, fin/e3}
+  \draw[biOther, densely dotted] (\a.east) -- (\b.west);
+\end{tikzpicture}
+\caption{The proof of Theorem~\ref{thm:chebyshev-windows} as a chain
+(schematic). Left: the theorems applied, with their conclusions; beside
+the arrows, what each step uses. Right: the exponent of $x$ carried
+along. The increments $+3\eps$ and $+\eps$ are read off the statement of
+Theorem~\ref{thm:core-bound} and the last step of the proof; the
+exponents $e_D$ and $e_L$ enter only through the gap bound, whose proof
+is given in outline.}
+\label{fig:exponent-ledger}

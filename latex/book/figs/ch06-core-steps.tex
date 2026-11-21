@@ -1,0 +1,62 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, node distance=0.42cm,
+  st/.style={v2 step, text width=#1, align=flush center, font=\footnotesize, inner sep=3pt},
+  st/.default=10cm,
+  hy/.style={font=\scriptsize, text=biOther!65!black},
+  io/.style={bi bound box, align=flush center, text width=10cm, font=\footnotesize,
+    inner sep=3pt},
+  num/.style={font=\footnotesize\bfseries, anchor=east}]
+\node[io] (in) {$\gap(u_0)\le x^{C\eps}\,\Err$ for every $u_0\in A_0$
+  \\ {\scriptsize\color{biOther!65!black} hypothesis (v)}};
+\node[st, below=of in] (bal) {$\gap(u_0)=\sum_{\tau\in\Top}\sum_{j<m}
+  \operatorname{Re}\DF_{\tau,w(u_0,j)}(a_\tau)$\\
+  {\scriptsize\color{biOther!65!black} balance identity
+  (Proposition~\ref{prop:balance}); weights positive on $\Phi$ and $N$
+  large, by the size conditions (ii)}};
+\node[st=4.75cm, below=0.55cm of bal.south west, anchor=north west] (thin)
+  {thin nodes: arguments $\ge X^\flat/3$,\\ negligible\\
+  {\scriptsize\color{biOther!65!black} thin-scale bound (ii), cost
+  conditions (iii)}};
+\node[st=4.75cm, below=0.55cm of bal.south east, anchor=north east] (thick)
+  {thick nodes: arguments moved to $x$, cost $O(\log x+|\ell(\theta)|)$
+  per term\\
+  {\scriptsize\color{biOther!65!black} size conditions (ii), bounds on
+  $\ell$ (iv)}};
+\node[st, below=0.55cm of thin.south west, anchor=north west] (avg)
+  {average over $u_0\in A_0$: only the $4o$ characters in $\Psi(A_0)$
+  remain; each $\theta\in\Xi$ has $\theta(s_0)=1$, which fixes the sign\\
+  {\scriptsize\color{biOther!65!black} character conditions (iv)}};
+\node[st, below=of avg] (top) {sum over $\tau\in\Top$: weights $1$ and
+  $\varkappa$;\\ the characters outside $\Xi$ go into $\Sigma_A(x)$\\
+  {\scriptsize\color{biOther!65!black} share clause of the character
+  conditions (iv)}};
+\node[st, below=of top] (div) {divide by $|\Top|\,m\,b\,\delta_2/2$;\\ the
+  bracket $x^{C\eps}\Err$ becomes at most $x^{1/2+(C+3)\eps}$\\
+  {\scriptsize\color{biOther!65!black} Proposition~\ref{prop:sqrtx}:
+  $m\le x^{1/2+\eps/2}$, $xm\le k$ (i); rest-size conditions (iii)}};
+\node[io, below=of div] (out) {$G_A(x)\le x^{1/2+(C+3)\eps}+\Sigma_A(x)$};
+\draw[v2 arr] (in) -- (bal);
+\draw[v2 arr] (bal.south -| thin.north) -- (thin.north);
+\draw[v2 arr] (bal.south -| thick.north) -- (thick.north);
+\draw[v2 arr] (thin.south) -- (thin.south |- avg.north);
+\draw[v2 arr] (thick.south) -- (thick.south |- avg.north);
+\draw[v2 arr] (avg) -- (top);
+\draw[v2 arr] (top) -- (div);
+\draw[v2 arr] (div) -- (out);
+\node[num] at ([xshift=-4pt]bal.west) {(1)};
+\node[num] at ([xshift=-4pt]thin.west) {(1)};
+\node[font=\footnotesize\bfseries, anchor=west] at ([xshift=4pt]thick.east)
+  {(2)};
+\node[num] at ([xshift=-4pt]avg.west) {(3)};
+\node[num] at ([xshift=-4pt]top.west) {(4)};
+\node[num] at ([xshift=-4pt]div.west) {(5)};
+\end{tikzpicture}%
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi
+\caption{Schematic of the proof outline of Theorem~\ref{thm:core-bound}.
+Bold numbers are the steps of the outline. The grey line in each box
+names the result or the hypotheses, numbered (i)--(v) as in the theorem,
+that the outline cites for the step. Combined with Theorem~\ref{thm:averaged-hyps}, the
+output becomes $G_\lev(x)\le x^{1/2+(C+3)\eps}+4o\,x^{1/2+\eps}$.}
+\label{fig:core-steps}

@@ -1,0 +1,27 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, ybar, width=0.44\linewidth, height=0.36\linewidth,
+  bar width=16pt, ymin=0, ymax=0.5, xmin=0.4, xmax=3.6,
+  xtick={1,2,3}, xticklabels={$A_0$,$\alpha_2+A_0$,$\alpha_3+A_0$},
+  ylabel={share of $\Top$}, title={\small (a) shares, $o=3$},
+  nodes near coords, nodes near coords style={font=\scriptsize},
+  point meta=explicit symbolic]
+\addplot[fill=biBound!50, draw=biBound] coordinates
+  {(1,0.4) [$4/10$] (2,0.3) [$3/10$] (3,0.3) [$3/10$]};
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, ybar, width=0.44\linewidth, height=0.36\linewidth,
+  bar width=16pt, ymin=0, ymax=1.25, xmin=0.4, xmax=3.6,
+  xtick={1,2,3}, xticklabels={$\theta=1$,$\theta_2$,$\theta_3$},
+  ylabel={$|\Top|^{-1}\sum_\tau\theta(\tau)$}, title={\small (b) resulting
+  weights},
+  nodes near coords, nodes near coords style={font=\scriptsize},
+  point meta=explicit symbolic]
+\addplot[fill=biZero!50, draw=biZero] coordinates
+  {(1,1) [$1$] (2,0.1) [$1/10$] (3,0.1) [$1/10$]};
+\end{axis}
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

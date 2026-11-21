@@ -1,0 +1,34 @@
+\resizebox{0.95\linewidth}{!}{%
+\begin{tikzpicture}[bi, node distance=6mm and 8mm,
+  std/.style={bi box, fill=white, text width=4.6cm},
+  new/.style={bi bound box, text width=4.6cm, line width=1.1pt, dashed},
+  e/.style={->, thick}]
+\node[std] (s1) {(1) unitary similitude group of a hermitian space of odd
+  dimension $a$, signature $(1,a-1)$ at one place; Kuga--Sato powers, all
+  degrees; no division algebra};
+\node[new, right=of s1] (s2) {(2) a definite form's Hecke eigensystem put
+  into cohomology by a \textbf{holomorphic Lefschetz formula}: occurrence,
+  not multiplicity};
+\node[new, below=of s2] (s3) {(3) \textbf{Eichler--Shimura as
+  annihilation}: a polynomial with the Satake roots kills $\Frob$};
+\node[new, below=of s1] (s4) {(4) \textbf{cut out an $a$-dimensional
+  piece}: Sen operator $+$ Proposition~\ref{prop:compact-group},
+  lacunary Hodge--Tate weights};
+\node[std, below=of s4] (s5) {(5) crystallinity from a crystalline
+  comparison theorem for smooth projective models};
+\node[new, below=of s3] (s6) {(6) all forms by $l$-adic limits of
+  pseudo-characters; \textbf{even rank by theta lifts} (their only use);
+  descent $\mathrm{GL}_a\to U(a)$; base-change patching};
+\node[bi zero box, text width=9.8cm, below=7mm of $(s5.south)!0.5!(s6.south)$]
+  (row) {continuous semisimple $r$ with Hodge--Tate weights and
+  truncated local--global compatibility
+  (Definition~\ref{def:truncated-lgc})};
+\draw[e] (s1) -- (s2); \draw[e] (s2) -- (s3); \draw[e] (s3) -- (s4);
+\draw[e] (s4) -- (s5); \draw[e] (s5) -- (s6); \draw[e] (s6.south) -- (s6.south
+  |- row.north);
+\end{tikzpicture}}
+
+\smallskip
+{\footnotesize Plain boxes: the published frame. Dashed boxes: the three
+departures, namely step (2), steps (3)--(4) together, and the theta
+lifts in step (6).}

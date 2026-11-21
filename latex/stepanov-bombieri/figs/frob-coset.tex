@@ -1,0 +1,120 @@
+\begin{tikzpicture}[sb, x=1cm, y=1cm,
+  gpt/.style={circle, fill=sbInk, inner sep=0pt, minimum size=3.6pt},
+  qpt/.style={circle, fill=sbInk, inner sep=0pt, minimum size=4.5pt},
+  orbit/.style={->, sbInk!70, line width=0.5pt,
+    >={Stealth[length=1.4mm]}},
+  fibre/.style={sbOther, line width=0.5pt, dashed},
+  elt/.style={draw=sbInk, rounded corners=1.5pt, minimum width=0.85cm,
+    minimum height=0.55cm, inner sep=1pt, font=\footnotesize},
+  phi/.style={elt, fill=sbZero!35},
+  img/.style={font=\footnotesize, inner sep=1pt},
+  map/.style={|->, sbInk, line width=0.5pt, >={Stealth[length=1.4mm]}},
+  hd/.style={font=\small\bfseries, anchor=west},
+  note/.style={font=\footnotesize, anchor=west, align=left},
+  cell/.style={draw=sbInk!60, minimum width=0.95cm, minimum height=0.5cm,
+    inner sep=0pt, font=\footnotesize},
+  cellhit/.style={cell, fill=sbZero!35},
+]
+\begin{scope}
+  \node[hd] at (-0.1,4.75) {(a) $Q$ unramified, Frobenius a $3$-cycle};
+  \draw[sbInk, line width=0.6pt] (0,0) -- (2.6,0);
+  \node[qpt, label={[font=\footnotesize]below:$Q$}] (Q) at (1.3,0) {};
+  \node[font=\scriptsize, text=sbInk!75, anchor=north west, align=left]
+    at (-0.15,4.2) {\textit{over} $\overline{\F}_q$: two places\\
+    of degree $3$};
+  \foreach \c/\nm/\lb in {0.65/P/{P}, 1.95/Pp/{P'}} {
+    \coordinate (\nm) at (\c,2.25);
+    \foreach \ang/\k in {90/1, 210/2, 330/3}
+      \node[gpt] (\nm\k) at ($(\nm)+(\ang:0.42)$) {};
+    \draw[orbit] (\nm1) -- (\nm2);
+    \draw[orbit] (\nm2) -- (\nm3);
+    \draw[orbit] (\nm3) -- (\nm1);
+    \node[font=\footnotesize] at ($(\nm)+(0,0.72)$) {$\lb$};
+    \draw[fibre] ($(\nm)+(0,-0.45)$) -- (Q);
+  }
+  \node[font=\footnotesize, anchor=west] at (3.0,4.1)
+    {$D(P)=A_3$, \ $I(P)=\{\mathrm{id}\}$};
+  \node[elt]  (a1) at (3.6,2.6) {$\mathrm{id}$};
+  \node[phi]  (a2) at (5.0,2.6) {$\rho$};
+  \node[elt]  (a3) at (6.4,2.6) {$\rho^2$};
+  \draw[orbit] (a1) -- node[above, font=\scriptsize] {$\cdot\rho$} (a2);
+  \draw[orbit] (a2) -- node[above, font=\scriptsize] {$\cdot\rho$} (a3);
+  \draw[orbit] (a3.north) to[out=135, in=45]
+    node[above, font=\scriptsize] {$\cdot\rho$} (a1.north);
+  \node[img] (g1) at (3.6,1.2) {$1$};
+  \node[img] (g2) at (5.0,1.2) {$\Fr_q$};
+  \node[img] (g3) at (6.4,1.2) {$\Fr_q^2$};
+  \foreach \i in {1,2,3} \draw[map] (a\i) -- (g\i);
+  \node[font=\scriptsize] at (4.3,1.9) {$\sigma\mapsto\bar\sigma$};
+  \node[font=\footnotesize] at (5.0,0.55)
+    {$\Gal(\kappa(P)/\F_q)=\langle\Fr_q\rangle$};
+  \node[note, anchor=north west] at (-0.1,-0.55) {%
+    $\lvert\Phi(P)\rvert\deg P=1\cdot3=3=\lvert D(P)\rvert$\\
+    $\sum_{P\mid Q}\lvert D(P)\rvert=3+3=6=\lvert G\rvert$\\
+    {\scriptsize\color{sbInk!75}check: $e\,f\cdot\#\{P\mid Q\}=1\cdot3\cdot2=6$}};
+  \node[font=\footnotesize, anchor=west] at (-0.1,-2.25)
+    {contribution of the places above $Q$ to $N(E,\sigma)$:};
+  \foreach \s/\v/\st [count=\i] in {{\mathrm{id}}/0/cell, \rho/3/cellhit,
+      {\rho^2}/3/cellhit, {\tau_1}/0/cell, {\tau_2}/0/cell, {\tau_3}/0/cell} {
+    \node[font=\footnotesize] at (0.35+1.05*\i-1.05,-2.75) {$\s$};
+    \node[\st] at (0.35+1.05*\i-1.05,-3.25) {$\v$};
+  }
+\end{scope}
+\begin{scope}[xshift=7.6cm]
+  \node[hd] at (-0.1,4.75) {(b) $Q$ ramified, $e=2$, $f=1$};
+  \draw[sbInk, line width=0.6pt] (0,0) -- (2.6,0);
+  \node[qpt, label={[font=\footnotesize]below:$Q$}] (Q) at (1.3,0) {};
+  \node[font=\scriptsize, text=sbInk!75, anchor=north west, align=left]
+    at (-0.15,4.2) {\textit{over} $\overline{\F}_q$: three places\\
+    of degree $1$};
+  \foreach \c/\k in {0.45/1, 1.3/2, 2.15/3} {
+    \node[gpt] (R\k) at (\c,2.25) {};
+    \node[font=\footnotesize] at (\c,2.97) {$P_\k$};
+    \draw[fibre] (R\k) -- (Q);
+  }
+  \node[font=\footnotesize, anchor=west] at (3.0,4.1)
+    {$D(P_1)=I(P_1)=\{\mathrm{id},\tau_1\}$};
+  \node[phi, minimum width=1.9cm] (b1) at (5.0,2.6)
+    {$\mathrm{id}\quad\tau_1$};
+  \node[img] (h1) at (5.0,1.2) {$1$};
+  \draw[map] (b1) -- (h1);
+  \node[font=\scriptsize, anchor=east] at (4.75,1.9) {$\sigma\mapsto\bar\sigma$};
+  \node[font=\footnotesize] at (5.0,0.55)
+    {$\Gal(\kappa(P_1)/\F_q)=\{1\}$};
+  \node[note, anchor=north west] at (-0.1,-0.55) {%
+    $\lvert\Phi(P_i)\rvert\deg P_i=2\cdot1=2=\lvert D(P_i)\rvert$\\
+    $\sum_{P\mid Q}\lvert D(P)\rvert=2+2+2=6=\lvert G\rvert$\\
+    {\scriptsize\color{sbInk!75}check: $e\,f\cdot\#\{P\mid Q\}=2\cdot1\cdot3=6$}};
+  \node[font=\footnotesize, anchor=west] at (-0.1,-2.25)
+    {contribution of the places above $Q$ to $N(E,\sigma)$:};
+  \foreach \s/\v/\st [count=\i] in {{\mathrm{id}}/3/cellhit, \rho/0/cell,
+      {\rho^2}/0/cell, {\tau_1}/1/cellhit, {\tau_2}/1/cellhit,
+      {\tau_3}/1/cellhit} {
+    \node[font=\footnotesize] at (0.35+1.05*\i-1.05,-2.75) {$\s$};
+    \node[\st] at (0.35+1.05*\i-1.05,-3.25) {$\v$};
+  }
+\end{scope}
+\draw[sbOther, line width=0.4pt] (7.25,5.0) -- (7.25,-3.55);
+\end{tikzpicture}
+\caption{Frobenius cosets (Proposition~\ref{prop:frob-coset}) in a Galois
+extension $E/F$ of function fields with group $G=S_3=\{\mathrm{id},\rho,
+\rho^2,\tau_1,\tau_2,\tau_3\}$ and full constant field $\F_q$, over a place
+$Q$ of $F$ of degree one; such places occur, for example, in the Galois
+closure of a cubic extension of $\F_q(x)$. Left in each panel: the
+geometric points above $Q$, grouped into places (Frobenius orbits, arrows).
+Right: $D(P)$ as cosets of $I(P)$ (outlined boxes), mapped onto
+$\Gal(\kappa(P)/\F_q)$ by $\sigma\mapsto\bar\sigma$. (a) $Q$ unramified with
+Frobenius a $3$-cycle: two places above $Q$, each of degree $3$, with
+$D(P)=A_3$ and $I(P)=\{\mathrm{id}\}$; the coset over $\Fr_q$ is
+$\Phi(P)=\{\rho\}$ (blue), and $\Phi(P')=\{\rho^2\}$. (b) $Q$ ramified
+with $D(P_i)=I(P_i)=\{\mathrm{id},\tau_i\}$: three places of degree one,
+and $\Phi(P_i)=I(P_i)$ (blue). In both cases
+$\lvert\Phi(P)\rvert\deg P=\lvert D(P)\rvert$ and $\sum_{P\mid
+Q}\lvert D(P)\rvert=\lvert G\rvert=6$. The bottom rows give, for each
+$\sigma\in G$, the degree of the $\sigma$-Frobenius places above $Q$; each
+row sums to $\lvert G\rvert$, so every place of degree one of $F$, ramified
+or not, contributes exactly $\lvert G\rvert$ to $\sum_\sigma N(E,\sigma)$
+(Proposition~\ref{prop:class-sum}). Blue: the $\sigma$ for which a place
+above $Q$ is $\sigma$-Frobenius. Schematic positions; the group theory is
+exact.}
+\label{fig:frob-coset}

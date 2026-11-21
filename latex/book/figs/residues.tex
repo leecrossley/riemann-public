@@ -1,0 +1,104 @@
+\begin{tikzpicture}[sb, x=0.8cm,
+    res0/.style={circle, fill=sbRes0, minimum size=4.4pt, inner sep=0pt},
+    res1/.style={regular polygon, regular polygon sides=3, fill=sbRes1,
+      minimum size=6.4pt, inner sep=0pt},
+    res2/.style={diamond, fill=sbRes2, minimum size=5.8pt, inner sep=0pt},
+    res3/.style={regular polygon, regular polygon sides=5, fill=sbRes3,
+      minimum size=6pt, inner sep=0pt},
+    res4/.style={star, star points=5, star point ratio=2.2, fill=sbRes4,
+      draw=sbRes3, line width=0.2pt, minimum size=7pt, inner sep=0pt},
+    term/.style={sb aux pt, minimum size=6pt},
+    coll/.style={sb fail pt, minimum size=7pt},
+    lab/.style={font=\footnotesize, inner sep=1pt}]
+  \pgfplotstableread{\sbdata{residues.dat}}\sbResTab
+  \pgfplotstablegetrowsof{\sbResTab}%
+  \pgfmathtruncatemacro\sbResLast{\pgfplotsretval-1}%
+  \newcommand\sbResLine{%
+    \draw[sbInk, line width=0.6pt] (27.6,0) -- (40.4,0);
+    \foreach \k in {28,...,40}{%
+      \pgfmathtruncatemacro\r{mod(\k,5)}%
+      \draw[sbInk] (\k,-0.08) -- (\k,0.08);
+      \node[lab, below] at (\k,-0.08) {$\k$};
+      \node[res\r] at (\k,-0.62) {};}}
+  \def\gx{42.2}\def\gw{0.75}
+  \newcommand\sbResGrid{%
+    \foreach \c in {0,...,4}{%
+      \node[res\c] at (\gx+\c*\gw+\gw/2,1.45) {};
+      \foreach \qq/\yy in {6/0.45,7/0.95}{%
+        \draw[sbOther!60, line width=0.3pt]
+          (\gx+\c*\gw,\yy-0.25) rectangle ++(\gw,0.5);
+        \pgfmathtruncatemacro\nn{5*\qq+\c}%
+        \node[font=\tiny, text=sbOther, anchor=north east, inner sep=0.8pt]
+          at (\gx+\c*\gw+\gw,\yy+0.25) {$\nn$};}}
+    \node[lab, anchor=east] at (\gx-0.05,0.45) {$6$};
+    \node[lab, anchor=east] at (\gx-0.05,0.95) {$7$};
+    \node[lab, anchor=north, align=center] at (\gx+2.5*\gw,0.12)
+      {\scriptsize rows: quotient by $5$\\[-2pt]\scriptsize columns: residue};}
+  \node[anchor=west, font=\small] at (27.4,2.55)
+    {(a) $a=4<M'=5$: basis $1,x,y,x^2$ of $\calL(4P_0)$,
+     pole orders $0,2,3,4$};
+  \sbResLine
+  \sbResGrid
+  \foreach \i in {0,...,\sbResLast}{%
+    \pgfplotstablegetelem{\i}{total}\of\sbResTab \let\tot\pgfplotsretval
+    \pgfplotstablegetelem{\i}{u}\of\sbResTab \let\uu\pgfplotsretval
+    \pgfplotstablegetelem{\i}{poleu}\of\sbResTab \let\pu\pgfplotsretval
+    \pgfplotstablegetelem{\i}{polev}\of\sbResTab \let\pv\pgfplotsretval
+    \pgfmathtruncatemacro\idx{\i+1}%
+    \pgfmathsetmacro\ly{ifthenelse(mod(\i,2)==1,1.15,0.55)}%
+    \node[term] at (\tot,0.35) {};
+    \ifodd\i \draw[sbAux, line width=0.4pt] (\tot,0.45) -- (\tot,\ly);\fi
+    \node[lab, above, align=center, fill=white] at (\tot,\ly)
+      {$\uu\,v_{\idx}^{5}$\\[-1pt]{\scriptsize$\pu+5\cdot\pv$}};
+    \pgfmathtruncatemacro\rr{mod(\tot,5)}%
+    \pgfmathtruncatemacro\qt{(\tot-\rr)/5}%
+    \node[term] at (\gx+\rr*\gw+0.24,{0.45+0.5*(\qt-6)-0.09}) {};}
+  \draw[sbInk, line width=0.6pt] (38,0.35) circle (0.2);
+  \node[lab, anchor=south, align=center] at (38,1.45)
+    {unique maximum:\\$-v_{P_0}(w)=38$};
+  \node[anchor=west, font=\small] at (27.4,-1.45)
+    {(b) $a=5\ge M'$: basis $1,x,y,x^2,xy$ of $\calL(5P_0)$, pole orders
+     $0,2,3,4,5$, and $5\equiv0\bmod5$};
+  \begin{scope}[yshift=-3.35cm]
+    \sbResLine
+    \sbResGrid
+    \node[coll] at (34.92,0.35) {};
+    \node[coll] at (35.08,0.35) {};
+    \node[lab, anchor=east, text=sbFail] at (34.65,0.35)
+      {$1\cdot v_1^{5}$: $0+5\cdot7$};
+    \node[lab, anchor=west, text=sbFail] at (35.35,0.35)
+      {$xy\,v_5^{5}$: $5+5\cdot6$};
+    \node[lab, anchor=south west, align=left] at (27.8,0.75)
+      {same pole order $35$: the leading terms can cancel;
+       (N) $a<M'$ excludes this};
+    \node[coll] at (\gx+0.2,0.86) {};
+    \node[coll] at (\gx+0.32,0.86) {};
+  \end{scope}
+  \node[font=\footnotesize, anchor=north west, align=left] at (27.4,-4.55) {%
+    \tikz\node[term]{}; term $u_iv_i^{5}$, at its pole order
+    $-v_{P_0}(u_i)-5\,v_{P_0}(v_i)$\qquad
+    \tikz\node[coll]{}; two terms with the same pole order\\[3pt]
+    residue mod $5$:\
+    \tikz\node[res0]{}; $0$\quad \tikz\node[res1]{}; $1$\quad
+    \tikz\node[res2]{}; $2$\quad \tikz\node[res3]{}; $3$\quad
+    \tikz\node[res4]{}; $4$\qquad
+    \sbschematic[the pole orders of the $v_i$ are illustrative]};
+\end{tikzpicture}
+\caption{Why the section $w=\sum_iu_iv_i^{M'}$ is nonzero
+(Proposition~\ref{prop:independence}, Step~2 of
+Theorem~\ref{thm:aux-section}), for $q=25$, $g=1$, $M'=5$. Pole orders
+$-v_{P_0}$ are drawn on a number line, with their residues modulo $5$ shown
+by shape and grey shade; at the right the same terms are placed in a grid by
+quotient and residue modulo $5$, as in Figure~\ref{fig:J-degrees}. (a) For
+$a=4$, the adapted basis $1,x,y,x^2$ of $\calL(4P_0)$ has pole orders
+$0,2,3,4$. With pole orders $7,6,7,6$ of $v_1,\dots,v_4$, the terms
+$u_iv_i^5$ (sky-blue squares) have pole orders $35,32,38,34$, one in each of
+four residue classes; the largest is attained once, so it is the pole order
+of $w$, and $w\ne0$. A section $w$ computed for one curve with these
+parameters has pole order $38$. (b) If $a\ge M'$, here $a=5$, two basis
+elements have pole orders congruent modulo $M'$, so two terms can have the
+same pole order (purple open circles, one grid cell) and their leading terms
+can cancel; condition (N) excludes this. The pole orders of the $v_i$ are
+illustrative, not those of the computed section: for $a<M'$ any choice gives
+distinct residues.}
+\label{fig:residues}

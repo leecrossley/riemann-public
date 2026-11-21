@@ -1,0 +1,742 @@
+\chapter{The geometric inequality I: unitary towers, hermitian lattices and slopes}\label{ch:geoa}
+
+This chapter covers the objects behind the archive's ``geometric inequality'' and the
+form in which that inequality reaches the analytic part of the proof. It describes the
+ranks and hermitian spaces of a tower of unitary groups, the abstract theta chain, the
+hermitian lattices over a number field with their slopes, a slope inequality of Bost
+type and a frame theorem built on it, and the abstract Arakelov interface \texttt{DV.Geo}.
+It then states the slope record, a list of real numbers with inequalities between them,
+together with the window hypotheses and the tie that says a record comes from a family
+of packages. Downstream, the analytic chain uses only the real-number clauses of a tied
+record and three arithmetic identifications; the archimedean and finite sides and the Chebyshev inequality come next.
+
+\section{Ranks and the tower of hermitian spaces}
+
+
+
+\begin{lemma}[rank identities]\label{geoa:rank-identities}
+\lean{Formalism.BasicNotions.Ranks.rS_two, Formalism.BasicNotions.rank_base_space, Formalism.BasicNotions.factXm, Formalism.BasicNotions.factYm}
+\uses{host:ranks}
+For all ranks: $2r_S+2=m$; $N(0)+1+2r_S=r$; $N(m)=\operatorname{rk}X'+1$; and
+$\operatorname{rk}Y(m)=\operatorname{rk}X'$.
+\end{lemma}
+\begin{proof}
+\uses{host:ranks}
+Integer arithmetic from the definitions, using that $m$ is even and $m\ge2$. The last
+identity holds by definition.
+\end{proof}
+
+\begin{definition}[hermitian spaces with base lattice]\label{geoa:hspace}
+\lean{Formalism.BasicNotions.CMData, Formalism.BasicNotions.HSpace}
+A \emph{CM datum} for number fields $F\subset E$ (with an involution on $E$) records that
+$E$ is a CM field unramified in the sense of the archive's \texttt{IsCMUnram}, that $F$ is
+totally real, that $[E:F]=2$, and that the fixed field of the involution is $F$.
+A \emph{hermitian space} over $E$ is a finite-dimensional $E$-vector space $V$ with a
+nondegenerate hermitian form $h$, a natural number $\rk$ equal to $\dim_EV$, a basis,
+a function assigning to each embedding $\tau\colon E\to\CC$ a pair of natural numbers
+(the declared signature), and an $\mathcal O_E$-submodule $L_0\subset V$ that is a
+lattice and is unimodular for $h$. It satisfies \texttt{SigOK} if, for every $\tau$, the
+Gram matrix in the given basis has signature $\operatorname{sig}(\tau)$ after applying
+$\tau$; it is \emph{definite} if for every $\tau$ the signature is $(\rk,0)$ or
+$(0,\rk)$. An $E$-linear map $\iota$ is an \emph{isometric embedding} if
+$h'(\iota x,\iota y)=h(x,y)$ for all $x,y$.
+\end{definition}
+
+\begin{definition}[the spaces of a choice of ranks]\label{geoa:spaces}
+\lean{Formalism.BasicNotions.Spaces}
+\uses{host:ranks, geoa:hspace}
+Let $R$ be ranks and $F\subset E$ number fields. \emph{Spaces} for $R$ consist of a CM
+datum for $E/F$, a prime number $T$, and hermitian spaces over $E$, all satisfying
+\texttt{SigOK}, as follows.
+\begin{itemize}
+\item $X_j$ for $j\in\N$, with $\rk X_j=N(j)$ and $X_j$ definite for $j\le m$.
+\item $X'$ of rank $\operatorname{rk}X'$, an isometric embedding $X'\to X_m$, and a
+vector $z\in X_m$ with $h(z,z)\ne0$ orthogonal to the image of $X'$.
+\item $Y_j$ for $j\in\N$, with $\rk Y_j=\operatorname{rk}Y(j)$ for $j\le m$; linear maps
+$X_j\to Y_j$ which are isometric embeddings for $j<m$; an $E$-linear isomorphism
+$X'\cong Y_m$ that is isometric.
+\item In $Y_0$: a vector $z_m$ with $h(z_m,z_m)=-T$, orthogonal to the image of $X_0$, and
+vectors $e_1,\dots,e_{r_S},f_1,\dots,f_{r_S}$ with $h(e_i,e_{i'})=h(f_i,f_{i'})=0$ and
+$h(e_i,f_{i'})=\delta_{ii'}$, orthogonal to the image of $X_0$ and to $z_m$; and
+$\operatorname{sig}Y_0(\tau)=\operatorname{sig}Y_0$ for every $\tau$.
+\item $W_j$ for $j\in\N$, with $\rk W_j=r$ and signature $\operatorname{sig}W(j)$ at
+every $\tau$ for $1\le j\le m$; for each such $j$ there are a bijection of the basis
+index sets and $g\in\GL_r(E\otimes_F\A_F^{\mathrm f})$ with $g^*G_{Y_0}g=G_{W_j}$, where
+$G$ denotes the Gram matrix and $\A_F^{\mathrm f}$ the finite adeles.
+\item $V_j$ for $j\in\N$, with $\rk V_j=n_V$ for $1\le j\le m$, a sign
+$\epsilon_j\in\{\pm1\}$, and $L_0(V_j)$ an orthonormal lattice of rank $n_V$ for
+$\epsilon_jh$.
+\end{itemize}
+\end{definition}
+
+\begin{lemma}[definiteness at the top]\label{geoa:top-definite}
+\lean{Formalism.BasicNotions.factXmDef}
+\uses{geoa:spaces, geoa:rank-identities}
+For spaces of ranks $R$, the spaces $X'$ and $Y_m$ are definite, and for every $\tau$
+the space $X_m$ has signature $(N(m),0)$ at $\tau$ if and only if $X'$ has signature
+$(\operatorname{rk}X',0)$ at $\tau$.
+\end{lemma}
+\begin{proof}
+\uses{geoa:spaces, geoa:rank-identities}
+The isometric embedding $X'\to X_m$ identifies the Gram matrix of $X'$ with the
+restriction of the form of $X_m$, which is definite. A restriction of a definite form
+to a nonzero subspace is definite of the same sign; the rank identity
+$N(m)=\operatorname{rk}X'+1$ and the CM datum (embeddings commute with the
+involution) give the signature statement. The isometry $X'\cong Y_m$ transfers
+definiteness to $Y_m$.
+\end{proof}
+
+\begin{remark}[the top of the tower]\label{geoa:rem-top}
+$\rk Y_j-\rk X_j=(r+jt)-N(j)=m-1-j$, so an isometric embedding of the nondegenerate
+space $X_j$ into $Y_j$ can exist only for $j\le m-1$, which is where the archive asks for
+one. At $j=m$ the direction reverses: $Y_m\cong X'$ embeds into $X_m$, whose rank is one
+larger, and $z$ spans the complementary line. The archive states that $z$ is anisotropic
+and orthogonal to the image, but not that $X_m$ is the orthogonal sum. Likewise, the
+vectors $z_m,e_i,f_i$ in $Y_0$ are only required to be orthogonal to $X_0$ and to each
+other; that they span a complement of $X_0$ follows from the rank identity
+$N(0)+1+2r_S=r$, which the definition does not state.
+\end{remark}
+
+\begin{definition}[column chain and theta kernels]\label{geoa:column-chain}
+\lean{Formalism.BasicNotions.ColumnChain, Formalism.BasicNotions.ColumnChain.Kmap, Formalism.BasicNotions.ColumnChain.K, Formalism.BasicNotions.ColumnChain.col, Formalism.ThetaLiftIndependence.kerOpM, Formalism.ThetaLiftIndependence.chainOpM}
+\uses{host:ranks}
+Let $R$ be ranks, $\iota$ a finite set and $(\mathrm{hc}_{\tau})_{\tau\in\iota}$
+Harish-Chandra parameters for $R$. A \emph{column chain} consists of, for each
+$i\in\N$: a finite set $\operatorname{cls}_i$; for each $c\in\operatorname{cls}_i$ a
+finite group $\operatorname{stab}_i(c)$; a type $Y_i$; nowhere-zero functions
+$\operatorname{de}_i\colon Y_i\times\iota\to\CC$; functions $\rho_i$ on
+$\operatorname{cls}_i$ and $\rho'_i$ on $\operatorname{cls}_{i+1}$ of absolute value $1$
+for $i<m$; $\CC$-linear maps
+$\operatorname{unf}_i(c,c')\colon\CC^{Y_i}\to\CC^{Y_{i+1}}$; integers
+$s^{\sharp}_i(\tau),s^{\mathrm{div}}_i(\tau)$ given for $i<m$ by explicit affine
+expressions in the parameter $e$ of $\mathrm{hc}_{\tau}$; and a positive integer
+$D_{\Gamma}$ divisible by every $\#\operatorname{stab}_i(c)$, $i\le m$. Put
+$\operatorname{wt}_i(c)=1/\#\operatorname{stab}_i(c)$ and
+\[
+K_i(c,c')=\rho_i(c)\rho'_i(c')\cdot M_{i+1}^{-1}\circ\operatorname{unf}_i(c,c')\circ
+M^{\sharp}_i,
+\]
+where $M^{\sharp}_i$ multiplies by $y\mapsto\prod_{\tau}\operatorname{de}_i(y,\tau)^{s^{\sharp}_i(\tau)}$
+and $M_{i+1}$ by $y'\mapsto\prod_{\tau}\operatorname{de}_{i+1}(y',\tau)^{s^{\mathrm{div}}_i(\tau)}$.
+A \emph{form at level $i$} is a function $\varphi\colon\operatorname{cls}_i\to\CC^{Y_i}$.
+The kernel operator is $(K_i\varphi)(c')=\sum_{c}\operatorname{wt}_i(c)K_i(c,c')\varphi(c)$,
+and the \emph{column} is the $m$-fold composite $\operatorname{col}=K_{m-1}\circ\cdots\circ
+K_0$.
+\end{definition}
+
+\begin{remark}[the column chain is abstract]\label{geoa:rem-column-abstract}
+Nothing in the column chain refers to the spaces of the previous definitions. The sets
+$\operatorname{cls}_i$, the groups $\operatorname{stab}_i(c)$, the types $Y_i$ and the maps
+$\operatorname{unf}_i$ are free fields. Reading $\operatorname{cls}_i$ as the class set of
+the genus of $L_0(X_i)$, the weights as mass weights, and $K_i$ as theta kernels for
+$U(X_i)\times U(X_{i+1})$ is an interpretation that this structure does not enforce;
+any such link must come from other fields of a package.
+\end{remark}
+
+\begin{definition}[columns at $T$]\label{geoa:columns-at-T}
+\lean{Formalism.BasicNotions.ColumnsAtT, Formalism.BasicNotions.ColumnsAtT.Mram, Formalism.BasicNotions.ColumnsAtT.du}
+\uses{geoa:column-chain}
+For a column chain, \emph{columns at $T$} consist of a prime $T$; a finite set
+$v_T$ with $f$ elements; for each $v\in v_T$ a finite field $F_v$ with $T$ elements, a
+nontrivial additive character $\psi_v$ of $F_v$ and a homomorphism $\rho_T(v)$ from
+$F_v^{\times}$ to the endomorphisms of the space of forms at level $0$; a
+finite-dimensional subspace $M_{u_0}$ of forms at level $0$ stable under every
+$\rho_T(v)(c)$; and constants $d^*_u\in\N_{>0}$, $D^*>0$, $\Gamma_P>1$. Put
+$\operatorname{Nm}_v=\sum_{c\in F_v^{\times}}\rho_T(v)(c)$,
+$M_{\mathrm{ram}}=M_{u_0}\cap\bigcap_v\ker\operatorname{Nm}_v$ and
+$d_u=\dim_{\CC} M_{\mathrm{ram}}$.
+\end{definition}
+
+\begin{definition}[period map]\label{geoa:period-map}
+\lean{Formalism.BasicNotions.PeriodMap, Formalism.BasicNotions.PeriodMap.Ptil, Formalism.BasicNotions.PeriodMap.PtilCol}
+\uses{geoa:column-chain}
+A \emph{period map} for a column chain consists of complex vector spaces $M_t$, $W_z$,
+$W_{\mathrm{row}}$, linear maps $\operatorname{ev}_z$ from forms at level $m$ to $W_z$ and
+$\operatorname{low}\colon W_z\to W_{\mathrm{row}}$, and a bilinear pairing
+$\operatorname{per}\colon W_{\mathrm{row}}\times M_t\to\CC$. For a form $\varphi$ at level
+$0$ and $F\in M_t$ put
+$\widetilde P(\varphi,F)=\operatorname{per}(\operatorname{low}(\operatorname{ev}_z(\operatorname{col}\varphi)),F)$.
+All spaces and maps are free fields.
+\end{definition}
+
+\section{Hermitian lattices and slopes}
+
+\begin{definition}[hermitian lattices]\label{geoa:hlat}
+\lean{Formalism.BasicNotions.HLat, Formalism.BasicNotions.HLat.Good, Formalism.BasicNotions.HLat.rank, Formalism.HermitianLatticesTheory.fcoord, Formalism.HermitianLatticesTheory.realize}
+Let $K$ be a number field. A \emph{hermitian lattice} over $K$ is a $K$-vector space $V$
+with a basis $b$ indexed by a finite set $\iota$, a complex matrix $X_v\in M_{\iota}(\CC)$
+for each infinite place $v$ of $K$, and an $\mathcal O_K$-submodule $L\subset V$. It is
+\emph{good} if every $\det X_v$ is nonzero, $L$ is finitely generated and $L$ spans $V$.
+Its rank is $\dim_K(K L)$. The norm at $v$ is
+$\|x\|_v=|X_v^{-1}\sigma_v(x_b)|$, the euclidean norm of $X_v^{-1}$ applied to the
+coordinate vector of $x$ under the embedding $\sigma_v$ attached to $v$. The
+\emph{realization} sends $x$ to the real and imaginary parts of all these vectors, a
+group homomorphism from $V$ to a euclidean space of dimension $2\cdot\#\{v\}\cdot\#\iota$.
+\end{definition}
+
+\begin{definition}[heights and slopes]\label{geoa:slopes}
+\lean{Formalism.HN.ht, Formalism.HN.muDef, Formalism.HN.muMaxDef, Formalism.HN.muMinDef, Formalism.HN.opNormAt, Formalism.HN.htMap, Formalism.HN.slope, Formalism.HN.muMax, Formalism.HN.muMin, Formalism.F.covol, Formalism.F.slope, Formalism.BasicNotions.HLat.mu, Formalism.BasicNotions.HLat.muMax, Formalism.BasicNotions.HLat.muMin}
+\uses{geoa:hlat}
+For a $\Z$-submodule $\Lambda$ of a euclidean space, $\operatorname{covol}\Lambda$ is the
+square root of the Gram determinant of a $\Z$-basis if $\Lambda$ is discrete and $0$
+otherwise; $\deg\Lambda=-\log\operatorname{covol}\Lambda$ and
+$\operatorname{sl}(\Lambda)=\deg\Lambda/\rk_{\Z}\Lambda$. For an $\mathcal O_K$-submodule $L$
+of a hermitian lattice write $\Lambda(L)$ for its image under the realization, $n_{\infty}$
+for the number of infinite places of $K$, and $c_K=-\log2+\log|d_K|/[K:\Q]$. Then
+\begin{align*}
+\operatorname{ht}(L)&=2^{n_{\infty}\rk L}\,|d_K|^{-\rk L/2}\operatorname{covol}\Lambda(L),\\
+\mu(L)&=2\operatorname{sl}\Lambda(L)+c_K,\\
+\mu_{\max}(L)&=2\sup\{\operatorname{sl}\Lambda(N):0\ne N\le L\}+c_K,\\
+\mu_{\min}(L)&=2\inf\{\operatorname{sl}(\Lambda(L)/\Lambda(N)):N\le L\text{ saturated},\ N\ne L\}+c_K.
+\end{align*}
+For a $K$-linear map $\varphi\colon V\to W$ between hermitian lattices, with matrix
+$\Phi$ in the given bases, put
+$\|\varphi\|_v=\|X'^{-1}_v\,\sigma_v(\Phi)\,X_v\|$ (operator norm) and
+\[
+\operatorname{ht}(\varphi)=\frac1{n_{\infty}}\sum_v\log\|\varphi\|_v^2 .
+\]
+\end{definition}
+
+\begin{remark}[normalisations]\label{geoa:rem-normalisation}
+The matrices $X_v$ are frames: the metric at $v$ is the one making the columns of $X_v$
+orthonormal. Nothing in the definition of a hermitian lattice requires a hermitian form
+or positivity beyond invertibility. The slope is twice the euclidean slope of the
+realization plus the constant $c_K$, and the height of a map uses only archimedean
+operator norms (squared, averaged over the infinite places). There is no finite-place
+contribution; integrality enters separately, as an inclusion of lattices. The suprema
+and infima are of real sets, so they take Mathlib's junk value when the set is empty or
+unbounded.
+\end{remark}
+
+\begin{definition}[duals]\label{geoa:dual}
+\lean{Formalism.HN.dualLat, Formalism.HN.dualFrame, Formalism.BasicNotions.HLat.dualL, Formalism.BasicNotions.HLat.dualB, Formalism.BasicNotions.HLat.dualX, Formalism.BasicNotions.HLat.muDual, Formalism.BasicNotions.HLat.muMaxDual, Formalism.BasicNotions.HLat.muMinDual}
+\uses{geoa:hlat, geoa:slopes}
+The dual of a hermitian lattice $A$ is the space $V^*$ with the dual basis, the frames
+$(X_v^{T})^{-1}$, and the lattice $L^{\vee}=\{\lambda\in V^*:\lambda(L)\subset\mathcal O_K\}$.
+Its slope, maximal slope and minimal slope are written $\mu(A^{\vee})$,
+$\mu_{\max}(A^{\vee})$ and $\mu_{\min}(A^{\vee})$.
+\end{definition}
+
+\begin{definition}[period lattice data]\label{geoa:divdata}
+\lean{Formalism.BasicNotions.DivData, Formalism.BasicNotions.sFrame, Formalism.BasicNotions.uFrame, Formalism.BasicNotions.DivData.cc, Formalism.BasicNotions.DivData.OneMapIntoCC, Formalism.BasicNotions.DivData.HBound}
+\uses{geoa:hlat, geoa:slopes, geoa:dual}
+Let $K$ be a number field and $\mathcal W$ a finite set (the words). \emph{Period
+lattice data} consist of a hermitian lattice $R$ (test forms); for each $u\in\mathcal W$
+a hermitian lattice $N_u$ and a $K$-linear map $B_u\colon V(N_u)\to V(R)^*$; reals
+$h_u$, $HH$, $\eta_F$, $\delta_P$ with $\delta_P\le1$; a natural number $D_{\mathrm{all}}$;
+and the inequality $s+\mu_{\max}(R)\le HH$, where
+\[
+s=\frac{\sum_u d_u(\mu(N_u)-h_u)}{\sum_ud_u},\qquad d_u=\rk N_u .
+\]
+If $\mathcal W$ is nonempty, $u_F=\max_u(\mu_{\max}(N_u)-h_u)-s$. Put $cc=R^{\vee}$. The
+data satisfy \texttt{OneMapIntoCC} if $B_u(N_u)\subset cc$ for all $u$, and
+\texttt{HBound} if $\operatorname{ht}(B_u)\le h_u$ for all $u$, the height taken from
+the frames of $N_u$ to the dual frames of $R$.
+\end{definition}
+
+\begin{remark}\label{geoa:rem-divdata}
+Integrality and the height bound are separate predicates, not fields: period lattice
+data alone do not force $B_u$ into $R^{\vee}$, and $B_u$ need not be injective. The
+inequality $s+\mu_{\max}(R)\le HH$ is a field. A package (\texttt{D7}) carries one set of
+period lattice data together with invertibility of all the frames
+(\texttt{div\_good}). When $\sum_ud_u=0$ Lean's division gives $s=0$.
+\end{remark}
+
+\begin{theorem}[slope inequality]\label{geoa:slope-ineq-mean}
+\lean{Formalism.HN.SlopeIneqMean, Formalism.HN.slope_inequality_mean}
+\uses{geoa:slopes}
+Let $K$ be a totally complex number field, $V,W$ finite-dimensional $K$-vector spaces with
+bases and invertible frames at every infinite place, $\varphi\colon V\to W$ a $K$-linear
+map and $A\subset V$ a finitely generated $\mathcal O_K$-submodule with $\varphi(A)\ne0$.
+Then:
+\begin{enumerate}
+\item $\mu_{\min}(A)-\operatorname{ht}(\varphi)\le\mu_{\min}(\varphi(A))$;
+\item for every finitely generated $B\subset W$ containing $\varphi(A)$,
+$\mu_{\min}(A)\le\mu_{\max}(B)+\operatorname{ht}(\varphi)$, and if moreover $\varphi$ is
+injective on $A$, then $\mu_{\max}(A)\le\mu_{\max}(B)+\operatorname{ht}(\varphi)$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+% uses-lean: Formalism.HN.slopeIneqMean_of, Formalism.HN.twist_of, Formalism.HN.rescale_covolume_formula, Formalism.HN.place_lattice_structure, Formalism.HN.slope_inequality_general
+The archive derives it from a general slope inequality for euclidean lattices and
+group homomorphisms (\texttt{slope\_inequality\_general}), transported to
+$\mathcal O_K$-lattices by the structure of the realization (rank of $\Lambda(L)$ is
+$[K:\Q]\rk L$), the rescaling formula for covolumes under scalar changes of frames, and
+shift invariance of the slopes under such twists. The proof is in
+\arch{Formalism/HarderNarasimhan/HarderNarasimhanProofs/} and is not expanded here.
+\end{proof}
+
+\begin{remark}[relation with Bost's inequality]\label{geoa:rem-bost}
+Since $\mu(A)\le\mu_{\max}(A)$, the last clause gives
+$\mu(A)\le\mu_{\max}(B)+\operatorname{ht}(\varphi)$ for $\varphi$ injective on $A$ with
+$\varphi(A)\subset B$. This is Bost's slope inequality in the form with integral maps and
+archimedean norms only, in the archive's normalisation of $\mu$. The archive does not
+apply it directly to the period maps $B_u$; it is used inside the proof of the frame
+theorem below.
+\end{remark}
+
+\begin{lemma}[frame linear algebra]\label{geoa:frame-la1}
+\lean{Formalism.HN.FrameLA1, Formalism.HN.frame_linear_algebra_first, Formalism.CorankShareLayerCake.FR.hs2, Formalism.CorankShareLayerCake.FR.frK, Formalism.CorankShareLayerCake.FR.frQ}
+Let $(V_i)_{i\in I}$ be a finite family of finite-dimensional complex inner product spaces,
+$H$ another, $B_i\colon V_i\to H$ linear, $c_i>0$, $N_i\subset V_i$ subspaces, and
+$e,\eta,\varepsilon$ real. Write $\|A\|_{\mathrm{HS}}^2=\operatorname{tr}(A^*A)$ and
+$Q=\sum_ic_iB_iB_i^*$. Assume $\sum_i\dim V_i>0$,
+$\sum_i\|c_iB_i^*B_i-1\|_{\mathrm{HS}}^2\le e\sum_i\dim V_i$, $0\le e\le1/4$, $\eta\ge0$,
+$\operatorname{tr}(Q^2)\le(1+\eta)(\operatorname{tr}Q)^2/\dim H$ and
+$\sum_i(\dim V_i-\dim N_i)\le\varepsilon\sum_i\dim V_i$. Then
+\[
+\dim\Bigl(\sum_iB_i(N_i)\Bigr)^{\perp}\le(\eta+4\varepsilon+4\sqrt e)\dim H .
+\]
+\end{lemma}
+\begin{proof}
+Finite-dimensional linear algebra in
+\arch{Formalism/HarderNarasimhan/HarderNarasimhanProofs/FrameLinearAlgebraFirst.lean};
+not expanded here.
+\end{proof}
+
+\begin{theorem}[frame theorem, sharp form]\label{geoa:theoremF-sharp}
+\lean{Formalism.HN.TheoremFSharp, Formalism.HN.frame_theorem_sharp, Formalism.HN.theoremFSharp_of}
+\uses{geoa:slope-ineq-mean, geoa:frame-la1, geoa:slopes}
+Let $K$ be a totally complex number field. Let $W$ have a basis indexed by a finite set
+$\kappa$, invertible frames $X'_w$, and a finitely generated $\mathcal O_K$-submodule
+$cc$ spanning $W$. Let $I$ be a nonempty finite set and, for $i\in I$, let $V_i$ have a
+basis indexed by $\iota_i$, invertible frames $X_{i,w}$, a finitely generated
+$\mathcal O_K$-submodule $N_i$ spanning $V_i$, a $K$-linear map $B_i\colon V_i\to W$ and
+a real $h_i$. Fix an infinite place $v$, a finite set $\kappa_1$, invertible matrices
+$Y_i\in M_{\iota_i}(\CC)$, $Y'\in M_{\kappa}(\CC)$, matrices
+$\mathrm{Ball}_i\in M_{\kappa\sqcup\kappa_1,\iota_i}(\CC)$, weights $\gamma_i$, and reals
+$s,u,HH,e,\eta,\delta$. Assume:
+\begin{enumerate}
+\item $\sum_i\#\iota_i>0$; $B_i(N_i)\subset cc$; and $\operatorname{ht}(B_i)\le h_i$
+whenever $B_i\ne0$;
+\item $s\sum_i\#\iota_i\le\sum_i\#\iota_i\,(\mu(N_i)-h_i)$; $u\ge0$ and
+$\mu_{\max}(N_i)-h_i\le s+u$ for all $i$; $s-\mu_{\min}(cc)\le HH$ and $HH\ge0$;
+\item $0\le\delta<1$ and $(1-\delta)\#(\kappa\sqcup\kappa_1)\le\#\kappa$;
+\item the $\kappa$-rows of $\mathrm{Ball}_i$ are those of
+$Y'^{-1}\sigma_v(\text{matrix of }B_i)Y_i$;
+\item $\gamma_i>0$, $\sum_i\|\gamma_i\mathrm{Ball}_i^*\mathrm{Ball}_i-1\|_{\mathrm{HS}}^2\le
+e\sum_i\#\iota_i$, $0\le e\le1/4$, and, with
+$Q=\sum_i\gamma_i\mathrm{Ball}_i\mathrm{Ball}_i^*$,
+$\operatorname{tr}(Q^2)\le(1+\eta)(\operatorname{tr}Q)^2/\#(\kappa\sqcup\kappa_1)$ and
+$\eta\ge0$.
+\end{enumerate}
+Then
+\[
+s-(1-\delta)^{-1}\Bigl(4u\log\Bigl(1+\frac{HH}u\Bigr)+(\eta+4\sqrt e)HH\Bigr)\le\mu(cc).
+\]
+\end{theorem}
+\begin{proof}
+\uses{geoa:slope-ineq-mean, geoa:frame-la1}
+% uses-lean: Formalism.HN.thmF_share, Formalism.HN.thmF_place, Formalism.HN.hnStep
+For $\tau\ge0$ let $N_i(\tau)\subset N_i$ be the Harder--Narasimhan step of $N_i$ made of
+the part of slope at least $s-\tau+h_i$ (in the normalisation of $\mu$), and $S(\tau)$
+the step of $cc$ of slope at least $s-\tau$. A counting lemma on the slope lists
+(\texttt{thmF\_share}, using the mean bound $s$ and the cap $s+u$) gives
+$\sum_i(\#\iota_i-\rk N_i(\tau))\le\frac u{u+\tau}\sum_i\#\iota_i$. The first clause of
+the slope inequality, applied to $B_i$ on $N_i(\tau)$ with the height bound, shows that
+$B_i(N_i(\tau))$ has minimal slope at least $s-\tau$, hence lies in $S(\tau)$. The frame
+linear algebra at the place $v$, with $\varepsilon=u/(u+\tau)$ and hypothesis~(3), gives
+$\#\kappa-\rk\sum_iB_i(N_i(\tau))\le w(\tau)\#\kappa$ with
+$w(\tau)=(1-\delta)^{-1}(\eta+4u/(u+\tau)+4\sqrt e)$, so the same bound holds for
+$\#\kappa-\rk S(\tau)$. Expressing $\mu(cc)$ through its Harder--Narasimhan polygon,
+using $\mu_{\min}(cc)\ge s-HH$, and integrating the rank bound over $\tau\in[0,HH]$ gives
+the stated inequality, since $\int_0^{HH}4u/(u+\tau)\,d\tau=4u\log(1+HH/u)$.
+\end{proof}
+
+\begin{theorem}[frame theorem]\label{geoa:theoremF}
+\lean{Formalism.HN.TheoremF, Formalism.HN.frame_theorem_log_ideal, Formalism.HN.theoremF_of_sharp, Formalism.HN.theoremF}
+\uses{geoa:theoremF-sharp}
+Under the hypotheses of the sharp form,
+\[
+s-\log\#I-(1-\delta)^{-1}\Bigl(4u\log\Bigl(1+\frac{HH}u\Bigr)+(\eta+4\sqrt e)HH\Bigr)\le\mu(cc).
+\]
+\end{theorem}
+\begin{proof}
+\uses{geoa:theoremF-sharp}
+Since $I$ is nonempty, $\log\#I\ge0$; subtract it from the left side of the sharp form.
+\end{proof}
+
+\begin{remark}[on the frame theorem]\label{geoa:rem-theoremF}
+The term $-\log\#I$ is a weakening of the sharp form that the archive carries along; the
+slope clause of the record below has the same term with $\#I$ the number of words. The
+rank weights are the basis sizes $\#\iota_i$, which equal $\rk N_i$ because $N_i$ spans
+$V_i$. The matrices $Y_i$, $Y'$ are arbitrary invertible matrices, not tied to the frames
+$X$; the proof uses them only through ranks. For $u=0$ Lean reads $HH/u$ as $0$, and the
+term $4u\log(1+HH/u)$ is $0$. The survey describes this theorem as conditioned on
+\texttt{FrameLA1}; in the archive \texttt{FrameLA1} is proved
+(\texttt{frame\_linear\_algebra\_first}).
+\end{remark}
+
+\section{The abstract Arakelov interface}
+
+\begin{definition}[geometry interface]\label{geoa:geo}
+\lean{Formalism.BasicNotions.DV.Geo}
+\uses{geoa:hlat}
+Let $F$ be a number field. A \emph{geometry} over $F$ is a structure with: a type
+$\mathrm{Var}$ of ``varieties'' $Y$ with dimensions; function fields $\operatorname{Fn}(Y)$
+(fields with an $F$-algebra structure); abelian groups $\operatorname{Dv}(Y)$ of
+divisors with an effectivity predicate closed under $0$ and sums; spaces
+$H^0(Y,\Delta)\subset\operatorname{Fn}(Y)$, finite-dimensional, multiplicative in $\Delta$
+and monotone under effective differences; a canonical divisor; closed-subset types with
+properness, inclusion and support; an intersection number of $\dim Y$ divisors; predicates
+$\operatorname{nef}$, $\operatorname{big}$, base-point freeness, birationality and
+non-contraction; vanishing predicates; complex points with a measure for each embedding
+$F\to\CC$; types of metrics with sum, power and Fubini--Study constructions, pointwise
+norms and positivity predicates; a type of adelic line bundles with a construction
+$\operatorname{ofW}$ from a hermitian lattice and a map to $\operatorname{Fn}(Y)$,
+twists, an arithmetic top degree, an arithmetic volume and a nefness predicate; sup norms
+at infinite and finite places with the expected behaviour under $\operatorname{ofW}$ and
+twists; and several cut and residue predicates. The only axioms are the effectivity,
+$H^0$ and sup-norm compatibilities just listed.
+\end{definition}
+
+\begin{definition}[the one-point geometry]\label{geoa:pointgeo}
+\lean{GlobalTheory.PointGeometry.pointGeo, GlobalTheory.PointGeometry.AdelicLine, GlobalTheory.PointGeometry.AdelicLine.deg}
+\uses{geoa:geo}
+For a number field $F$, the one-point geometry has $\mathrm{Var}=\{\ast\}$ of dimension
+$0$, $\operatorname{Fn}(\ast)=F$, one divisor, every divisor effective,
+$H^0=F$ for every divisor, intersection number $1$, and
+\[
+\operatorname{nef}:=\text{True},\qquad \operatorname{big}:=\text{True}.
+\]
+Its complex points are a single point with the Dirac measure, metrics are nonnegative
+reals, and its adelic line bundles are \emph{adelic lines}: positive reals at infinite
+places and at almost all finite places equal to $1$, with arithmetic degree
+$-\bigl(\sum_vm_v\log\ell_v+\sum_w\log\ell_w\bigr)/[F:\Q]$; the arithmetic volume is the
+positive part of the degree.
+\end{definition}
+
+\begin{lemma}[a geometry with a nonzero section exists]\label{geoa:exists-geo}
+\lean{GlobalTheory.PointGeometry.exists_geo, GlobalTheory.PointGeometry.point_global_sections_ne_bot}
+\uses{geoa:pointgeo}
+For every number field $F$ there are a geometry $G$ over $F$ and $Y\in\mathrm{Var}(G)$ with
+$H^0(Y,0)\ne0$.
+\end{lemma}
+\begin{proof}
+\uses{geoa:pointgeo}
+Take the one-point geometry; $H^0(\ast,0)=F\ne0$.
+\end{proof}
+
+\begin{definition}[divisor data of a package]\label{geoa:divx}
+\lean{Formalism.BasicNotions.DivX, Formalism.BasicNotions.DV.hExpl6, Formalism.BasicNotions.DV.KapRBase}
+\uses{geoa:geo, geoa:hspace, geoa:hlat}
+% uses-lean: Formalism.BasicNotions.D7, Formalism.BasicNotions.SizeData₂
+For a package $D$ with coefficient field $LL$, \emph{divisor data} consist of a geometry
+over $LL$; a level type and a family of ``Shimura data'' attached to hermitian spaces over
+the host field (abstract records of Chern and arithmetic degree functionals); for each
+prime $p$ a nonempty finite set of places above $p$ with nonnegative weights summing to
+$1$ given by ramification indices and norms; integral models at $p$ with first Chern
+class data; for each level $j$ a good hermitian lattice $M_j$ embedded isometrically in the
+package's space of forms on $U(W_j)$, and maps from $M_j$ into
+$H^0(Y,\Lambda_j)$ for varieties $Y$ of the geometry; local twist data; positive reals
+$\kappa_R(e)$ for embeddings $e\colon LL\to\CC$, invariant under conjugation; and
+surface invariants. \texttt{KapRBase} says that $\kappa_R$ at the base embedding equals
+the explicit constant $\kappa^{\sharp}(D)$. The explicit height $h^{(6)}_u$ of a word $u$ is
+an explicit combination of size data of $D$ minus the mean of $\log\kappa_R(e)$ over the
+embeddings; it uses no other field of the divisor data.
+\end{definition}
+
+\begin{lemma}[provisional divisor data]\label{geoa:provisional-divx}
+\lean{GlobalTheory.exists_provisionalDivX, GlobalTheory.provisionalDivX}
+\uses{geoa:divx, geoa:exists-geo}
+Let $D$ be a package such that for each $1\le j\le m$ the space of forms $M_j$ has a
+complex basis in which every generator of the given lattice has coordinates in the
+image of $LL$. Then there are divisor data $X$ for $D$ satisfying \texttt{KapRBase}.
+\end{lemma}
+\begin{proof}
+\uses{geoa:exists-geo}
+% uses-lean: GlobalTheory.WittFracComplex.nonempty_ringHom_complex, GlobalTheory.nonempty_admissibleModel
+Take the geometry and variety supplied by the existence lemma, which is the one-point
+geometry, together with an embedding of the Witt-vector fraction field into $\CC$,
+admissible integral models, and lattices $M_j$ built from the given bases; set
+$\kappa_R\equiv\kappa^{\sharp}(D)$ and take the surface types empty.
+\end{proof}
+
+\begin{remark}[the geometry interface is hollow on this path]\label{geoa:rem-hollow-geo}
+\texttt{DV.Geo} is not built on Mathlib schemes: it is a record of types and predicates
+whose only axioms are bookkeeping compatibilities. It is instantiated by the one-point
+model with $\operatorname{nef}:=\text{True}$ and $\operatorname{big}:=\text{True}$, and
+the archive's provisional divisor data use exactly this model. Two further instances in
+\arch{Formalism/LocalToGlobal/LatticeGeometry/Inhabited.lean}
+(\texttt{geoDegenerate}, \texttt{geoDegenerateNoTau}) also set $\operatorname{nef}$ and
+$\operatorname{big}$ to True, and \texttt{geoExample} has an empty type of varieties.
+A family stores divisor data and defines the heights $h_u$ by $h^{(6)}_u$, which reads
+only $\kappa_R$. The lemma \texttt{exists\_provisionalDivX} itself is not reached from the final
+theorems, but the one-point model is: a review traced, link by link, the chain
+\texttt{hypotheses\_nonempty\_of\_unramified\_exponents\_alt},
+\texttt{hyps\_e\_third\_layer\_ser\_n\_of\_geometric\_galois},
+\texttt{exists\_hyp\_n\_of\_geometric\_galois\_compat}, \dots,
+\texttt{exists\_divisor\_eigen\_index\_third\_component\_alt},
+\texttt{ThirdIdx.nonempty\_divX}
+(\arch{Development/AbelianVarietyTheory/Proofs/IwasawaDecomposition/ExistsEigenReadThirdLocal.lean}, lines 24--26), whose last
+step builds \texttt{provisionalDivX} from \texttt{exists\_geo}. So divisor data over
+the one-point model are used on the main chain. Whether later steps use any geometric
+content of those data was not traced. Statements about nef or big divisors made through this interface carry no
+geometric content unless the instance is a real one.
+\end{remark}
+
+\section{The inequalities on real numbers}
+
+\begin{definition}[slope records]\label{geoa:record}
+\lean{Formalism.RankGapBounds.WeightedMeanData.Data, Formalism.RankGapBounds.WeightedMeanData.Consts}
+A \emph{slope record} with index type $U_0$ (shifts), word types $W(u_0)$ for
+$u_0\in U_0$, a type $\mathrm{Top}$ (top places) and natural numbers $m,f$ consists of
+real numbers $x,\eps,a,b,b',k,L,L_a,B_0,N_c,\gamma,\ell_K,v,\lg,\log\Gamma_L$; reals
+$a_{\tau}$ for $\tau\in\mathrm{Top}$; weights $w(u_0,j,\rho)$ for $j<m$, $\rho<f$; for
+$u\in W(u_0)$ reals $d(u),T(u),\mu_N(u),\mu_N^{\max}(u),h(u),\mu_M(u),\mu_M^{\max}(u)$
+and $E_j(u)$ for $j<m$; for $u_0\in U_0$ reals $\mu_R(u_0),\mu_R^{\min}(u_0)$,
+$\mathrm{Fo},\mathrm{Ga},\mathrm{Ta},\mathrm{PS},\mathrm{IO},HH,\delta,\beta_1,\beta_2$
+(Lean fields \texttt{muCC}, \texttt{muMinCC}, \texttt{Fo}, \texttt{Ga}, \texttt{Ta},
+\texttt{ASK}, \texttt{IO}, \texttt{HH}, \texttt{del}, \texttt{$\eta$}, \texttt{e}); and reals
+$\bar\delta,\bar\beta_1,\bar\beta_2$. \emph{Constants} are ten reals
+$c_{\mathrm{Div}},e_{\mathrm{Div}},c_E,c_H,c_{\mathrm{Count}},c_{\mathrm{Slope}},
+c_{\mathrm{Sl}},c_{\mathrm{Loss}},e_{\mathrm{Loss}},c_{HH}$.
+\end{definition}
+
+\begin{definition}[derived quantities of a record]\label{geoa:record-derived}
+\lean{Formalism.RankGapBounds.WeightedMeanData.ph, Formalism.RankGapBounds.WeightedMeanData.wmean, Formalism.RankGapBounds.WeightedMeanData.umean, Formalism.RankGapBounds.WeightedMeanData.Data.nT, Formalism.RankGapBounds.WeightedMeanData.Data.sumA, Formalism.RankGapBounds.WeightedMeanData.Data.logOm, Formalism.RankGapBounds.WeightedMeanData.Data.Ee, Formalism.RankGapBounds.WeightedMeanData.Data.s, Formalism.RankGapBounds.WeightedMeanData.Data.uF, Formalism.RankGapBounds.WeightedMeanData.Data.LoP, Formalism.RankGapBounds.WeightedMeanData.Data.Main}
+\uses{geoa:record}
+For a slope record with $U_0$ and all $W(u_0)$ finite and nonempty, put
+$n_T=\#\mathrm{Top}$, $\Sigma a=\sum_{\tau} a_{\tau}$, $\operatorname{ph}(y)=y\log y-y$,
+$\log\Omega=\gamma+\log(\pi/v)-\ell_K$, $\operatorname{Ee}(u)=\sum_{j<m}E_j(u)$,
+\[
+s(u_0)=\frac{\sum_ud(u)(\mu_N(u)-h(u))}{\sum_ud(u)},\qquad
+u_F(u_0)=\max_u(\mu_N^{\max}(u)-h(u))-s(u_0),
+\]
+$\mathrm{Lo}_P=c_{\mathrm{Loss}}n_Tmb\,x^{e_{\mathrm{Loss}}\eps}$ and
+\[
+\operatorname{Main}(u_0)=\sum_{j<m}\sum_{\tau} a_{\tau}\Bigl(\log a_{\tau}-1-\gamma+\ell_K
+-\frac1f\sum_{\rho<f}\log w(u_0,j,\rho)\Bigr).
+\]
+\end{definition}
+
+\begin{definition}[clauses of the size data, first group]\label{geoa:clauses}
+\lean{Formalism.RankGapBounds.WeightedMeanData.Data.HidaSetting, Formalism.RankGapBounds.WeightedMeanData.Data.DIV, Formalism.RankGapBounds.WeightedMeanData.Data.HComp, Formalism.RankGapBounds.WeightedMeanData.Data.Slopes, Formalism.RankGapBounds.WeightedMeanData.Data.SlopeIneq, Formalism.RankGapBounds.WeightedMeanData.Data.HHBound, Formalism.RankGapBounds.WeightedMeanData.Data.FParams}
+\uses{geoa:record-derived}
+For a record and constants, quantified over all $u_0$ and $u,u'\in W(u_0)$:
+\begin{itemize}
+\item (positivity, \texttt{HidaSetting}) $x,b,k,v>0$, $f>0$, $a,b'\ge0$, $a_{\tau}\ge0$,
+$w>0$, $d>0$, $T>0$, $\mu_N\le\mu_N^{\max}$, $c_{\mathrm{Sl}}\ge0$, $\bar\delta<1$,
+$\bar\beta_1\ge0$, $0\le\bar\beta_2\le1/4$;
+\item (\texttt{DIV}) $\mu_R+h(u)-\mathrm{Fo}\le\sum_{\tau}\bigl(m(\operatorname{ph}(a_{\tau})
+-a_{\tau}\log\Omega)-a_{\tau}\log T(u)\bigr)+c_{\mathrm{Div}}n_TaL_a
++c_{\mathrm{Div}}m(B_0+N_c)x^{e_{\mathrm{Div}}\eps}$;
+\item (\texttt{HComp}) $\bigl|(h(u)+\Sigma_{\tau} a_{\tau}\log T(u))-(h(u')+\Sigma_{\tau}
+a_{\tau}\log T(u'))\bigr|\le c_H(n_TaL_a+mB_0)$;
+\item (\texttt{Slopes}) $-c_{\mathrm{Slope}}n_TaL_a(1+m/k)\le\mu_M(u)$ and
+$\mu_M^{\max}(u)\le c_{\mathrm{Slope}}n_TaL_a$;
+\item (\texttt{SlopeIneq}) if $0\le\delta<1$, $\beta_1\ge0$, $0\le\beta_2\le1/4$,
+$s-\mu_R^{\min}\le HH$ and $HH>0$, then
+\[
+s-\log\#W(u_0)-(1-\delta)^{-1}\Bigl(4u_F\log\Bigl(1+\frac{HH}{u_F}\Bigr)
++(\beta_1+4\sqrt{\beta_2})HH\Bigr)\le\mu_R;
+\]
+\item (\texttt{HHBound}) $s-\mu_R^{\min}\le HH$, $HH>0$ and $HH\le x^{c_{HH}}b$;
+\item (\texttt{FParams}) $0\le\delta\le\bar\delta$, $0\le\beta_1\le\bar\beta_1$,
+$0\le\beta_2\le\bar\beta_2$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[clauses of the size data, second group]\label{geoa:clauses-5}
+\lean{Formalism.LFunctionChainParameters.WeightedSlopeBounds.Lo5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.QuotientSlopeBoundsWith, Formalism.LFunctionChainParameters.WeightedSlopeBounds.EComp5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.Count5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.LossBounds}
+\uses{geoa:record-derived}
+Let $X''$ be real and put
+$\mathrm{Lo}_5(u)=c_{\mathrm{Sl}}\mathrm{IO}+c_{\mathrm{Sl}}n_Tm(a/k+b')\log T(u)
++c_{\mathrm{Sl}}X''+1$. For all $u_0$ and $u,u'\in W(u_0)$:
+\begin{itemize}
+\item (\texttt{EComp5}) $|\operatorname{Ee}(u)-m\,\Sigma a\,\lg|\le c_EmB_0$;
+\item (\texttt{Count5}) $\sum_{j<m}f^{-1}\sum_{\rho}\log(w(u_0,j,\rho)v/\pi)+m\lg
+-c_{\mathrm{Count}}(L_a+m^2L_a/k)\le\log T(u)\le c_{\mathrm{Count}}mL$ and
+$|\log T(u)-\log T(u')|\le c_{\mathrm{Count}}\log k$;
+\item (\texttt{QuotientSlopeBoundsWith}) $\mu_N^{\max}(u)\le\mu_M^{\max}(u)+\mathrm{Ga}
++\mathrm{Fo}-\operatorname{Ee}(u)+c_{\mathrm{Sl}}mB_0$ and
+$\mu_M(u)+\mathrm{Ga}+\mathrm{Fo}-\operatorname{Ee}(u)-\mathrm{Lo}_5(u)\le\mu_N(u)$;
+\item (\texttt{LossBounds}) $\mathrm{PS}(u_0)-\mathrm{Ga}(u_0)\le\mathrm{Lo}_P$ and
+$\mathrm{IO}(u_0)\le\mathrm{Lo}_P$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[size data of a record]\label{geoa:sizedata}
+\lean{Formalism.LFunctionChainParameters.LChain.SizeData₂}
+\uses{geoa:clauses, geoa:clauses-5}
+A record \emph{satisfies the size data} with constants $C$ and real $X''$ if it satisfies
+\texttt{HidaSetting}, \texttt{DIV}, \texttt{EComp5}, \texttt{HComp}, \texttt{Count5},
+\texttt{Slopes}, \texttt{QuotientSlopeBoundsWith} (with $X''$), \texttt{LossBounds},
+\texttt{SlopeIneq}, \texttt{HHBound} and \texttt{FParams}.
+\end{definition}
+
+\begin{remark}[names and unused variants]\label{geoa:rem-variants}
+The name \texttt{HidaSetting} denotes a list of positivity conditions; an unrelated
+predicate \texttt{DV.HidaSetting} on hermitian spaces exists. The name \texttt{SizeData}$_2$
+is also used for the structure \texttt{Formalism.BasicNotions.SizeData}$_2$ of a package,
+which is a different object. The file of the record also defines \texttt{EComp}
+(a bound for each $j$), \texttt{Count} (with $L$ in place of $L_a$ and an extra term in
+$\log\Gamma_L$), \texttt{SlopesN}, \texttt{Losses} (bounds for the mean over $u_0$) and
+the proposition \texttt{MeanBoundSecondForm}; none is a clause of the size data, and no
+proof of \texttt{MeanBoundSecondForm} was found. The field $\log\Gamma_L$ enters no clause
+of the size data. The hypotheses of \texttt{SlopeIneq} follow from \texttt{HidaSetting},
+\texttt{HHBound} and \texttt{FParams}.
+\end{remark}
+
+\begin{remark}[the slope clause and the frame theorem]\label{geoa:rem-slopeineq}
+\texttt{SlopeIneq} has the shape of the conclusion of the frame theorem with $I=W(u_0)$,
+target $cc=R^{\vee}$, sources $N_u$, $s$ the rank-weighted mean of $\mu(N_u)-h_u$,
+$u=u_F$, $\eta=\beta_1$ and $e=\beta_2$. It bounds the mean $s$ by the slope of
+$R^{\vee}$, not by its maximal slope, which is stronger than Bost's inequality applied word
+by word. Together with \texttt{DIV}, an upper bound for $\mu_R+h(u)-\mathrm{Fo}$, it
+pins $\mu_R$ from both sides. In the record the clause is a hypothesis on real numbers.
+\end{remark}
+
+\begin{definition}[window hypotheses]\label{geoa:errwindows}
+\lean{Formalism.LFunctionChainParameters.LErr.ConstsBound, Formalism.LFunctionChainParameters.LErr.ErrWindows0, Formalism.LFunctionChainParameters.LErr.ErrWindows}
+\uses{geoa:record}
+Let $X'',e_K,K_W$ be real. A record with constants satisfies \texttt{ErrWindows} if:
+$1\le x$; $0<\eps\le1$; $1\le b$; $xb\le a$; $1\le n_T$; $m\le x^{1/2+\eps/2}$;
+$xm\le k$; $0\le e_K$; $1\le k\le x^{e_K}$; $k\le a$; $0\le L\le2x^{\eps}$;
+$0\le L_a\le2x^{\eps}$; $0\le b'$ and $kb'\le a$; $0\le X''\le a$; $0\le a_{\tau}\le2a$;
+$B_0,N_c\ge0$; $\log\#W(u_0)\le(k-3)\log2$ for all $u_0$; $\bar\delta\le1/2$;
+$\bar\beta_1,\bar\beta_2\ge0$; the constants $c_{\mathrm{Div}},c_E,c_H,c_{\mathrm{Count}},
+c_{\mathrm{Slope}},c_{\mathrm{Sl}},c_{\mathrm{Loss}}$ lie in $[0,K_W]$ and
+$e_{\mathrm{Div}},e_{\mathrm{Loss}},c_{HH}\ge0$; and the defect bound
+$(\bar\beta_1+4\sqrt{\bar\beta_2})\,x^{c_{HH}}b\le K_W\,x^{\eps}\,n_Ta$.
+\end{definition}
+
+\begin{definition}[identification and size bounds]\label{geoa:ident}
+\lean{Formalism.LFunctionChainParameters.LChain.Ident, Formalism.LFunctionChainParameters.LChain.BNBounds, Formalism.LFunctionChainParameters.ThickSetMeanBounds.ValuesAtX}
+\uses{geoa:record}
+% uses-lean: Formalism.LFunctionChainParameters.characterSumData.ArithData, Formalism.LFunctionChainParameters.characterSumData.ASK, Formalism.LFunctionChainParameters.characterSumData.GPsi, Formalism.LFunctionChainParameters.characterSumData.chC, Formalism.D5.PhiSet
+\uses{bal:additive-model, bal:arith-data, bal:ask, bal:gpsi} % resolved
+Let $H$ be a finite abelian group, $\mathcal D$ arithmetic data on $H$, $N\in\N$,
+$\ell$ a function on the characters of $E_0\times H$, $TT\subset H$, $a\colon H\to\R$,
+$w\colon H\times\{0,\dots,m-1\}\times(E_0\times H)\to\R$, and bijections
+$\mathrm{Top}\cong TT$ and $\{0,\dots,f-1\}\cong\Phi$. A record with $U_0=H$ satisfies
+\texttt{Ident} if its $a_{\tau}$ and $w$ are carried to $a$ and $w$ by these bijections,
+$\gamma$ is Euler's constant, $\ell_K=\Re\ell(\chi_C)$, and
+$\mathrm{PS}(u_0)=\sum_{t\in TT}\sum_{j<m}\operatorname{ASK}(a_t,t,w(u_0,j))$ for all
+$u_0$. For $T_2\subset H$ it satisfies \texttt{BNBounds} if
+$B_0\le2\#H\,m\,b\,x^{\eps}$ and $N_c\le\#T_2\,k\,b\,x^{\eps}/(\#H\cdot\#H\,x^{-\eps})$.
+For real $x,\eps,C_L$, \texttt{ValuesAtX} holds if
+$|\Psi_{\theta}(x)|\le x^{1/2+\eps}$ and $|\ell(\theta)|\le C_L\log x$ for the three
+characters $\theta\in\{\psi_C,\chi_C,\chi_C\psi_C\}$, where $\Psi_{\theta}$ is the
+archive's twisted prime-sum function \texttt{GPsi}.
+\end{definition}
+
+\begin{lemma}[the main term]\label{geoa:main-eq}
+\lean{Deduction.ch_top_main_eq}
+\uses{geoa:record-derived, geoa:ident}
+% uses-lean: Formalism.LFunctionChainParameters.characterSumData.MAIN, Deduction.CH.IdentU
+\uses{bal:main-defect} % resolved
+Let a record, $\mathcal D,N,\ell,TT,a,w$ and the bijections be as above, let
+$\operatorname{tr}\colon U_0\to H$, and assume the variant \texttt{IdentU} of
+\texttt{Ident} in which $w(u_0,j,\cdot)$ is matched with $w(\operatorname{tr}u_0,j,\cdot)$
+(\texttt{Ident} is the case $U_0=H$, $\operatorname{tr}=\mathrm{id}$). Then for every
+$u_0$,
+\[
+\operatorname{Main}(u_0)=\sum_{t\in TT}\sum_{j<m}\Re\,\operatorname{MAIN}(a_t,w(\operatorname{tr}u_0,j)),
+\]
+where $\operatorname{MAIN}(a,w)=a\bigl(\log a-1-\gamma+\ell(\chi_C)-\#\Phi^{-1}\sum_{\rho\in\Phi}\log w(\rho)\bigr)$.
+\end{lemma}
+\begin{proof}
+\uses{geoa:record-derived}
+The bijection $\{0,\dots,f-1\}\cong\Phi$ gives $f=\#\Phi$ and turns sums over $\rho<f$
+into sums over $\Phi$. Substituting the identifications of $a_{\tau}$, $w$, $\gamma$ and
+$\ell_K$ into $\operatorname{Main}$, exchanging the sums over $j$ and $\tau$ and
+reindexing $\tau$ by $TT$ gives the right side term by term, since all quantities other
+than $\ell(\chi_C)$ are real. No positivity of $a_t$ or $w$ is used.
+\end{proof}
+
+\begin{definition}[families]\label{geoa:famcore}
+\lean{Formalism.MainNotions.FamCore, Formalism.MainNotions.FamP}
+\uses{geoa:divx}
+% uses-lean: Formalism.BasicNotions.D7, Formalism.BasicNotions.SizeData₂
+Let $\eps$ be real. A \emph{core family} at $\eps$ consists of a threshold $x_1>1$; an
+index type $\mathrm{Ix}(x)$ for each real $x$; an unbounded set $\mathrm{Win}\subset\R$
+with $\mathrm{Ix}(x)$ nonempty for $x\in\mathrm{Win}$ and $\mathrm{Ix}(0)$ nonempty;
+packages $D(x,i)$ with package size data $L(x,i)$ at scale $x$ (for $x>x_1$) and $\eps$;
+uniformity across indices of ranks, $TT$, $T_2$, $q$, $d$, $Q_S$, Artin numerics, the
+auxiliary primes and further constants; bounds by a constant $C_o$; a common word type;
+and a covering clause realising every residue $u_0<n$ by some index. A \emph{family}
+extends a core family by parameter choices, tie data, divisor data $X(x,i)$, geometric
+instance data, explicit definitions of $\nu$, $N'$ and $R$, and the height formula
+$h_u=h^{(6)}_u(D(x,i),L(x,i),X(x,i),C_{\mathrm{sz}})$, among other fields.
+\end{definition}
+
+\begin{definition}[uniform explicit-formula condition]\label{geoa:efamc}
+\lean{Formalism.HC.EAt, Formalism.HC.EFamC}
+\uses{geoa:famcore}
+% uses-lean: Formalism.HC.EAtH
+For a level $\Lambda$ and a core family, \texttt{EFamC} holds if there are $C$ and $x_0$
+such that for all $x\ge x_0$ and all indices $i$, the host of $D(x,i)$ satisfies the
+explicit-formula condition $\mathrm{EAtH}(\Lambda,TT,x,\eps,C)$.
+\end{definition}
+
+\begin{definition}[tied chains]\label{geoa:tied}
+\lean{Formalism.MainNotions.TiePts, Formalism.MainNotions.TieGlobal, Formalism.MainNotions.TieLocal, Formalism.MainNotions.TieArith, Formalism.MainNotions.ChainTied}
+\uses{geoa:famcore, geoa:sizedata, geoa:errwindows, geoa:ident, geoa:divdata, geoa:dual}
+% uses-lean: Formalism.LFunctionChainParameters.LChain.GrowthInequalityRemainingHyps, Formalism.LFunctionChainParameters.LChain.CostWindows, Formalism.LFunctionChainParameters.LChain.RestSize, Formalism.MainNotions.arithOf
+\uses{bal:rest-size} % resolved
+Let $\mathrm{Fm}$ be a family at $\eps$ and $e_D,e_L,K_W,c_{HH},e_K,C_L,x$ real.
+$\mathrm{Fm}$ is \emph{tied} at $x$ if there exist an index $i_0$, $m,f\in\N$, a choice
+$\operatorname{pt}(u_0)$ of index for each $u_0$ in the group $A$ of the frame of
+$D(x,i_0)$, integer sequences $a^v,b^v$, a finite type $\mathrm{Top}$, a record with
+$U_0=A$ and $W(u_0)$ the words of $D(x,\operatorname{pt}(u_0))$, constants, a real $X''$,
+and $\ell,N,TT,T_2,a,w$, bijections and reals $\eta,X^{\flat},\theta$, such that:
+\begin{enumerate}
+\item (\texttt{TiePts}) all $D(x,\operatorname{pt}(u_0))$ have the frame of $D(x,i_0)$,
+the given $m$, $f$, $q$, $d$, shift $u_0$, and $a_t,b_t$ read off from $a^v,b^v$;
+\item (\texttt{TieGlobal}) $a,b,b',k,L,L_a,B_0,N_c$ are those of the size data, $\gamma$ is
+Euler's constant, $\ell_K$ is the recorded logarithmic derivative at $1$, $v$ is the
+host's $v$, $\lg=\log(g_0g_1)$, $\log\Gamma_L$, $X''$, $\eta$ and $X^{\flat}$ are as
+recorded;
+\item (\texttt{TieLocal}) $d(u)=\rk N_u$, $T(u)$ is the level prime of the word,
+$\mu_N(u),\mu_N^{\max}(u)$ are the slope and maximal slope of $N_u$, $h(u)=h_u$,
+$\mu_M,\mu_M^{\max}$ are those of the form lattice of $u$, $E_j(u)$, $\mathrm{Ta}$ and
+$\mathrm{IO}$ are sums of local sizes over the support of the size data,
+$\mu_R=\mu(R^{\vee})$, $\mu_R^{\min}=\mu_{\min}(R^{\vee})$, $\mathrm{Fo},\mathrm{Ga}$ are the
+size-data fields, and $\delta$ is the package's rank defect;
+\item (\texttt{TieArith}) $TT$, $T_2$, $a$ and $w$ are those of the members, and
+$\ell(\psi)=L'(1,\chi)/L(1,\chi)$ for every nontrivial $\psi$ and every primitive
+Dirichlet character $\chi$ agreeing with $\psi$ on positive integers;
+\item $x,\eps$ are those of the record, $e_{\mathrm{Div}}\le e_D$, $e_{\mathrm{Loss}}\le e_L$,
+$c_{HH}^{\mathrm{rec}}\le c_{HH}$;
+\item the record satisfies \texttt{Ident}, the size data, \texttt{ErrWindows},
+\texttt{BNBounds}, the growth-inequality hypotheses (including \texttt{ValuesAtX}),
+\texttt{CostWindows} and \texttt{RestSize}.
+\end{enumerate}
+The fields $HH$, $\beta_1$, $\beta_2$ and $\mathrm{PS}$ are set by no tie;
+$\mathrm{PS}$ is fixed by \texttt{Ident}.
+\end{definition}
+
+\begin{lemma}[ties are discarded downstream]\label{geoa:tied-core}
+% overlaps (deduplicated): geob:tiedcore
+\lean{Formalism.MainNotions.ChainTied.core_of}
+\uses{geoa:tied}
+% uses-lean: Formalism.LFunctionChainParameters.LChain.ChainCore, UpperTheory.Comparison₂.FamCoreConstantBounds, Formalism.LFunctionChainParameters.characterSumData.HostFacts
+\uses{bal:split-outside, geob:coreath} % resolved
+If $\mathrm{Fm}$ is tied at $x$ and every host of the family satisfies \texttt{HostFacts},
+then \texttt{ChainCore} holds at $x$: there exist a finite abelian group, a record over it
+and the remaining data satisfying \texttt{Ident}, the size data, \texttt{ErrWindows},
+\texttt{BNBounds}, the growth-inequality hypotheses, \texttt{CostWindows} and
+\texttt{RestSize}. Also, if $\mathrm{Fm}$ is tied at $x$ then the core family satisfies
+\texttt{FamCoreConstantBounds} at $x$.
+\end{lemma}
+\begin{proof}
+\uses{geoa:tied}
+Unpack the existential. The first statement drops \texttt{TiePts}, \texttt{TieGlobal},
+\texttt{TieLocal} and \texttt{TieArith} and repackages the rest with the group $A$. The
+second also drops \texttt{TiePts}, \texttt{TieGlobal} and \texttt{TieLocal}, keeps from
+\texttt{TieArith} only the descriptions of $TT$ and $T_2$ and the values of $\ell$, and
+identifies $TT$ with the host's set.
+\end{proof}
+
+\begin{remark}[what the analytic chain uses]\label{geoa:rem-ties}
+The declaration \texttt{ChainTied.core\_of} of Lemma~\ref{geoa:tied-core} has no
+callers in the archive; the main chain goes through \texttt{tiedCore\_of\_chainTied}.
+On that path the conclusions use that some record satisfies the real-number clauses,
+together with three parts of \texttt{TieArith}: the descriptions of $TT$ and $T_2$ as
+finite sets and the identification of $\ell_\psi$ with $L'/L(1,\chi)$; the identifications of $d(u)$, $\mu_N$,
+$\mu_R$ and $h(u)$ with ranks, slopes and heights of the lattices of a package are not
+used after the tie is established. The lattice-theoretic content of this chapter (the
+slope inequality, the frame theorem, the period lattice data) matters only for proving
+that a family is tied, which happens elsewhere in the archive.
+\end{remark}

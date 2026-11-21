@@ -1,0 +1,21 @@
+\setbox0=\hbox{%
+\begin{tikzcd}[column sep=1.4cm, row sep=0.9cm]
+ & \Q(\zeta_{Q_Sqd}) \arrow[d, dash] & \\
+ & E \arrow[dl, dash, "\Phi=\Gal(E/K)"'] \arrow[dr, dash, "\text{index }2"]
+   & \\
+ K=\Q(\sqrt{-d}) \arrow[dr, dash, "2"'] & & F=E^+ \arrow[dl, dash] \\
+ & \Q &
+\end{tikzcd}
+\qquad
+\begin{tikzpicture}[bi, baseline=(g.base)]
+\node[bi box, text width=5.4cm] (g) {$\Gal(E/\Q)\cong\mathfrak G=
+  \{\pm1\}^2\times A$\\[2pt]
+  $c=((-1,-1),0)$: complex conjugation\\
+  $\iota=((-1,1),0)$: acts on $\sqrt{-d}$ only\\
+  $A_0=\langle\alpha_0\rangle\subset A$, $o=[A:A_0]$\\
+  $h_0\colon A\twoheadrightarrow H_\nu$ (2-power part)\\
+  first sign: action on $\sqrt{-d}$; second sign: $\omega_q$};
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

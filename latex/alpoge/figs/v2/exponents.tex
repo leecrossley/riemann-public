@@ -1,0 +1,33 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, width=0.82\linewidth, height=0.46\linewidth,
+  xmin=0, xmax=1, ymin=0, ymax=1.05,
+  xtick={0,0.25,0.5,0.75,1},
+  xticklabels={$0$,$\tfrac14$,$\tfrac12$,$\tfrac34$,$1$},
+  ytick={0,0.5,1}, yticklabels={$0$,$\tfrac12$,$1$},
+  xlabel={$\mu$, where $m=x^{\mu}$ is the number of lifts},
+  ylabel={exponent of $x$},
+  legend style={at={(0.5,-0.3)}, anchor=north, legend columns=4,
+    draw=none, fill=none},
+  legend cell align=left]
+\fill[biZero!14] (axis cs:0.45,0) rectangle (axis cs:0.525,1.05);
+\addplot[biOther, dashed, line width=0.8pt, domain=0:1, samples=2] {1-x};
+\addlegendentry{$x/m$}
+\addplot[biOther, densely dotted, line width=0.9pt, domain=0:1,
+  samples=2] {x};
+\addlegendentry{$m$}
+\addplot[biRH, line width=0.8pt, domain=0:1, samples=2] {0.5};
+\addlegendentry{$x^{1/2}$}
+\addplot[biBound, line width=1.3pt, domain=0:1, samples=3]
+  {max(1-x,max(x,0.5))};
+\addlegendentry{maximum}
+\node[bi zero] at (axis cs:0.5,0.5) {};
+\node[font=\footnotesize, anchor=north] at (axis cs:0.5,0.44)
+  {$\mu=\tfrac12$};
+\node[biZero!70!black, font=\scriptsize, align=center, anchor=south]
+  at (axis cs:0.49,0.06) {allowed\\ band};
+\end{axis}
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

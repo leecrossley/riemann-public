@@ -1,0 +1,821 @@
+\chapter{The analytic criterion}\label{ch:an}
+
+This chapter covers the analytic end of the archive's chain. A one-sided
+bound $G(x)\le x^{\theta}$ for a positive combination $G$ of smoothed prime
+sums, assumed only on windows $[Y,Y^{\lambda}]$ for arbitrarily large $Y$,
+forces the corresponding Dirichlet $L$-functions to have no zero in
+$\Re s>\theta$ (a windowed form of Landau's theorem on Dirichlet integrals
+with nonnegative coefficients). The archive proves this windowed theorem
+in full in \arch{Development/AutomorphicArithmetic/DedekindLFunctions/LandauTheorems/}.
+It then combines it with two inputs from other parts of the archive, a
+Chebyshev-type inequality for the combination on the scales of a family of
+host data and the existence of such hosts, to obtain zero-freeness in
+$\Re s>1/2$ for every primitive Dirichlet character
+(\texttt{ZeroFreeAll}).
+
+\section{Smoothed prime sums}
+
+\begin{definition}[Primitive characters]\label{an:pchar}
+\lean{Formalism.HC.PChar, Formalism.HC.PChar.one, Formalism.HC.PChar.inv, Formalism.HC.PChar.of, Formalism.HC.PChar.IsReal}
+A \emph{primitive character} is a pair $(N,\chi)$ with $N\ge1$ and $\chi$ a
+primitive Dirichlet character modulo $N$ with values in $\CC$; two such
+pairs are equal only if the moduli and the characters agree. The trivial
+primitive character $\mathbf 1$ is the unique character modulo $1$. The
+inverse of $(N,\chi)$ is $(N,\chi^{-1})$. For any Dirichlet character
+$\chi$ modulo $N$, $\operatorname{of}(\chi)$ is the primitive character
+inducing $\chi$, of modulus the conductor of $\chi$. A primitive character
+is \emph{real} if all its values are real.
+\end{definition}
+
+\begin{definition}[Smoothed Chebyshev functions, real form]\label{an:smoothed}
+\lean{Formalism.Sz, Formalism.Gz, Formalism.Schi, Formalism.Gchi}
+Let $\Lambda$ be the von Mangoldt function and $\gamma$ Euler's constant.
+For $x\in\R$ and a Dirichlet character $\chi$ modulo $N\ge1$ put
+\begin{align*}
+\Sz(x)&=\sum_{1\le n\le x}\Lambda(n)\Bigl(\frac xn-1\Bigr), &
+\Gz(x)&=\Sz(x)-x\log x+(1+\gamma)x,\\
+S_{\chi}(x)&=\sum_{1\le n\le x}\Lambda(n)\,\Re\chi(n)\Bigl(\frac xn-1\Bigr), &
+G^{\R}_{\chi}(x)&=S_{\chi}(x)+x\,\Re\frac{L'(1,\chi)}{L(1,\chi)},
+\end{align*}
+where $L(s,\chi)$ is Mathlib's Dirichlet $L$-function (so $\log$ and
+$L(1,\chi)$ take Mathlib's values at points where the classical object is
+undefined).
+\end{definition}
+
+\begin{definition}[Smoothed Chebyshev functions, complex form]\label{an:gchi}
+\lean{Formalism.HC.An.logDerivativeAtOne, Formalism.HC.An.G, Formalism.HC.An.sumLamChi, Formalism.HC.An.gChi}
+For $y\in\R$ and a Dirichlet character $\chi$ modulo $N\ge1$ put
+$\ell(\chi)=L'(1,\chi)/L(1,\chi)$ and
+\[
+G(y)=\sum_{1\le n\le y}\Lambda(n)\max\Bigl(\frac yn-1,0\Bigr)-y(\log y-1-\gamma),
+\qquad
+\Sigma_{\chi}(y)=\sum_{1\le n\le y}\Lambda(n)\chi(n)\max\Bigl(\frac yn-1,0\Bigr).
+\]
+Define $g_{\chi}(y)=G(y)$ if $\chi$ is the trivial character of its modulus,
+and $g_{\chi}(y)=\Sigma_{\chi}(y)+y\,\ell(\chi)$ otherwise.
+\end{definition}
+
+\begin{lemma}\label{an:gz-eq}
+\lean{UpperTheory.Comparison₂.Gz_eq}
+\uses{an:smoothed, an:gchi, an:charfamily}
+For every real $y$, $\Gz(y)=G(y)$, and $G(y)$ equals the function $G$ of
+the character-family development (Definition~\ref{an:charfamily}).
+\end{lemma}
+\begin{proof}
+\uses{an:smoothed, an:gchi}
+For $1\le n\le\lfloor y\rfloor$ one has $n\le y$, so
+$\max(y/n-1,0)=y/n-1$; the two expressions then differ by rearranging the
+linear terms. The sum over $0\le n\le\lfloor y\rfloor$ used in the
+character-family version differs only by the term $n=0$, where
+$\Lambda(0)=0$.
+\end{proof}
+
+\begin{lemma}\label{an:re-gchi}
+\lean{Formalism.HC.Landau.re_gChi}
+\uses{an:smoothed, an:gchi}
+If $\chi\ne1$, then $\Re g_{\chi}(y)=G^{\R}_{\chi}(y)$ for every real $y$.
+\end{lemma}
+\begin{proof}
+\uses{an:smoothed, an:gchi}
+Termwise: $\Lambda(n)$ and $\max(y/n-1,0)=y/n-1$ are real for
+$1\le n\le y$, and $\Re(y\,\ell(\chi))=y\Re\ell(\chi)$.
+\end{proof}
+
+\section{Levels and the weighted combination}
+
+\begin{definition}[Levels]\label{an:level}
+\lean{Formalism.HC.KSet, Formalism.HC.Level, Formalism.HC.Level.Nt, Formalism.HC.Level.wt, Formalism.HC.Level.Gm}
+\uses{an:pchar, an:smoothed, an:gchi}
+A \emph{level} $\Lambda$ consists of
+\begin{itemize}
+\item a finite set $\Kept(\Lambda)$ of primitive characters containing
+$\mathbf 1$ and closed under $\psi\mapsto\psi^{-1}$;
+\item an optional character $\psi_{K}$, which, when present, lies in
+$\Kept(\Lambda)$, is odd and is real;
+\item a natural number $o(\Lambda)$.
+\end{itemize}
+Its weights are $\operatorname{wt}(\psi)=1$ if $\psi=\psi_K$ and
+$\operatorname{wt}(\psi)=(3o(\Lambda)+1)^{-1}$ otherwise, and its
+combination is
+\[
+G_{\Lambda}(y)=\Gz(y)+\sum_{\psi\in\Kept(\Lambda),\ \psi\ne\mathbf 1}
+\operatorname{wt}(\psi)\,\Re g_{\psi}(y).
+\]
+All weights are positive.
+\end{definition}
+
+\begin{definition}[Cyclic levels]\label{an:level-cyc}
+\lean{Formalism.HC.Level.ofSub, Formalism.HC.Level.cyc, Formalism.HC.Level.mem_cyc}
+\uses{an:level}
+For a subgroup $\Xi$ of the Dirichlet characters modulo $M\ge1$, the level
+$\Lambda_{\Xi}$ has $\Kept(\Lambda_{\Xi})=\{\operatorname{of}(\chi):\chi\in\Xi\}$,
+no exceptional character, and $o(\Lambda_{\Xi})=|\Xi|$. For a primitive
+character $\psi$ modulo $N$, the \emph{cyclic level} $\Lambda_{\psi}$ is
+$\Lambda_{\Xi}$ for $\Xi$ the cyclic group generated by $\psi$; so its kept
+set consists of the primitive characters inducing the powers of $\psi$,
+$o(\Lambda_{\psi})$ is the order of $\psi$, every nontrivial weight equals
+$(3o(\Lambda_{\psi})+1)^{-1}$, and $\psi\in\Kept(\Lambda_{\psi})$.
+\end{definition}
+
+\begin{definition}[Zero-freeness predicates]\label{an:zerofree}
+\lean{Formalism.HC.PChar.ZeroFreeAbove, Formalism.HC.ZeroFreeOn, Formalism.HC.ZeroFreeAll, Formalism.HC.Level.ZeroFreeAbove, Formalism.HC.Level.ZeroFreeLevel}
+\uses{an:pchar, an:level}
+A primitive character $\psi$ is \emph{zero-free above} $\theta$ if
+$L(s,\psi)\ne0$ for every $s\in\CC$ with $\Re s>\theta$. For a property $Q$
+of primitive characters, $\mathrm{ZeroFreeOn}(Q)$ says that every $\psi$
+with $Q(\psi)$ is zero-free above $1/2$, and $\mathrm{ZeroFreeAll}$ is
+$\mathrm{ZeroFreeOn}$ of the trivially true property. A level is
+zero-free above $\theta$ if every kept character is, and
+$\mathrm{ZeroFreeLevel}(\Lambda)$ means zero-free above $1/2$.
+\end{definition}
+
+\begin{remark}[the point $s=1$]\label{an:rem-junk}
+For $\psi=\mathbf 1$, $L(s,\mathbf 1)$ is Mathlib's $\zeta(s)$, and the
+predicates of Definition~\ref{an:zerofree} include the point $s=1$. There
+the statement $\zeta(1)\ne0$ is about Mathlib's assigned value at the pole,
+which is nonzero. Inside the Landau argument this point is handled by
+Mathlib's nonvanishing of $\zeta$ on $\Re s\ge1$, which covers $s=1$
+(Lemma~\ref{an:nonvanish-re1}).
+\end{remark}
+
+\begin{lemma}\label{an:zerofree-levels}
+\lean{Formalism.HC.zeroFreeOn_of_levels, Formalism.HC.zeroFreeOn_of_cyc}
+\uses{an:zerofree, an:level-cyc}
+Let $Q$ be a property of primitive characters. If every $\psi$ with
+$Q(\psi)$ lies in the kept set of some level $\Lambda$ with
+$\mathrm{ZeroFreeLevel}(\Lambda)$, then $\mathrm{ZeroFreeOn}(Q)$. In
+particular this holds if $\mathrm{ZeroFreeLevel}(\Lambda_{\psi})$ for every
+$\psi$ with $Q(\psi)$.
+\end{lemma}
+\begin{proof}
+\uses{an:zerofree, an:level-cyc}
+Immediate from the definitions; for the second statement use
+$\psi\in\Kept(\Lambda_{\psi})$.
+\end{proof}
+
+\section{Windows and the window criterion}
+
+\begin{definition}[Windows]\label{an:windows}
+\lean{Formalism.HC.HasWindows}
+A set $S\subset\R$ \emph{has windows of exponent} $\lambda$ if for every
+$y\in\R$ there is $Y\ge y$ such that every $x$ with $Y\le x\le Y^{\lambda}$
+lies in $S$.
+\end{definition}
+
+\begin{lemma}\label{an:windows-mono}
+\lean{Formalism.HC.HasWindows.mono, Formalism.HC.hasWindows_of_large}
+\uses{an:windows}
+Let $S$ have windows of exponent $\lambda$, and suppose every $x\ge x_0$
+in $S$ lies in $S'$. Then $S'$ has windows of exponent $\lambda$. A set
+containing $[x_0,\infty)$ has windows of every exponent.
+\end{lemma}
+\begin{proof}
+\uses{an:windows}
+Apply the hypothesis at $\max(y,x_0)$.
+\end{proof}
+
+\begin{definition}[The window criterion]\label{an:formb}
+\lean{Formalism.HC.Level.FormBAt, Formalism.HC.Level.FormB}
+\uses{an:level, an:windows, an:zerofree}
+A level $\Lambda$ \emph{satisfies the window criterion at} $\lambda$
+($\mathrm{FormBAt}$) if for every $\theta\in(0,1)$: if
+$\{x: G_{\Lambda}(x)\le x^{\theta}\}$ has windows of exponent $\lambda$, then
+$\Lambda$ is zero-free above $\theta$. It satisfies the window criterion
+($\mathrm{FormB}$) if this holds for every $\lambda>1$.
+\end{definition}
+
+\begin{lemma}\label{an:formb-mono}
+\lean{Formalism.HC.Level.FormBAt.mono}
+\uses{an:formb}
+If $\Lambda$ satisfies the window criterion at $\lambda$ and
+$\lambda\le\lambda'$, it satisfies it at $\lambda'$.
+\end{lemma}
+\begin{proof}
+\uses{an:formb, an:windows}
+A window $[Y,Y^{\lambda'}]$ with $Y\ge1$ contains $[Y,Y^{\lambda}]$.
+\end{proof}
+
+\section{The windowed Landau theorem}
+
+\begin{definition}[Character families]\label{an:charfamily}
+\lean{Deduction.ramp, Deduction.Gchi, Deduction.G, Deduction.CharFamily, Deduction.Gm, Deduction.ZeroFree}
+A \emph{character family} $F$ consists of a finite index set $I$, for
+each $i\in I$ a Dirichlet character $\chi_i$ modulo $N_i\ge1$ with
+$N_i=1$ or $\chi_i\ne1$, and weights $a_i>0$. For a Dirichlet character
+$\chi$, the archive's second copy of the smoothed sum is
+$\mathcal G_{\chi}(y)=\sum_{0\le n\le y}\Lambda(n)\chi(n)\max(y/n-1,0)-y\log
+y+(1+\gamma)y$ if $\chi=1$, and the same sum plus $y\,L'(1,\chi)/L(1,\chi)$
+otherwise. The family's combination is
+$G_F(y)=\sum_i a_i\Re\mathcal G_{\chi_i}(y)$, and $F$ is \emph{zero-free
+above} $\theta$ if $L(s,\chi_i)\ne0$ for all $i$ and all $\Re s>\theta$.
+\end{definition}
+
+\begin{remark}
+The admissibility condition $N_i=1$ or $\chi_i\ne1$ excludes principal
+characters of modulus larger than $1$, whose $L$-functions have a pole at
+$s=1$ and a Mellin transform of a different shape.
+\end{remark}
+
+\begin{definition}[Window hypotheses]\label{an:windowhyp}
+\lean{Deduction.WindowHyp, Deduction.gm, Deduction.WindowHypU}
+\uses{an:charfamily}
+Let $F$ be a character family and $\theta,\delta\in\R$. The \emph{window
+hypothesis} $\mathrm{WH}(F,\theta,\delta)$ says: for every $\eta>0$ and
+every $Y_0$ there are $Y\ge Y_0$ and a function $R$ on
+$[Y,Y^{1+\delta}]$ with $R\ge0$, $G_F\le R$ there, $R(y)y^{-\theta-1}$
+integrable on $[Y,Y^{1+\delta}]$ and
+$\int_Y^{Y^{1+\delta}}R(y)y^{-\theta-1}\,dy\le Y^{\eta}$.
+Its logarithmic form $\mathrm{WH}_U(g,\theta,\delta)$, for a function $g$
+on $\R$, says: for every $\eta>0$ and $U_0$ there are $U\ge U_0$ and $R$
+with $0\le R$, $g\le R$ on $[U,(1+\delta)U]$, $R(u)e^{-\theta u}$
+integrable there and $\int_U^{(1+\delta)U}R(u)e^{-\theta u}\,du\le
+e^{\eta U}$. Write $g_F(u)=G_F(e^u)$.
+\end{definition}
+
+\begin{lemma}[From a power bound to the window hypothesis]\label{an:windowhyp-rpow}
+\lean{Deduction.windowHyp_of_rpow, Deduction.windowHyp_of_rpow_eventually}
+\uses{an:windowhyp}
+Let $\delta>0$ and $C\in\R$, and suppose that for every $Y_0$ there is
+$Y\ge Y_0$ with $G_F(y)\le Cy^{\theta}$ for all $y\in[Y,Y^{1+\delta}]$.
+Then $\mathrm{WH}(F,\theta,\delta)$ holds.
+\end{lemma}
+\begin{proof}
+\uses{an:windowhyp}
+Take $R(y)=|C|y^{\theta}$. Then $\int_Y^{Y^{1+\delta}}R(y)y^{-\theta-1}dy
+=|C|\delta\log Y$, and $|C|\delta\log Y\le Y^{\eta}$ once $Y$ is large,
+because $\log Y\le Y^{\eta/2}/(\eta/2)$. Apply the hypothesis at a large
+enough $Y_0$.
+\end{proof}
+
+\begin{lemma}\label{an:windowhypu}
+\lean{Deduction.windowHypU_of_windowHyp}
+\uses{an:windowhyp}
+If $\delta>0$ and $\mathrm{WH}(F,\theta,\delta)$, then
+$\mathrm{WH}_U(g_F,\theta,\delta)$.
+\end{lemma}
+\begin{proof}
+\uses{an:windowhyp}
+Substitute $y=e^u$: the window $[Y,Y^{1+\delta}]$ becomes
+$[\log Y,(1+\delta)\log Y]$ and $R(y)y^{-\theta-1}dy$ becomes
+$R(e^u)e^{-\theta u}du$; $Y^{\eta}=e^{\eta\log Y}$.
+\end{proof}
+
+\begin{definition}[Pole data]\label{an:poledata}
+\lean{Deduction.zeroSet, Deduction.PoleData}
+\uses{an:charfamily}
+For a character family $F$, let $Z(F)$ be the set of $\rho$ with
+$\Re\rho>0$ such that $L(\rho,\chi_i)=0$ or $L(\bar\rho,\chi_i)=0$ for
+some $i$. For $g:\R\to\R$, $\Phi:\CC\to\CC$ and $Z\subset\CC$, the
+statement $\mathrm{PoleData}(g,\Phi,Z)$ consists of:
+\begin{enumerate}
+\item $g$ is measurable and $|g(u)|\le Ce^{2u}$ for $u\ge0$, for some $C$;
+\item $\Phi(s)=\int_0^{\infty} g(u)e^{-su}\,du$ for $\Re s>2$;
+\item every $\rho\in Z$ has $\Re\rho>0$, $\Phi$ is holomorphic on
+$\{\Re s>0\}\setminus Z$, and $Z$ has no accumulation point in
+$\{\Re s>0\}$ (every such point has a punctured neighbourhood disjoint
+from $Z$);
+\item at each $\rho\in Z$, $\Phi(s)=c/(s-\rho)+h(s)$ near $\rho$ with
+$h$ holomorphic at $\rho$ and $c\ne0$, and if $\rho$ is real then $c$ is
+real and positive.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}[Growth]\label{an:gchi-growth}
+\lean{Deduction.Gchi_growth}
+\uses{an:charfamily}
+For every Dirichlet character $\chi$ there is $C$ with
+$|\mathcal G_{\chi}(y)|\le Cy^2$ for $y\ge1$.
+\end{lemma}
+\begin{proof}
+\uses{an:charfamily}
+The prime sum is at most $2y^2$ in absolute value, since $|\chi(n)|\le1$;
+the remaining terms are $O(y\log y)$.
+\end{proof}
+
+\begin{lemma}[Conjugation]\label{an:gchi-conj}
+\lean{Deduction.Gchi_conj, Deduction.LFunction_conj}
+\uses{an:charfamily}
+For a Dirichlet character $\chi$ and $s\in\CC$,
+$L(\bar s,\chi^{-1})=\overline{L(s,\chi)}$, and
+$\overline{\mathcal G_{\chi}(y)}=\mathcal G_{\chi^{-1}}(y)$ for real $y$.
+\end{lemma}
+\begin{proof}
+\uses{an:charfamily}
+The first identity is proved through the Hurwitz zeta functions, which
+commute with complex conjugation; the second follows termwise, using
+$\overline{\chi(n)}=\chi^{-1}(n)$ and the first identity for the
+derivative at $1$.
+\end{proof}
+
+\begin{lemma}[Mellin transforms]\label{an:mellin}
+\lean{Deduction.mellin_Gchi_of_ne_one, Deduction.mellin_Gchi_modOne, Deduction.poleData_change}
+\uses{an:charfamily}
+Let $\Re s>1$. If $\chi\ne1$, then
+\[
+\int_1^{\infty}\mathcal G_{\chi}(y)y^{-s-1}\,dy
+=-\frac{L'(s,\chi)/L(s,\chi)-s\,L'(1,\chi)/L(1,\chi)}{s(s-1)}.
+\]
+For the character modulo $1$,
+\[
+\int_1^{\infty}\mathcal G_{\chi}(y)y^{-s-1}\,dy
+=-\frac{\zeta'(s)/\zeta(s)+1/(s-1)+1-(1+\gamma)s}{s(s-1)}.
+\]
+Moreover $\int_0^{\infty} H(e^u)e^{-su}\,du=\int_1^{\infty} H(y)y^{-s-1}\,dy$
+for every function $H$.
+\end{lemma}
+\begin{proof}
+\uses{an:charfamily}
+Termwise integration: $\int_1^{\infty}\max(y/n-1,0)y^{-s-1}dy
+=n^{-s}/(s(s-1))$, the series $\sum\Lambda(n)\chi(n)n^{-s}$ is
+$-L'(s,\chi)/L(s,\chi)$, and the elementary terms give
+$\int_1^{\infty}\log y\cdot y^{-s}dy=(s-1)^{-2}$ and similar integrals. The last
+identity is the substitution $y=e^u$.
+\end{proof}
+
+\begin{lemma}[Pole structure of one transform]\label{an:polechar}
+\lean{Deduction.poleData_abstract, Deduction.poleData_char}
+\uses{an:mellin, an:gchi-growth}
+Let $\chi$ be a Dirichlet character modulo $N$ with $N=1$ or $\chi\ne1$.
+There is $\Phi_{\chi}:\CC\to\CC$ such that
+\begin{enumerate}
+\item $\Phi_{\chi}(s)=\int_0^{\infty}\mathcal G_{\chi}(e^u)e^{-su}\,du$ for $\Re s>2$;
+\item $\Phi_{\chi}$ is holomorphic at every $\rho\ne0$ with
+$L(\rho,\chi)\ne0$;
+\item at every $\rho\ne0$ there are $m\in\N$, with $m=0$ exactly when
+$L(\rho,\chi)\ne0$, and $h$ holomorphic at $\rho$, such that
+$\Phi_{\chi}(s)=m\cdot\bigl(-1/(\rho(\rho-1))\bigr)/(s-\rho)+h(s)$ near $\rho$;
+\item every point has a punctured neighbourhood on which $L(\cdot,\chi)$
+does not vanish.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\uses{an:mellin, an:gchi-growth}
+An abstract lemma treats an entire $g$ with $g(1)\ne0$ and a constant
+$k$: the function
+$-\bigl(g'/g(s)-s\,g'(1)/g(1)+k(1-s)\bigr)/(s(s-1))$ has a removable
+singularity at $s=1$, is holomorphic where $g\ne0$ and $s\ne0$, and at a
+zero of $g$ of order $m$ has the stated simple pole, because $g'/g$ has
+residue $m$ there. For $\chi\ne1$ take $g=L(\cdot,\chi)$ (entire, with
+$L(1,\chi)\ne0$) and $k=0$. For the character modulo $1$ take
+$g(s)=(s-1)\zeta(s)$, extended by $g(1)=1$, and $k=1$; then $g'(1)=\gamma$,
+and $g(w)\ne0\iff\zeta(w)\ne0$ for all $w$ (at $w=1$ by Mathlib's
+$\zeta(1)\ne0$). Lemma~\ref{an:mellin} identifies the function with the
+Laplace transform on $\Re s>2$.
+\end{proof}
+
+\begin{lemma}[Pole data of a family]\label{an:poledata-lemma}
+\lean{Deduction.poleData}
+\uses{an:poledata, an:polechar, an:gchi-growth, an:gchi-conj, an:nonvanish-re1}
+For every character family $F$ there is $\Phi$ with
+$\mathrm{PoleData}(g_F,\Phi,Z(F))$.
+\end{lemma}
+\begin{proof}
+\uses{an:polechar, an:gchi-growth, an:gchi-conj, an:nonvanish-re1}
+Since $\Re z=(z+\bar z)/2$ and $\overline{\mathcal G_{\chi}}=\mathcal
+G_{\chi^{-1}}$, take $\Phi=\sum_i\frac{a_i}2(\Phi_{\chi_i}+\Phi_{\chi_i^{-1}})$.
+Growth follows from Lemma~\ref{an:gchi-growth}, and the Laplace formula
+from Lemma~\ref{an:polechar}(1). By Lemma~\ref{an:gchi-conj},
+$L(\rho,\chi_i^{-1})=0$ iff $L(\bar\rho,\chi_i)=0$, so off $Z(F)$ every
+summand is holomorphic. At $\rho\in Z(F)$ the residue is
+$c=S\cdot(-1/(\rho(\rho-1)))$ with
+$S=\sum_i\frac{a_i}{2}(m_{1,i}+m_{2,i})$, where $m_{1,i},m_{2,i}$ are the
+orders of $L(\cdot,\chi_i)$ and $L(\cdot,\chi_i^{-1})$ at $\rho$; $S>0$
+because some order is positive and all $a_i>0$. Also $\rho\ne1$ and, for
+real $\rho$, $\rho<1$ by Lemma~\ref{an:nonvanish-re1}; then
+$\rho(\rho-1)<0$, so $c$ is real and positive.
+\end{proof}
+
+\begin{lemma}[Nonvanishing on $\Re s\ge1$]\label{an:nonvanish-re1}
+\lean{Deduction.charFamily_LFunction_ne_zero_of_one_le_re}
+\uses{an:charfamily}
+For a character family $F$, every $i$ and every $s$ with $\Re s\ge1$,
+$L(s,\chi_i)\ne0$.
+\end{lemma}
+\begin{proof}
+\uses{an:charfamily}
+If $N_i=1$, $L(\cdot,\chi_i)=\zeta$ and Mathlib's nonvanishing of $\zeta$ on
+$\Re s\ge1$ applies (it includes Mathlib's value at $s=1$). Otherwise
+$\chi_i\ne1$ and Mathlib's theorem for nontrivial characters applies.
+\end{proof}
+
+\begin{lemma}[Taylor coefficients]\label{an:coeff}
+\lean{Deduction.landau_coeff, Deduction.iteratedDeriv_laplace}
+\uses{an:poledata}
+Assume $\mathrm{PoleData}(g,\Phi,Z)$ and $\Re s>2$. Then for every
+$k\in\N$,
+\[
+c_k(s):=\frac{(-1)^k\Phi^{(k)}(s)}{k!}=\int_0^{\infty} g(u)\frac{u^k}{k!}e^{-su}\,du.
+\]
+\end{lemma}
+\begin{proof}
+\uses{an:poledata}
+Differentiate the Laplace integral under the integral sign, using
+$|g(u)|\le Ce^{2u}$ for domination; $\Phi$ agrees with the integral on
+the open half-plane $\Re s>2$.
+\end{proof}
+
+\begin{lemma}[Concentration of the Gamma kernel]\label{an:tails}
+\lean{Deduction.landau_tails}
+Let $\delta>0$. There are $\sigma>2$ and $C$ such that for every
+$U\ge1$ some integer $k\ge U$ satisfies
+\[
+\int_{(0,\infty)\setminus[U,(1+\delta)U]}\frac{u^k}{k!}e^{(2-\sigma)u}\,du\le\frac{C}{\sigma^k}.
+\]
+\end{lemma}
+\begin{proof}
+Put $l=2+6/\delta$, $\sigma=l(1+\delta)(2+l)$ and
+$k=\lceil(1+\delta/2)\sigma U\rceil$, so $k\ge U$. Bound the two tails
+of the kernel by exponential tilting with parameter $l$ (a Chernoff
+bound: $\mathbf 1_{u<U}\le e^{l(U-u)}$ and
+$\mathbf 1_{u>V}\le e^{l(u-V)}$), evaluate the resulting Gamma integrals
+exactly, and check that both are at most a constant times $\sigma^{-k}$
+for this choice of $k$.
+\end{proof}
+
+\begin{lemma}[One-sided window inequality]\label{an:window-ineq}
+\lean{Deduction.landau_window_ineq, Deduction.landau_kernel_max}
+Let $g$ be measurable with $|g(u)|\le C_0e^{2u}$ for $u\ge0$, let
+$\sigma>2$, $\theta<\sigma$, $0<U$, and let $R$ satisfy $0\le R$, $g\le R$
+on $[U,V]$, with $R(u)e^{-\theta u}$ integrable on $[U,V]$. Then for all
+$k\in\N$ and $\gamma\in\R$,
+\begin{multline*}
+\Bigl|\int_0^{\infty} g(u)\frac{u^k}{k!}e^{-(\sigma+i\gamma)u}du\Bigr|
++\Re\int_0^{\infty} g(u)\frac{u^k}{k!}e^{-\sigma u}du\\
+\le\frac{2}{(\sigma-\theta)^k}\int_U^VR(u)e^{-\theta u}du
++2C_0\int_{(0,\infty)\setminus[U,V]}\frac{u^k}{k!}e^{(2-\sigma)u}du.
+\end{multline*}
+\end{lemma}
+\begin{proof}
+On $[U,V]$, $g\le R$ and $R\ge0$ give $|g|\le 2R-g$, and
+$u^ke^{-\sigma u}/k!\le(\sigma-\theta)^{-k}e^{-\theta u}$ because
+$t^k/k!\le e^t$ with $t=(\sigma-\theta)u$. Outside $[U,V]$ use
+$|g|\le C_0e^{2u}$ for both integrals.
+\end{proof}
+
+\begin{lemma}[Coefficient bound from a window]\label{an:window-key}
+\lean{Deduction.landau_window_key}
+\uses{an:poledata, an:coeff, an:tails, an:window-ineq, an:windowhyp}
+Assume $\mathrm{PoleData}(g,\Phi,Z)$, $0<\theta<1$, $\delta>0$ and
+$\mathrm{WH}_U(g,\theta,\delta)$. Then there are $\sigma>2$ and $C$ such
+that for every $\eta>0$ and $U_0$ there are $U\ge U_0$ and an integer
+$k\ge U$ with
+\[
+|c_k(\sigma+i\gamma)|+\Re c_k(\sigma)\le\frac{Ce^{\eta U}}{(\sigma-\theta)^k}
+\qquad\text{for all }\gamma\in\R.
+\]
+\end{lemma}
+\begin{proof}
+\uses{an:coeff, an:tails, an:window-ineq}
+Take $\sigma,C$ from Lemma~\ref{an:tails}. Given $\eta,U_0$, the window
+hypothesis gives a window $[U,(1+\delta)U]$ with $U\ge\max(U_0,1)$ and a
+majorant $R$ with $\int R e^{-\theta u}\le e^{\eta U}$;
+Lemma~\ref{an:tails} gives $k\ge U$ for that $U$. Insert both into
+Lemma~\ref{an:window-ineq}, express the integrals as $c_k$ by
+Lemma~\ref{an:coeff}, and bound $C/\sigma^k\le|C|e^{\eta U}/(\sigma-\theta)^k$.
+\end{proof}
+
+\begin{lemma}\label{an:pole-re-le}
+\lean{Deduction.landau_pole_re_le, Deduction.landau_pole_re_le_bound}
+\uses{an:poledata}
+If $\mathrm{PoleData}(g,\Phi,Z)$, then $\Re\rho\le2$ for every $\rho\in Z$.
+\end{lemma}
+\begin{proof}
+\uses{an:poledata}
+For $\sigma>2$, $\Phi$ is bounded on $\Re s\ge\sigma$ by the Laplace
+integral, while near a pole with nonzero residue it is unbounded.
+\end{proof}
+
+\begin{lemma}[Dichotomy]\label{an:dichotomy}
+\lean{Deduction.landau_dichotomy, Deduction.landau_finite}
+Let $Z\subset\CC$ have no accumulation point in $\Re s>0$, let
+$\Re\rho<\sigma$ for all $\rho\in Z$, let $0<\theta<\sigma$, and let
+$\rho_0\in Z$ with $\Re\rho_0>\theta$. Then either
+\begin{enumerate}
+\item there is $D\le\sigma-\theta$ such that the open disc $B(\sigma,D)$
+contains no point of $Z$ but some $\rho_1\in Z$ has $\sigma-\Re\rho_1<D$;
+or
+\item there are a real $\beta\in Z$ with $\beta>\theta$ and $r$ with
+$\sigma-\beta<r\le\sigma-\theta$ such that $\beta$ is the only point of
+$Z$ in $B(\sigma,r)$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+The set $F$ of points of $Z$ in the closed disc of radius
+$\sigma-\theta$ about $\sigma$ is finite. If $F$ is empty, case (1)
+holds with $D=\sigma-\theta$ and $\rho_1=\rho_0$. Otherwise let $d$ be the
+least distance from $\sigma$ to $F$; the disc $B(\sigma,d)$ meets no point
+of $Z$. If some $\rho_1\in Z$ has $\sigma-\Re\rho_1<d$, case (1) holds
+with $D=d$. If not, every point of $F$ at distance $d$ equals the real
+point $\sigma-d$, so $\beta=\sigma-d\in Z$; moreover $d<\sigma-\theta$,
+since $d=\sigma-\theta$ would contradict $\sigma-\Re\rho_0<\sigma-\theta$.
+Taking $r$ between $d$ and the next distance (capped at $\sigma-\theta$)
+gives case (2).
+\end{proof}
+
+\begin{lemma}[Isolating a nearest pole]\label{an:nearest}
+\lean{Deduction.landau_nearest}
+Let $Z$ be as in Lemma~\ref{an:dichotomy}, $\Re\rho<\sigma$ on $Z$,
+$D<\sigma$ and $\rho_1\in Z$ with $\sigma-\Re\rho_1<D$. Then there are
+$\gamma\in\R$, $\rho\in Z$ and $r\le D$ with $|\sigma+i\gamma-\rho|<r$ and
+$\rho$ the only point of $Z$ in $B(\sigma+i\gamma,r)$.
+\end{lemma}
+\begin{proof}
+Only finitely many points of $Z$ are relevant; for all but finitely many
+$\gamma$ the point $\sigma+i\gamma$ is not equidistant from two of them,
+and $\gamma$ near $\Im\rho_1$ brings a pole within distance $D$.
+\end{proof}
+
+\begin{lemma}[Coefficients near a simple pole]\label{an:pole-asym}
+\lean{Deduction.landau_pole_asym, Deduction.landau_cauchy}
+Let $\Phi$ be holomorphic on $B(z,r)\setminus\{\rho\}$, with $\rho\in
+B(z,r)$, $\rho\ne z$, and $\Phi(s)=c/(s-\rho)+h(s)$ near $\rho$ with $h$
+holomorphic at $\rho$. For $0<r'<r$ there is $M$ with
+$|c_k(z)-c/(z-\rho)^{k+1}|\le M/r'^k$ for all $k$. If $\Phi$ is
+holomorphic on all of $B(z,r)$, then $|\Phi^{(k)}(z)/k!|\le M/r'^k$ for all
+$k$ (Cauchy's estimate).
+\end{lemma}
+\begin{proof}
+Subtract the polar part, whose $k$-th coefficient at $z$ is
+$c/(z-\rho)^{k+1}$, and apply Cauchy's estimate on the circle of radius
+$r'$ to the holomorphic remainder.
+\end{proof}
+
+\begin{lemma}[Growth contradiction]\label{an:growth-contra}
+\lean{Deduction.landau_growth_contra, Deduction.landau_window_contra}
+Let $c>0$ and $0<d<e\le E$, and let $M,C\in\R$. It is impossible that for
+every $\eta>0$ and $U_0$ there are $U\ge U_0$ and an integer $k\ge U$ with
+$c/d^k\le M/e^k+Ce^{\eta U}/E^k$.
+\end{lemma}
+\begin{proof}
+With $L=\log(e/d)>0$ and $\eta=L/2$, one has
+$C'e^{\eta U}/e^k<c/d^k$ for all large $U$ and all $k\ge U$, where
+$C'=|M|+|C|$; and $M/e^k+Ce^{\eta U}/E^k\le C'e^{\eta U}/e^k$.
+\end{proof}
+
+\begin{lemma}[Landau, window form for pole data]\label{an:landau-window}
+\lean{Deduction.landau_window}
+\uses{an:poledata, an:window-key, an:pole-re-le, an:dichotomy, an:nearest, an:pole-asym, an:growth-contra, an:windowhyp}
+Assume $\mathrm{PoleData}(g,\Phi,Z)$, $0<\theta<1$, $\delta>0$ and
+$\mathrm{WH}_U(g,\theta,\delta)$. Then $\Re\rho\le\theta$ for every
+$\rho\in Z$.
+\end{lemma}
+\begin{proof}
+\uses{an:window-key, an:pole-re-le, an:dichotomy, an:nearest, an:pole-asym, an:growth-contra}
+Suppose $\rho_0\in Z$ has $\Re\rho_0>\theta$. Take $\sigma>2$ and $C$
+from Lemma~\ref{an:window-key}; by Lemma~\ref{an:pole-re-le} all of $Z$
+lies in $\Re s<\sigma$. Apply Lemma~\ref{an:dichotomy}.
+
+In case (2), the residue $c$ at $\beta$ is real and positive, and
+Lemma~\ref{an:pole-asym} at $z=\sigma$ with $r'=(\sigma-\beta+r)/2$ gives
+$\Re c_k(\sigma)\ge c/(\sigma-\beta)^{k+1}-M/r'^k$. With $\gamma=0$,
+Lemma~\ref{an:window-key} bounds $\Re c_k(\sigma)$ by
+$Ce^{\eta U}/(\sigma-\theta)^k$ for one $k\ge U$ per window. Since
+$\sigma-\beta<r'<r\le\sigma-\theta$, Lemma~\ref{an:growth-contra} gives a
+contradiction.
+
+In case (1), Lemma~\ref{an:nearest} gives $\gamma$ and a unique nearest
+pole $\rho$ to $z=\sigma+i\gamma$ at distance $d<r\le D$. With
+$r'=(d+r)/2$, Lemma~\ref{an:pole-asym} gives
+$|c_k(z)|\ge|c|/d^{k+1}-M/r'^k$, and Cauchy's estimate on the pole-free
+disc $B(\sigma,D)$ gives $\Re c_k(\sigma)\ge-M'/r'^k$. Adding and
+comparing with Lemma~\ref{an:window-key} again contradicts
+Lemma~\ref{an:growth-contra}, as $d<r'\le D\le\sigma-\theta$.
+
+The lower bounds hold for every $k$, so one admissible $k$ per window is
+enough.
+\end{proof}
+
+\begin{lemma}\label{an:lemmaL}
+\lean{Deduction.lemmaL}
+\uses{an:charfamily, an:windowhyp, an:poledata-lemma, an:landau-window, an:windowhypu, an:nonvanish-re1}
+Let $F$ be a character family, $0<\theta<1$ and $\delta>0$. If
+$\mathrm{WH}(F,\theta,\delta)$, then $F$ is zero-free above $\theta$.
+\end{lemma}
+\begin{proof}
+\uses{an:poledata-lemma, an:landau-window, an:windowhypu, an:nonvanish-re1}
+Let $L(s,\chi_i)=0$ with $\Re s>\theta$. If $\Re s\ge1$ this contradicts
+Lemma~\ref{an:nonvanish-re1}. Otherwise $s\in Z(F)$, and
+Lemma~\ref{an:landau-window}, applied to the pole data of
+Lemma~\ref{an:poledata-lemma} and the hypothesis transported by
+Lemma~\ref{an:windowhypu}, gives $\Re s\le\theta$, a contradiction.
+\end{proof}
+
+\begin{theorem}[Windowed Landau theorem]\label{an:rpow-window}
+\lean{Deduction.zeroFree_of_rpow_window}
+\uses{an:charfamily, an:lemmaL, an:windowhyp-rpow}
+Let $F$ be a character family, $0<\theta<1$, $\delta>0$ and $C\in\R$.
+Suppose that for every $Y_0$ there is $Y\ge Y_0$ with
+$G_F(y)\le Cy^{\theta}$ for all $y\in[Y,Y^{1+\delta}]$. Then
+$L(s,\chi_i)\ne0$ for every $i$ and every $s$ with $\Re s>\theta$.
+\end{theorem}
+\begin{proof}
+\uses{an:lemmaL, an:windowhyp-rpow}
+Lemma~\ref{an:windowhyp-rpow} followed by Lemma~\ref{an:lemmaL}.
+\end{proof}
+
+\begin{remark}[why positivity matters]\label{an:rem-positivity}
+The theorem uses only an upper bound for $G_F$. The proof needs the
+residue of the transform at a real zero to be positive
+(Definition~\ref{an:poledata}(4)), and this comes from $a_i>0$ in
+Lemma~\ref{an:poledata-lemma}. This is why the archive must produce a
+combination of $\Gz$ and the $\Re g_{\psi}$ with positive weights.
+\end{remark}
+
+\section{The window criterion for every level}
+
+\begin{lemma}[A level as a character family]\label{an:level-family}
+\lean{UpperTheory.Comparison₂.level_family, UpperTheory.Comparison₂.gChi_eq}
+\uses{an:level, an:charfamily, an:gz-eq, an:zerofree}
+For every level $\Lambda$ there is a character family $F$ with
+$G_F=G_{\Lambda}$ and, for every $\theta$, $F$ zero-free above $\theta$ if
+and only if $\Lambda$ is zero-free above $\theta$.
+\end{lemma}
+\begin{proof}
+\uses{an:gz-eq, an:level, an:charfamily}
+Index $F$ by $\Kept(\Lambda)$, with the character $\psi$ itself, weight
+$1$ for $\psi=\mathbf 1$ and $\operatorname{wt}(\psi)$ otherwise. All
+weights are positive. Admissibility holds because a primitive $\psi$
+with $\psi=1$ has modulus $1$. The two versions of the smoothed sums
+agree: $g_{\psi}=\mathcal G_{\psi}$ for primitive $\psi$, and $\Gz=G$
+(Lemma~\ref{an:gz-eq}), so splitting off the term $\mathbf 1$ gives
+$G_F=G_{\Lambda}$.
+\end{proof}
+
+\begin{theorem}[Every level satisfies the window criterion]\label{an:formb-thm}
+\lean{UpperTheory.Comparison₂.formB}
+\uses{an:formb, an:level-family, an:rpow-window}
+Every level $\Lambda$ satisfies the window criterion at every $\lambda>1$.
+\end{theorem}
+\begin{proof}
+\uses{an:level-family, an:rpow-window}
+Given $\lambda>1$, $\theta\in(0,1)$ and windows of exponent $\lambda$ for
+$\{G_{\Lambda}(x)\le x^{\theta}\}$, pass to the family $F$ of
+Lemma~\ref{an:level-family} and apply Theorem~\ref{an:rpow-window} with
+$\delta=\lambda-1$ and $C=1$.
+\end{proof}
+
+\section{From the Chebyshev inequality to zero-freeness}
+
+
+
+\begin{remark}
+The exponents $e_D,e_L$ are chosen before $\varepsilon$ in the second
+statement, so the exponent $1/2+(e_D+e_L+7)\varepsilon$ can be pushed to
+$1/2$. The same family and the same relation $\mathrm{Tied}$ appear in
+both statements, so the first applies to the family produced by the
+second.
+\end{remark}
+
+\begin{lemma}\label{an:small-eps}
+\lean{Formalism.HC.exists_small_eps}
+For $C\in\R$, $\delta>0$ and $\varepsilon_1>0$ there is
+$\varepsilon\in(0,\varepsilon_1)$ with $C\varepsilon\le\delta$.
+\end{lemma}
+\begin{proof}
+Take $\varepsilon=\min(\varepsilon_1/2,\delta/(|C|+1))$.
+\end{proof}
+
+\begin{lemma}[A level from tied windows]\label{an:level-tiedwin}
+\lean{Formalism.HC.level_of_tiedWin}
+\uses{geoa:efamc, an:formb, an:small-eps, an:windows-mono, an:zerofree}
+Let $\Lambda$ be a level and $\lambda\in\R$. Assume the Chebyshev
+inequality on windows for $\Lambda$, the window criterion for $\Lambda$ at
+$\lambda$, and the Chebyshev inequality at window scale $\lambda$ for
+$\Lambda$. Then $\mathrm{ZeroFreeLevel}(\Lambda)$.
+\end{lemma}
+\begin{proof}
+\uses{an:small-eps, an:windows-mono}
+Let $\psi\in\Kept(\Lambda)$ and $\Re s>1/2$. Put
+$m=\min(\Re s-1/2,1/2)>0$ and $\theta=1/2+m/2\in(0,1)$, so
+$\theta<\Re s$. By Lemma~\ref{an:small-eps} choose $\varepsilon$ below
+$\varepsilon_1$ with $(e_D+e_L+7)\varepsilon\le m/2$, and take the family
+given by the window-scale inequality. The inequality on windows gives
+$G_{\Lambda}(x)\le x^{1/2+(e_D+e_L+7)\varepsilon}\le x^{\theta}$ for large
+$x\ge1$ in $\mathrm{Win}$; by Lemma~\ref{an:windows-mono}, the set
+$\{G_{\Lambda}(x)\le x^{\theta}\}$ inherits the windows of $\mathrm{Win}$.
+The window criterion gives $L(s,\psi)\ne0$.
+\end{proof}
+
+\begin{proposition}\label{an:zerofree-tiedwin}
+\lean{Formalism.HC.zeroFreeOn_of_tiedWin, Formalism.HC.zeroFreeOn_of_tiedWin_cyc}
+\uses{an:level-tiedwin, an:zerofree-levels, an:level-cyc, an:formb}
+Let $Q$ be a property of primitive characters and $\lambda>1$. Suppose
+that for every $\psi$ with $Q(\psi)$ the cyclic level $\Lambda_{\psi}$
+satisfies the Chebyshev inequality on windows, the window criterion, and
+the Chebyshev inequality at window scale $\lambda$. Then
+$\mathrm{ZeroFreeOn}(Q)$. (The general form allows any level containing
+$\psi$ and any $\lambda>1$ depending on $\psi$.)
+\end{proposition}
+\begin{proof}
+\uses{an:level-tiedwin, an:zerofree-levels, an:level-cyc}
+Lemma~\ref{an:level-tiedwin} gives $\mathrm{ZeroFreeLevel}(\Lambda_{\psi})$,
+using the window criterion at $\lambda$; since
+$\psi\in\Kept(\Lambda_{\psi})$, Lemma~\ref{an:zerofree-levels} concludes.
+\end{proof}
+
+
+
+\begin{remark}
+$\mathrm{TopG}$ is quantified over every host requirement $G$, while the
+chain uses it only for $G=G_{\chi}(\psi)$, the requirement that the host
+satisfy $\mathrm{EAtH}$ for $\Lambda_{\psi}$ with constant $4$ together with
+a bound $\mathrm{VVle}$ on Tate--Shafarevich lengths. Its content lies in
+the chapters on the Chebyshev inequality; this chapter uses it only
+through its statement.
+\end{remark}
+
+\begin{lemma}\label{an:cls}
+\lean{UpperTheory.Top.hypV_of_cls, UpperTheory.Top.eFamC_of_cls}
+% uses-lean: UpperTheory.Top.GChi, UpperTheory.Top.FReq.cls, UpperTheory.Top.HypV, Formalism.MainNotions.FamP
+\uses{geoa:famcore, host:gchi} % resolved
+\uses{geoa:efamc, an:level-cyc}
+Let $\psi$ be a primitive character, $\lambda\in\R$, and $\mathcal F$ a
+family in $\operatorname{cls}_{\lambda}(G_{\chi}(\psi))$. Then $\mathcal F$
+satisfies $\mathrm{HypV}$ and $\mathrm{EFamC}(\Lambda_{\psi},\mathcal F)$
+(with constant $4$).
+\end{lemma}
+\begin{proof}
+Both are components of $G_{\chi}(\psi)$ at each datum beyond the family
+threshold, after identifying the datum's scale and parameter with $x$ and
+$\varepsilon$.
+\end{proof}
+
+\begin{theorem}[Zero-freeness for all primitive characters]\label{an:zerofreeall-topg}
+\lean{UpperTheory.Top.zeroFreeAll_of_topG}
+% uses-lean: UpperTheory.Comparison₂.level_gm_le_on_family_scales, GlobalTheory.EX.HostExW, UpperTheory.Top.GChi, UpperTheory.Top.FReq.req, Formalism.MainNotions.ChainTied
+\uses{geoa:tied, geob:levelgm, host:gchi, host:host-exw} % resolved
+\uses{geob:topg, an:zerofree-tiedwin, an:formb-thm, an:cls, an:zerofree}
+Let $\lambda>1$. Assume $\mathrm{TopG}$, and assume that for every
+primitive character $\psi$ hosts satisfying $G_{\chi}(\psi)$ exist on windows
+of exponent $\lambda$. Then $\mathrm{ZeroFreeAll}$: $L(s,\psi)\ne0$ for
+every primitive Dirichlet character $\psi$ and every $s$ with $\Re s>1/2$.
+\end{theorem}
+\begin{proof}
+\uses{an:zerofree-tiedwin, an:formb-thm, an:cls, geob:topg}
+Apply Proposition~\ref{an:zerofree-tiedwin} with $Q$ true, families of the
+parametrised type $\mathrm{FamP}$ and $\mathrm{Tied}=\mathrm{ChainTied}$.
+Its three hypotheses for $\Lambda_{\psi}$ are: the Chebyshev inequality on
+windows, which is the archive's
+\texttt{level\_gm\_le\_on\_family\_scales} (proved for every level in the
+chapters on the Chebyshev inequality); the window criterion,
+Theorem~\ref{an:formb-thm}; and the inequality at window scale
+$\lambda$, obtained from $\mathrm{TopG}$ at $G=G_{\chi}(\psi)$, whose
+hypothesis $\mathrm{HypV}$ is supplied by Lemma~\ref{an:cls}, and whose
+output families lie in $\operatorname{cls}_{\lambda}(G_{\chi}(\psi))$, so
+they have windows of exponent $\lambda$ and satisfy $\mathrm{EFamC}$ by
+Lemma~\ref{an:cls}.
+\end{proof}
+
+\begin{remark}
+The archive applies this theorem with $\lambda=3/2$. Passing from
+$\mathrm{ZeroFreeAll}$ (a statement about primitive characters) to all
+Dirichlet characters and to the Riemann hypothesis is done elsewhere in
+the archive.
+\end{remark}
+
+\section{Parallel and unused developments}
+
+\begin{definition}[Non-windowed criterion]\label{an:chebgrowth}
+\lean{Formalism.HC.Level.ChebyshevGrowthImpliesZeroFree}
+\uses{an:level, an:zerofree}
+For a level $\Lambda$, $\mathrm{ChebyshevGrowthImpliesZeroFree}(\Lambda)$
+says: for every $\theta\in(0,1)$ and $y_0$, if $G_{\Lambda}(y)\le y^{\theta}$
+for all $y\ge y_0$, then $\Lambda$ is zero-free above $\theta$.
+\end{definition}
+
+\begin{lemma}\label{an:chebgrowth-lemma}
+\lean{Formalism.HC.Landau.zero_free_of_Chebyshev_growth, Formalism.HC.Landau.landau_family}
+\uses{an:chebgrowth, an:re-gchi}
+Every level satisfies $\mathrm{ChebyshevGrowthImpliesZeroFree}$.
+\end{lemma}
+\begin{proof}
+\uses{an:re-gchi}
+Multiply by $3o(\Lambda)+1$ to obtain integer multiplicities ($3o+1$ for
+$\psi_K$, $1$ for the other nontrivial kept characters) and apply a
+Landau theorem for $R\,\Gz+\sum_{\xi} G^{\R}_{\chi_{\xi}}$ over a finite
+inversion-closed family of nontrivial characters, proved in
+\arch{Formalism/SharpRestriction/RamificationFrobenius/TotientGaloisClasses/Landau.lean}
+from the product $\zeta_1^R\prod L(\cdot,\chi_{\xi})$; Lemma~\ref{an:re-gchi}
+converts $\Re g$ to $G^{\R}$.
+\end{proof}
+
+\begin{remark}[a file named after Landau]\label{an:rem-landaufile}
+The file \arch{.../TotientGaloisClasses/Landau.lean} proves only the
+non-windowed Lemma~\ref{an:chebgrowth-lemma}. It feeds the alternative
+route \texttt{level\_of\_tiedAll} / \texttt{zeroFreeOn\_of\_tiedAll},
+which needs the tie on all large scales. The chain used by
+Theorem~\ref{an:zerofreeall-topg} goes through Theorem~\ref{an:formb-thm}
+and the separate development in \arch{.../DedekindLFunctions/LandauTheorems/}.
+\end{remark}
+
+\begin{remark}[definitions without uses]\label{an:rem-unused}
+\arch{Formalism/StatementOC.lean} also defines statements
+\texttt{OCStep}, \texttt{OCStepUpper}, \texttt{OCAvg}, \texttt{OCAvgUpper}
+and \texttt{RiemannHypothesisOfLowerBounds} about one-sided bounds for
+$\Gz-G^{\R}_{\chi}$ with real characters; none of them is referenced
+elsewhere in the archive. The same holds for \texttt{Level.LandauWin}
+(\arch{.../TotientGaloisClasses/Window.lean}). The predicates
+\texttt{LandauZeroFreeCriterion}, \texttt{GmLevel} and \texttt{famD} in
+\arch{.../DedekindLFunctions/LandauZeroFreeCriterion.lean} concern even
+characters modulo $2^{j+2}$ and are not used by the chain above.
+\end{remark}

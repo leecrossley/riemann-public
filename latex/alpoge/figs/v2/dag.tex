@@ -1,0 +1,79 @@
+\vtwofit{%
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[bi, font=\footnotesize,
+  every node/.append style={text width=3.05cm}]
+\node[v2 step, text width=4.6cm] (main) at (0,0)
+  {Theorem~\ref{thm:main}: RH and the Riemann hypothesis for
+  Dirichlet $L$-functions};
+\node[v2 step, text width=4.6cm] (imp) at (0,-1.75)
+  {Proposition~\ref{prop:imprimitive}: primitive $\Rightarrow$ all
+  characters, critical line};
+\node[v2 step, text width=4.6cm] (asm) at (0,-3.55)
+  {Assembly (\S\ref{sec:assembly}): zero-freeness for primitive $\psi$\\
+  Theorem~\ref{thm:zero-free-primitive}};
+\node[v2 step] (landau) at (-6.3,-6.0)
+  {\textbf{Step 1} (\S\ref{sec:landau})\\ windowed Landau criterion\\
+  Theorems~\ref{thm:windowed-landau}, \ref{thm:level-criterion}};
+\node[v2 step] (cheb) at (-2.3,-6.0)
+  {\textbf{Step 2} (\S\S\ref{sec:balance}--\ref{sec:chebwin})\\
+  Chebyshev inequality on windows\\
+  Theorem~\ref{thm:chebyshev-windows}};
+\node[v2 step] (fam) at (1.9,-6.0)
+  {\textbf{Step 3} (\S\ref{sec:assembly})\\ tied families exist\\
+  Theorem~\ref{thm:tied-families}};
+\node[v2 input] (host) at (8.0,-6.0)
+  {\textit{Input A} (\S\ref{sec:hosts})\\ host supply\\
+  Theorems~\ref{thm:good-pairs}, \ref{thm:host-supply}};
+\node[v2 input] (bal) at (-5.6,-8.9)
+  {balance identity, shares\\ Propositions~\ref{prop:balance},
+  \ref{prop:shares} (\S\ref{sec:balance})};
+\node[v2 input] (slope) at (-2.0,-8.9)
+  {slope record, frame theorem\\ Definition~\ref{def:size-data},
+  Theorems~\ref{thm:frame}, \ref{thm:gap}};
+\node[v2 input, text width=2.4cm] (green) at (1.4,-8.9)
+  {Green's parametrisation\\ Theorem~\ref{thm:green}};
+\node[v2 input] (hyps) at (4.6,-8.9)
+  {admissible-family data\\ Definition~\ref{def:admissible}};
+\node[v2 input] (vwin) at (8.0,-8.9)
+  {\textit{Input B} (\S\ref{sec:sha})\\ Sha bound on windows\\
+  Theorem~\ref{thm:sha-windows}};
+\node[v2 input, text width=3.3cm] (covol) at (3.4,-11.6)
+  {covolume bound\\ Theorem~\ref{thm:covolume}\\
+  (arithmetic-geometry inputs)};
+\node[v2 input] (gal) at (8.0,-11.6)
+  {Galois representations (\S\ref{sec:galois})\\
+  Theorem~\ref{thm:galois-reps}, Remark~\ref{thm:lgc-to-sha}};
+\draw[v2 arr] (imp) -- (main);
+\draw[v2 arr] (asm) -- (imp);
+\draw[v2 arr] (landau.north) -- ([xshift=-1.6cm]asm.south);
+\draw[v2 arr] (cheb.north) -- ([xshift=-0.6cm]asm.south);
+\draw[v2 arr] (fam.north) -- ([xshift=0.6cm]asm.south);
+\draw[v2 arr] (host.north) -- ([xshift=1.6cm]asm.south);
+\draw[v2 arr] (bal.north) -- ([xshift=-0.5cm]cheb.south);
+\draw[v2 arr] (slope.north) -- ([xshift=0.5cm]cheb.south);
+\draw[v2 arr, dashed] (fam.west) -- node[above, text width=, font=\tiny]
+  {tie} (cheb.east);
+\draw[v2 arr] (green.north) -- ([xshift=-0.4cm]fam.south);
+\draw[v2 arr] (hyps.north west) -- ([xshift=0.6cm]fam.south);
+\draw[v2 arr] (vwin.north) -- (host.south);
+\draw[v2 arr] (vwin.north west) .. controls +(-0.6,0.7) and +(1.0,0)
+  .. node[above, pos=0.55, text width=, font=\tiny] {upper link}
+  (fam.east);
+\draw[v2 arr] (covol.north) -- ([xshift=-0.6cm]hyps.south);
+\draw[v2 arr] (gal.north) -- (vwin.south);
+\draw[v2 arr] (gal.north west) -- ([xshift=0.8cm]hyps.south);
+\begin{scope}[yshift=-13.6cm, xshift=-7.3cm,
+  every node/.append style={text width=}]
+\node[v2 step, minimum width=0.6cm, minimum height=0.35cm] (l1)
+  at (0,0) {};
+\node[anchor=west] at (l1.east) {a step of the main chain};
+\node[v2 input, minimum width=0.6cm, minimum height=0.35cm] (l2)
+  at (6.4,0) {};
+\node[anchor=west] at (l2.east) {an input to a step};
+\draw[v2 arr, dashed] (0,-0.7) -- ++(0.6,0);
+\node[anchor=west] at (0.6,-0.7) {the tie of
+  Definition~\ref{def:tied} couples Step~3 to Step~2; solid arrows:
+  ``is used by''};
+\end{scope}
+\end{tikzpicture}}%
+}

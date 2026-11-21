@@ -1,0 +1,59 @@
+\begin{tikzpicture}[sb]
+\begin{axis}[sb axis, width=0.72\linewidth, height=0.56\linewidth,
+  xmin=0.6, xmax=11.9, ymin=0.6, ymax=3.8,
+  xtick={1,...,10}, ytick={1,1.5,...,3.5},
+  xlabel={genus $g$}, ylabel={constant in front of $\sqrt q$, divided by $2g$},
+  clip=false,
+]
+\addplot[sbBound, line width=0.9pt, solid, mark=triangle*, mark size=1.6pt]
+  table[x=g, y expr={\thisrow{p7}/(2*\thisrow{g})}] {\sbdata{constants.dat}}
+  node[pos=1, anchor=west, font=\footnotesize, text=sbInk] {$p=7$};
+\addplot[sbBound, line width=0.9pt, dashed, mark=triangle*, mark size=1.6pt,
+  mark options={solid}]
+  table[x=g, y expr={\thisrow{p5}/(2*\thisrow{g})}] {\sbdata{constants.dat}}
+  node[pos=1, anchor=west, font=\footnotesize, text=sbInk] {$p=5$};
+\addplot[sbBound, line width=0.9pt, dash dot, mark=triangle*, mark size=1.6pt,
+  mark options={solid}]
+  table[x=g, y expr={\thisrow{p3}/(2*\thisrow{g})}] {\sbdata{constants.dat}}
+  node[pos=1, anchor=west, font=\footnotesize, text=sbInk] {$p=3$};
+\addplot[sbBound, line width=0.9pt, densely dotted, mark=triangle*,
+  mark size=1.6pt, mark options={solid}]
+  table[x=g, y expr={\thisrow{p2}/(2*\thisrow{g})}] {\sbdata{constants.dat}}
+  node[pos=1, anchor=west, font=\footnotesize, text=sbInk] {$p=2$};
+\addplot[sbBound, line width=0.9pt, mark=triangle*, mark size=2.1pt, mark
+options={fill=white}]
+  table[x=g, y expr={\thisrow{bombieri}/(2*\thisrow{g})}]
+  {\sbdata{constants.dat}};
+\addplot[sb weil plot, mark size=1.6pt]
+  table[x=g, y expr={\thisrow{sharp}/(2*\thisrow{g})}]
+  {\sbdata{constants.dat}};
+\addplot[sbOther, line width=0.9pt, densely dotted, mark=*, mark size=1pt,
+  mark options={solid}]
+  table[x=g, y expr={\thisrow{floor}/(2*\thisrow{g})}]
+  {\sbdata{constants.dat}};
+\node[font=\footnotesize, anchor=south west, inner sep=1pt]
+  at (axis cs:10.15,1.06) {$q$ square};
+\node[font=\footnotesize, text=sbWeil!70!black, anchor=west, inner sep=1pt]
+  at (axis cs:10.15,1.0) {Weil};
+\node[font=\footnotesize, text=sbOther, anchor=north west, inner sep=1pt]
+  at (axis cs:10.15,0.94) {floor};
+\node[font=\footnotesize, anchor=north west, align=left] at (axis cs:2.6,3.72)
+  {orange, filled triangles: $(g+1)\sqrt p+2g$, every $q=p^e$\\
+   orange, open triangles: $2g+\frac g{g+1}$, $q$ a square\\
+   green: Weil, $2g$;\quad grey: floor $\max(2\sqrt g,2\sqrt{g(g-1)})$};
+\end{axis}
+\end{tikzpicture}
+\caption{The constants in front of $\sqrt q$, divided by $2g$, for
+$1\le g\le10$. Orange, filled triangles: the constant $(g+1)\sqrt p+2g$ of
+Proposition~\ref{prop:all-q}, valid for every $q=p^e$ with
+$\sqrt q\ge2(g+1)$, for $p=7,5,3,2$
+(solid, dashed, dash-dot, dotted); it tends to $1+\sqrt p/2$. Orange, open
+triangles: $2g+\frac g{g+1}$ of Theorem~\ref{thm:bombieri} for $q$ a square
+with $q>(g+1)^4$,
+which tends to $1$. Green: Weil's sharp constant $2g$
+(Theorem~\ref{thm:rh}). Grey dotted: $\max(2\sqrt g,2\sqrt{g(g-1)})$, which
+by Proposition~\ref{prop:sqrtq-forced} the method of
+Theorem~\ref{thm:aux-section} cannot reach when the Riemann--Roch values are
+generic. It equals $2g$ at $g=1$ and lies below
+it for $g\ge2$. Closed formulas.}
+\label{fig:constants}

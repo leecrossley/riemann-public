@@ -1,0 +1,16 @@
+removed_label	kept_label
+fin:pchar	an:pchar
+fin:zero-free-all	an:zerofree
+an:cheb-windows	geoa:efamc
+an:topg	geob:topg
+geoa:ranks	host:ranks
+geob:topg-zerofree	an:zerofreeall-topg
+sha:winpair	host:win-pair
+fam:family-class-connected	geob:topg
+fam:top-g	geob:topg
+fam:zero-free-green	fin:every-green
+fam:every-char-theta	fin:theta-local
+fam:open-lit	fin:open-lit
+fam:ll-gl-rect-lit	fin:lit-fields
+fam:every-char-lit	fin:every-lit-vwin
+fam:every-character	fin:every-character-of-row

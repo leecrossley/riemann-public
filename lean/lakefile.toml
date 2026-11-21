@@ -1,0 +1,16 @@
+name = "WeilRH"
+version = "0.1.0"
+defaultTargets = ["WeilRH"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.1"
+
+[[lean_lib]]
+name = "WeilRH"

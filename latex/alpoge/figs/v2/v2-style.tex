@@ -1,0 +1,22 @@
+\providecommand{\lev}{\mathscr{L}}
+\providecommand{\Gz}{G_{\zeta}}
+\providecommand{\GPsi}{G^{\mathrm{ar}}}
+\providecommand{\Top}{\mathcal{T}}
+\providecommand{\Kept}{\operatorname{Kept}}
+\providecommand{\Frob}{\operatorname{Frob}}
+\providecommand{\GG}{\mathfrak{G}}
+\providecommand{\PS}{\mathrm{PS}}
+\providecommand{\Main}{\operatorname{Main}}
+\providecommand{\Words}{\mathcal{U}}
+\providecommand{\Fo}{\mathrm{Fo}}
+\providecommand{\Ga}{\mathrm{Ga}}
+\providecommand{\eps}{\varepsilon}
+\tikzset{
+  v2 step/.style={bi box, fill=biAux!18},
+  v2 input/.style={bi box, fill=white, dashed},
+  v2 arr/.style={->, line width=0.6pt},
+}
+\newsavebox{\vtwobox}
+\providecommand{\vtwofit}[1]{\sbox{\vtwobox}{#1}%
+  \ifdim\wd\vtwobox>\linewidth\resizebox{\linewidth}{!}{\usebox{\vtwobox}}%
+  \else\usebox{\vtwobox}\fi}

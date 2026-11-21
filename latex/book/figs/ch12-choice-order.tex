@@ -1,0 +1,47 @@
+\begin{tikzpicture}[bi, node distance=0.21cm,
+  st/.style={v2 step, font=\scriptsize, text width=2.2cm, inner sep=3pt,
+    minimum height=1.3cm,
+    execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000%
+      \relpenalty=10000\binoppenalty=10000\thickmuskip=4mu\medmuskip=3mu}},
+  hyp/.style={v2 input, font=\scriptsize, inner sep=3pt},
+  res/.style={bi bound box, font=\scriptsize, text width=2.2cm,
+    inner sep=3pt, minimum height=1.3cm,
+    execute at begin node={\thickmuskip=4mu\medmuskip=3mu}},
+  rl/.style={font=\scriptsize\itshape, text=biOther!70!black, rotate=90,
+    anchor=south, align=center},
+  ar/.style={v2 arr}]
+\node[st] (a1) {fix primitive $\psi$;\\
+  $\mathcal C=\mathcal C_{\mathscr R_\psi}(\lambda)$};
+\node[st, right=of a1, text width=2.5cm] (a2) {every family in $\mathcal C$:\\ \mbox{Sha hypothesis and}\\ \mbox{uniform EF for $\lev_\psi$}};
+\node[st, right=of a2, text width=2.2cm] (a3) {$\mathcal C$ supplies tied
+  families:\\ $e_D,\ e_L,\ \eps_1>0$};
+\draw[ar] (a1) -- (a2); \draw[ar] (a2) -- (a3);
+\node[hyp, above=0.45cm of a3.north east, anchor=south east] (h)
+  {hypotheses of the theorem:\\ the top existence statement (Def.~\ref{def:admissible}) holds;\\ $\mathscr R_\psi$ is supplied on windows of exponent $\lambda$};
+\draw[ar, dashed] (h.south -| a3.north) -- (a3.north);
+\node[st, below=0.75cm of a1, text width=2.75cm] (b1) {$s$ with $\operatorname{Re}s>\tfrac12$;\\
+  $\mu=\min(\operatorname{Re}s-\tfrac12,\tfrac12)$};
+\node[st, right=of b1, text width=2.75cm] (b2) {$\eps\in(0,\eps_1)$ with\\
+  $(e_D+e_L+7)\eps\le\mu/2$};
+\node[st, right=of b2, text width=2.4cm] (b3) {family $\Fam$ at $\eps$ in $\mathcal C$;\\
+  $c_W,c_S,e_K,C_L,x_0$};
+\node[st, right=of b3] (b4) {Thm.~\ref{thm:chebyshev-windows}:\\ $G_{\lev_\psi}(x)\le x^{\sigma_0}$\\ for $x\in\Win$,\\ $x\ge x_1$};
+\draw[ar] (b1) -- (b2); \draw[ar] (b2) -- (b3); \draw[ar] (b3) -- (b4);
+\draw[ar] (a3.south) -- ++(0,-0.25) -| (b2.north);
+\node[st, below=0.75cm of b2, text width=2.75cm] (c1) {$\Fam\in\mathcal C$, so\\ $\{x:G_{\lev_\psi}(x)\le x^{\sigma_0}\}$\\ has windows of\\ exponent $\lambda$};
+\node[st, right=of c1] (c2) {Thm.~\ref{thm:level-criterion}:\\ $L(s',\chi)\ne0$ for\\ $\chi\in\Kept(\lev_\psi)$,\\ $\operatorname{Re}s'>\sigma_0$};
+\node[res, right=of c2] (c3) {$\psi$ kept and\\ $\operatorname{Re}s>\sigma_0$,\\ so $L(s,\psi)\ne0$};
+\draw[ar] (b4.south) |- ($(b4.south)!0.5!(c1.north |- b4.south)+(0,-0.3)$)
+  -| (c1.north);
+\draw[ar] (c1) -- (c2); \draw[ar] (c2) -- (c3);
+\node[rl] at ([xshift=-0.08cm]a1.west) {before $s$};
+\node[rl] at ([xshift=-0.08cm]b1.west) {chosen\\ after $s$};
+\node[anchor=north west] at ([yshift=-0.15cm]c1.south -| b1.west)
+  {\bischematic[schematic; $\sigma_0=\tfrac12+\tfrac\mu2$]};
+\end{tikzpicture}
+\caption{The order of choices in the proof of
+Theorem~\ref{thm:zero-free-primitive}. The exponents $e_D,e_L$ and
+$\eps_1$ are fixed with $\psi$, before $s$ is given. The point $s$
+determines $\mu$, then $\eps$, then the family $\Fam$, its constants and
+$x_1$. Dashed boxes are the hypotheses of the theorem. Schematic.}
+\label{fig:choice-order}

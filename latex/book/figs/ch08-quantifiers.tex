@@ -1,0 +1,83 @@
+\begin{tikzpicture}[bi, node distance=0.30cm,
+  q/.style={bi box, font=\scriptsize, inner sep=3pt, minimum height=0.95cm},
+  qe/.style={q, fill=biAux!18},
+  qa/.style={q, fill=white},
+  ar/.style={->, line width=0.6pt}]
+\node[qe] (e1) {$\exists\,\eps_1>0$};
+\node[qa, right=of e1] (e) {$\forall\,\eps\in(0,\eps_1]$};
+\node[qe, right=of e] (k) {$\exists$ threshold $\kappa$};
+\node[qa, right=of k] (F) {$\forall$ family $\Fam$ at $\eps$
+  in $\mathcal C_{\mathrm{cov}}$,\\ $\forall\,c\in\R$ with\\ $\Fam$ large
+  for $(\kappa,c)$};
+\draw[ar] (e1) -- (e); \draw[ar] (e) -- (k); \draw[ar] (k) -- (F);
+\node[qe, below=0.95cm of e1.south west, anchor=north west] (C0)
+  {$\exists\,C_0\ge0$};
+\node[qa, right=of C0] (x) {$\forall$ large $x$};
+\node[qa, right=of x] (i) {$\forall\,i\in I_x$\\ with member\\
+  hypothesis};
+\node[qa, right=of i] (z) {$\forall$ point
+  $\mathfrak z$\\ with point\\ conditions};
+\node[qa, right=of z] (C) {$\forall\,C\ge C_0$};
+\node[bi bound box, font=\scriptsize, inner sep=3pt, minimum height=0.95cm,
+  right=of C] (j) {$\forall\,j$:\\ covolume\\ inequality};
+\draw[ar] (C0) -- (x); \draw[ar] (x) -- (i); \draw[ar] (i) -- (z);
+\draw[ar] (z) -- (C); \draw[ar] (C) -- (j);
+\draw[ar, rounded corners=4pt] (F.south) |- ([yshift=0.42cm]C0.north)
+  -- (C0.north);
+\draw[decorate, decoration={brace, amplitude=4pt}, line width=0.5pt]
+  ([yshift=3pt]e1.north west) -- ([yshift=3pt]F.north east)
+  node[midway, above=4pt, font=\scriptsize, align=center]
+  {Definition~\ref{def:closed}\ref{item:cl-closed}: $\kappa$ is fixed
+  before $\Fam$};
+\draw[decorate, decoration={brace, amplitude=4pt, mirror},
+  line width=0.5pt]
+  ([yshift=-3pt]C0.south west) -- ([yshift=-3pt]j.south east)
+  node[midway, below=4pt, font=\scriptsize, align=center]
+  {the property $P(\Fam,c)$ of
+  Definition~\ref{def:covolume-condition}(4)};
+\node[font=\small, anchor=south west] at ([yshift=0.75cm]e1.north west)
+  {(a) quantifiers of Theorem~\ref{thm:covolume}};
+\end{tikzpicture}
+
+\vspace{0.6em}
+\begin{tikzpicture}[bi,
+  l/.style={bi box, font=\scriptsize, inner sep=3pt, fill=white},
+  t/.style={bi box, font=\scriptsize, inner sep=3pt, fill=biBound!15},
+  ge/.style={->, line width=0.6pt},
+  arg/.style={->, line width=0.6pt, dashed, biOther}]
+\node[l] (pre) at (0,1.25) {$c_{\mathrm{pre}}(\Fam)$};
+\node[l] (out) at (2.6,1.25) {$c_{\mathrm{out}}(\Fam)$};
+\node[l] (mid) at (5.3,1.25) {$c_{\mathrm{mid}}(\Fam,c)$};
+\node[l] (last) at (8.1,1.25) {$c_{\mathrm{last}}(\Fam)$};
+\node[bi box, font=\scriptsize, inner sep=3pt] (c) at (5.3,2.25) {$c$};
+\node[t] (kpre) at (0,0) {$\kappa_{\mathrm{pre}}$};
+\node[t] (kmid) at (5.3,0) {$\kappa_{\mathrm{mid}}$};
+\node[t] (klast) at (8.1,0) {$\kappa_{\mathrm{last}}$};
+\draw[ge] (pre) -- node[left, font=\scriptsize]{$\ge$} (kpre);
+\draw[ge] (mid) -- node[right, font=\scriptsize]{$\ge$} (kmid);
+\draw[ge] (last) -- node[right, font=\scriptsize]{$\ge$} (klast);
+\draw[line width=0.6pt, dotted] (c) -- node[right, font=\scriptsize]{first entry} (mid);
+\draw[arg] (out) -- (kmid);
+\draw[arg] (mid.south east) -- (klast.north west);
+\draw[arg, rounded corners=4pt] (out.south) -- ++(0,-1.6) -| (klast.south);
+\node[font=\scriptsize, text=biOther, align=left, anchor=west]
+  at (-0.6,-1.0) {dashed: argument of a function of $\kappa$};
+\node[font=\scriptsize, align=left, anchor=west] at (-0.6,-1.35)
+  {solid $\ge$: every entry is at least};
+\node[font=\small, anchor=south west] at (-0.6,2.25)
+  {(b) $\Fam$ large for $(\kappa,c)$};
+\node[anchor=north east] at (8.9,2.5) {\sbschematic[schematic]};
+\end{tikzpicture}
+\caption{Schematic. (a) The order in which
+Theorem~\ref{thm:covolume} fixes its objects; shaded boxes are
+existential, white boxes universal, the last box is the conclusion,
+and each object may depend on
+every object before it in the chain. The threshold $\kappa$ is chosen before the
+family, while $C_0$ and the range of large $x$ may depend on $\Fam$ and
+$c$. (b) The comparisons in ``$\Fam$ is large for $(\kappa,c)$''
+(Definition~\ref{def:closed}). The list $c_{\mathrm{out}}(\Fam)$ is not
+bounded by anything; it only enters as an argument of
+$\kappa_{\mathrm{mid}}$ and, followed by $c_{\mathrm{mid}}(\Fam,c)$, of
+$\kappa_{\mathrm{last}}$. The function $\kappa_t$ of a threshold does
+not enter this condition and is not drawn.}
+\label{fig:covolume-quantifiers}

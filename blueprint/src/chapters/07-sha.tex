@@ -1,0 +1,888 @@
+\chapter{The Sha bound VWin}\label{ch:sha}
+This chapter states the hypothesis \texttt{VWin} of the archive, a bound on the
+Tate--Shafarevich groups $\Sha^1(E,\Q_l/\Z_l(-e))$, for all primes $l$ and all
+$1\le e<x^{401}$, of abelian CM fields $E$ attached to a primitive character and an
+auxiliary pair of primes $(q,d)$. The bound is consumed by the host supply of the
+character branch. The archive reduces \texttt{VWin} to bounds for the minus part, the
+$2$-part, the part at finitely many bad primes, and the plus part; the plus part is
+split by cases and bounded by congruence numbers between Eisenstein and automorphic
+Galois representations on $\U(3)$ and $\GSp_4$. At the top, \texttt{VWin} is derived
+from a single hypothesis on Galois representations attached to polarized cuspidal
+representations, which is treated in another chapter.
+
+\section{The statement}
+
+\begin{definition}[$l$-adic data and Sha of Tate twists]\label{sha:sha}
+\lean{Formalism.GaloisCohomology.LData, Formalism.GaloisCohomology.qzTw, Formalism.GaloisCohomology.Sha, Formalism.GaloisCohomology.shaLen}
+Let $F$ be a number field, $\Omega$ an algebraic closure of $F$ and $l$ a prime.
+\emph{$l$-adic data} $D$ for $(F,\Omega,l)$ consist of: the finite set $S=S_l$ of finite
+places of $F$ above $l$; for each $v\in S$ a valuation subring $A_v$ of $\Omega$ lying
+over $v$; and a homomorphism $\chi_D:G_{F,S}\to\Z_l^{\times}$ from the Galois group
+$G_{F,S}$ of the maximal extension of $F$ in $\Omega$ unramified outside $S$ whose
+inflation to $G_F$ is the $l$-adic cyclotomic character. For $e\in\Z$ let
+$\Q_l/\Z_l(-e)$ be $\Q_l/\Z_l$ (discrete topology) with $G_{F,S}$ acting by
+$\chi_D^{-e}$, and put
+\[
+\Sha_D(e)=\ker\Bigl(H^1(G_{F,S},\Q_l/\Z_l(-e))\to\prod_{v\in S}H^1(G_v,\Q_l/\Z_l(-e))\Bigr),
+\]
+with $H^1$ continuous cocycles modulo coboundaries and $G_v$ the decomposition group of
+$A_v$. Let $\operatorname{shaLen}_D(e)\in\Z_{\ge0}\cup\{\infty\}$ be the $\Z_l$-length
+of $\Sha_D(e)$.
+\end{definition}
+
+\begin{remark}[continuity and duality]\label{sha:rem-cont}
+The cocycles of $H^1$ are required to be continuous
+(\arch{ReciprocityTheory/GaloisValuations/SeparatedDvrSecondCohomologyMem.lean}, the
+definition of $Z^1$), and the coefficient module carries the discrete topology, so
+$H^1$ is the usual continuous Galois cohomology. The same file
+\arch{Formalism/GaloisCohomology/Statement.lean} states, as the predicate
+\texttt{PTShaAt}, that for $l$ odd or $F$ totally imaginary the length of
+$\Sha^2(G_{F,S},\Z_l(e+1))$ equals $\operatorname{shaLen}_D(e)$. This is a
+Poitou--Tate type statement; it is a hypothesis-shaped predicate, not a theorem.
+\end{remark}
+
+\begin{definition}[ambient fields]\label{sha:fields}
+% overlaps (deduplicated): host:ischifield
+\lean{UpperTheory.V.AbF, UpperTheory.V.IsCompField, UpperTheory.V.condF, UpperTheory.V.isCompField_ofChar}
+% uses-lean: Formalism.HC.PChar
+\uses{an:pchar} % resolved
+An \emph{abelian datum} $M$ is a modulus $m\ge1$ with a subgroup
+$H_M\le(\Z/m)^{\times}$; its degree is the index of $H_M$. For integers $e\ge0$ and
+$q,d$, a number field $E$ is a \emph{composite field} for $(M,e,q,d)$ if for some $N$
+divisible by $2^{e+2}$, $m$, $q$ and $d$ there is an embedding
+$j:E\to\Q(\zeta_N)$ such that, for every automorphism $\tau_a:\zeta_N\mapsto\zeta_N^a$,
+$\tau_a$ fixes $j(E)$ if and only if
+\[
+a\equiv\pm1\pmod{2^{e+2}},\qquad a\bmod m\in H_M,\qquad
+\Bigl(\frac aq\Bigr)=\Bigl(\frac ad\Bigr)=1
+\]
+(Jacobi symbols). For a primitive Dirichlet character $\psi$ of conductor $N_{\psi}$, a
+\emph{$\psi$-field} for $(\psi,e,q,d)$ is the same with the condition $\psi(a)=1$ in place
+of $a\bmod m\in H_M$; it is a composite field for the datum
+$(N_{\psi},\ker\psi)$, and conversely (\texttt{isCompField\_ofChar}). So $E$ is the
+compositum of $\Q(\zeta_{2^{e+2}})^+$, the field cut out by $\ker\psi$, and the
+quadratic fields cut out by $(\cdot/q)$ and $(\cdot/d)$. The \emph{conductor}
+$\operatorname{cond}(E)$ is the least $N\ge1$ with an embedding $E\to\Q(\zeta_N)$.
+\end{definition}
+
+
+
+\begin{definition}[Sha budgets and VWin]\label{sha:vwin}
+\lean{UpperTheory.Top.VVle, UpperTheory.Top.VAt, UpperTheory.Top.VWinAt, UpperTheory.Top.VWin}
+\uses{sha:sha, sha:fields, host:win-pair}
+A number field $E$ has \emph{Sha budget} $(t,B)$ ($t\in\N$, $B\in\R$) if for every
+algebraic closure $\Omega$ of $E$ and every choice $(D_p)_p$ of $l$-adic data for every
+prime $p$: $\operatorname{shaLen}_{D_p}(e)<\infty$ for every prime $p$ and every
+$0<e<t$; and for every finite set $S$ of primes
+\[
+\sum_{l\in S}\log l\sum_{1\le e<t}\operatorname{shaLen}_{D_l}(e)\le B .
+\]
+For a primitive character $\psi$ and $C_t\in\R$, $\psi$ satisfies $\mathrm{VWin}(\psi,C_t)$
+if: for every $\eps\in(0,1/52)$ and every function $x\mapsto e(x)\in\N$ with $e(x)$ on page
+for $(\eps,x)$ for all $x\ge1$, there are $J\ge1$ and $X_0$ such that for every
+$X\ge X_0$ and every window pair $(q,d)$ for $(\eps,X^{1/J})$ there is $Y$ with
+$X^{1/J}\le Y$ and $Y^2\le X$ such that for every $x\in[Y,Y^2]$ every $\psi$-field for
+$(\psi,e(x),q,d)$ has Sha budget $(\lfloor x^{C_t}\rfloor,\exp(x^{\eps})^{1/2})$.
+\texttt{VWin} is the statement that $\mathrm{VWin}(\psi,401)$ holds for every primitive
+$\psi$.
+\end{definition}
+
+\begin{remark}[reading of VWin]\label{sha:rem-vwin}
+The name suggests an analytic window condition. The content is Galois-cohomological: on
+some window $[Y,Y^2]$ of scales, for the $\psi$-field $E$ of degree about
+$x^{2+8\eps}$, $\sum_l\log l\sum_{1\le e<\lfloor x^{401}\rfloor}\operatorname{shaLen}_l(e)
+\le\exp(x^{\eps}/2)$, uniformly in all window pairs $(q,d)$. The budget is very large
+compared with the heuristic size of these groups; the content is uniformity in $(q,d)$.
+The windows are existential in $Y$, so \texttt{VWin} gives information only on a sparse
+set of scales.
+\end{remark}
+
+\section{Splitting the budget}
+
+\begin{definition}[plus and minus parts and partial budgets]\label{sha:parts}
+\lean{UpperTheory.V.ShaPlus, UpperTheory.V.ShaMinus, UpperTheory.V.plusLen, UpperTheory.V.minusLen, UpperTheory.V.VVat, UpperTheory.V.BoundedHeightTwoPlaceCondition, UpperTheory.V.VVminusLe, UpperTheory.V.VVplusLe}
+\uses{sha:sha}
+Let $E$ be a CM field with complex conjugation $c$, acting on $H^1$ through the Galois
+action on cohomology. For $e\ge0$ the \emph{plus part} of $\Sha_D(e)$ is its
+$(-1)^e$-eigenspace for $c$, the \emph{minus part} the $(-1)^{e+1}$-eigenspace;
+$\operatorname{plusLen}_D(e)$, $\operatorname{minusLen}_D(e)$ are their $\Z_l$-lengths.
+\begin{itemize}
+\item $E$ has \emph{$l$-budget} $(t,B)$ (\texttt{VVat}) if for every $\Omega$ and every
+$l$-adic data $D$: $\operatorname{shaLen}_D(e)<\infty$ for $0<e<t$ and
+$\sum_{1\le e<t}\operatorname{shaLen}_D(e)\le B$ (no factor $\log l$).
+\texttt{BoundedHeightTwoPlaceCondition} is the $2$-budget.
+\item $E$ has \emph{minus budget} (resp.\ \emph{plus budget}) $(t,B)$ if the conditions of
+Definition~\ref{sha:vwin} hold with $\operatorname{minusLen}$ (resp.\
+$\operatorname{plusLen}$) in place of $\operatorname{shaLen}$, for odd primes only: finiteness
+for $p\ne2$, and the sum over finite sets $S$ of odd primes.
+\end{itemize}
+\end{definition}
+
+\begin{remark}[a misleading name]\label{sha:rem-bh2}
+\texttt{BoundedHeightTwoPlaceCondition} is not a height condition; it is the
+$2$-budget of Definition~\ref{sha:parts}.
+\end{remark}
+
+\begin{lemma}[eigenspace splitting]\label{sha:split}
+\lean{UpperTheory.V.shaLen_eq_add}
+\uses{sha:parts}
+Let $E$ be CM and $l$ an odd prime. Then
+$\operatorname{shaLen}_D(e)=\operatorname{plusLen}_D(e)+\operatorname{minusLen}_D(e)$.
+\end{lemma}
+\begin{proof}
+Since $2\in\Z_l^{\times}$ and $c$ acts as an involution preserving $\Sha_D(e)$, the module
+is the direct sum of the two eigenspaces (the general lemma
+\texttt{length\_eq\_add\_eigen} in the same file).
+\end{proof}
+
+\begin{lemma}[assembling the budget]\label{sha:vvle-of-parts}
+\lean{UpperTheory.V.vvle_of_parts}
+\uses{sha:parts, sha:vwin, sha:split}
+Let $E$ be CM. Assume $E$ has $2$-budget $(t,B_2)$, minus budget $(t,B_-)$ and plus
+budget $(t,B_+)$. Then $E$ has Sha budget $(t,B_2\log2+B_-+B_+)$.
+\end{lemma}
+\begin{proof}
+\uses{sha:split}
+Finiteness at $p=2$ is the $2$-budget; at odd $p$ it follows from
+Lemma~\ref{sha:split}. For the sum, separate $l=2$ from the odd primes and split each odd
+term by Lemma~\ref{sha:split}.
+\end{proof}
+
+\begin{definition}[admissible scale functions and the minus statement]\label{sha:thmbc}
+\lean{UpperTheory.V.PrimePair, UpperTheory.V.admitted, UpperTheory.V.minusBound, UpperTheory.V.ThmBc, UpperTheory.V.ThmBcFree}
+\uses{sha:fields, sha:parts}
+$(q,d)$ is a \emph{prime pair} for $m$ if $q$ is a prime $\equiv3\pmod 8$, $d$ a prime
+$\equiv7\pmod{16}$ and $\gcd(qd,m)=1$. Functions $e,t:\R\to\N$ are \emph{admitted} for
+$(A_1,C_t)$ if for all $x\ge2$: $2\le e(x)$, $2^{e(x)}\le x^{A_1}$ and
+$2\le t(x)\le x^{C_t}$. Put
+\[
+\operatorname{mB}_C(o,n,N,t)=3nt^2\log(tN)+C\sum_{l\mid o,\ l\ \mathrm{odd}}l\,n^2t^2\log(tlN)^2 .
+\]
+\texttt{ThmBcFree} asserts: there is $C$ such that for every abelian datum $M$, all
+naturals $e,t\ge2$, every prime pair $(q,d)$ for $m$ and every CM composite field $E$ for
+$(M,e,q,d)$, $E$ has minus budget $(t,\operatorname{mB}_C(\deg M,[E:\Q],\operatorname{cond}E,t))$.
+\texttt{ThmBc}$(C_t)$ is the same statement with $e=e(x)$, $t=t(x)$ for admitted
+functions and $x\ge2$.
+\end{definition}
+
+\begin{lemma}[the two minus statements agree]\label{sha:thmbc-iff}
+\lean{UpperTheory.V.thmBc_iff}
+\uses{sha:thmbc}
+For $C_t\ge1$, $\texttt{ThmBc}(C_t)$ holds if and only if \texttt{ThmBcFree} holds.
+\end{lemma}
+\begin{proof}
+Given naturals $e,t\ge2$, take $x=\max(2^e,t)$ and functions equal to $e,t$ at $x$ and to
+$2$ elsewhere; these are admitted for $(2,C_t)$. The converse is a specialisation.
+\end{proof}
+
+\begin{definition}[window statement for the $2$-part and bad primes]\label{sha:thmbab}
+\lean{UpperTheory.V.BConst, UpperTheory.V.BConst.J, UpperTheory.V.InRange, UpperTheory.V.BaAt, UpperTheory.V.BbAt, UpperTheory.V.IsBWindow, UpperTheory.V.BShape, UpperTheory.V.ThmBab}
+\uses{sha:thmbc, sha:parts}
+A \emph{constant datum} $K$ consists of functions $R_0(M)$, $R_l(L)$ (on abelian data) with
+values in $\N$ and a constant $C_K>0$. For an abelian datum $M$, a finite set $B'$ and
+abelian data $L(l)$, put $R=R_0(M)+\sum_{l\in B'}R_l(L(l))$ and
+$J=2^{R+2}(2C_KC_t/\eps)^R$. $Y$ is \emph{in range} for $(J,X)$ if $X^{1/J}\le Y$ and
+$Y^2\le X$. \texttt{ThmBab}$(K,C_t)$ asserts: for every $M$, every finite set $B'$ of odd
+primes and $L$ such that each $L(l)$ contains the $l$-th roots of unity, every
+$\eps\in(0,1/52)$ and $A_1$, there is $X_0$ such that for all admitted $e,t$, all
+$X\ge X_0$ and all prime pairs $(q,d)$ for $m$ with $\log(qd)\le X^{\eps/(4J)}$ there is
+$Y$ in range for $(J,X)$ such that for every $x\in[Y,Y^2]$:
+\begin{itemize}
+\item (2-part) every composite field for $(M,e(x),q,d)$ has $2$-budget
+$(t(x),\exp(x^{4\eps/5}))$;
+\item (bad primes) for each $l\in B'$, every abelian field $L_0$ of type $L(l)$ and every
+$l$-power cyclotomic extension $L_1/L_0$ of degree $l^{j}$ with
+$j=\lfloor\log_lR_l(L(l))\rfloor+3$, the field $L_1$ has $l$-budget
+$(t(x),\exp(x^{4\eps/5}))$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[the plus window statement and the joint window]\label{sha:jointwin}
+\lean{UpperTheory.V.Lchi, UpperTheory.V.Jchi, UpperTheory.V.HVAt, UpperTheory.V.ThmHV, UpperTheory.V.JointWin}
+\uses{sha:thmbab, sha:bchi}
+For a primitive $\psi$ write $M_{\psi}=(N_{\psi},\ker\psi)$, $L_{\psi}(l)$ the datum
+$(lN_{\psi},\{1\})$ (the cyclotomic field $\Q(\zeta_{lN_{\psi}})$) and
+$J_{\psi}=J(K,C_t,\eps,M_{\psi},B_{\psi},L_{\psi})$ with $B_{\psi}$ as in Definition~\ref{sha:bchi}.
+$\mathrm{HVAt}(\psi,C,\eps,e,t,q,d,x)$: every CM $\psi$-field $E$ for $(\psi,e(x),q,d)$ has
+plus budget $(t(x),(\operatorname{cond}(E)t(x))^C+C\exp(x^{4\eps/5}))$.
+\begin{itemize}
+\item \texttt{ThmHV}$(K,C_t)$: for every $\psi$ there are $C$ and primes $r_1,r_2$ such
+that for every $\eps\in(0,1/52)$ and $A_1$ there is $X_0$ such that for all admitted
+$e,t$, $X\ge X_0$, prime pairs $(q,d)$ for $N_{\psi}$ with $2X^{C_t}+1<q,d$, with
+$N_{\psi},\operatorname{ord}\psi,p_K,h^*,p_1,r_1,r_2$ all $<q$ and $<d$, and
+$\log(qd)\le X^{\eps/(4J_{\psi})}$, and every $Y$ satisfying the conclusion of
+\texttt{ThmBab} for $(M_{\psi},B_{\psi},L_{\psi})$: $\mathrm{HVAt}$ holds for all $x\in[Y,Y^2]$.
+\item \texttt{JointWin}$(C_t)$: for every $\psi$, $\eps\in(0,1/52)$, $A_1$ and admitted
+$e,t$ there are $J>0$, $C$, $P$, $X_0$ such that for $X\ge X_0$ and prime pairs
+$(q,d)$ for $N_{\psi}$ with $2X^{C_t}+1<q,d$, $P<q,d$ and $\log(qd)\le X^{\eps/(4J)}$ there
+is $Y$ in range for $(J,X)$ with, for all $x\in[Y,Y^2]$, the $2$-part clause of
+\texttt{ThmBab} for $M_{\psi}$ and $\mathrm{HVAt}$.
+\end{itemize}
+\end{definition}
+
+\begin{lemma}[joining the windows]\label{sha:jointwin-of}
+\lean{UpperTheory.V.jointWin_of}
+\uses{sha:jointwin, sha:thmbab}
+Let $C_t>0$. Assume $\texttt{ThmBab}(K,C_t)$ and $\texttt{ThmHV}(K,C_t)$. Then
+$\texttt{JointWin}(C_t)$.
+\end{lemma}
+\begin{proof}
+Apply \texttt{ThmBab} to $(M_{\psi},B_{\psi},L_{\psi})$ (admissible since every $l\in B_{\psi}$ is
+an odd prime and $\Q(\zeta_{lN_{\psi}})$ contains $\mu_l$), take $J=J_{\psi}$ and
+$P=N_{\psi}+\operatorname{ord}\psi+p_K+h^*+p_1+r_1+r_2$; the window from \texttt{ThmBab} is
+fed into \texttt{ThmHV}.
+\end{proof}
+
+\begin{theorem}[VWin from the joint window and the minus bound]\label{sha:vwin-of-joint}
+\lean{UpperTheory.V.vwinAt_of_joint, UpperTheory.V.vwin_of_joint}
+\uses{sha:vwin, sha:jointwin, sha:thmbc, sha:vvle-of-parts, sha:fields}
+Let $C_t\ge1$. Assume $\texttt{JointWin}(C_t)$ and $\texttt{ThmBc}(C_t)$. Then
+$\mathrm{VWin}(\psi,C_t)$ holds for every primitive $\psi$. In particular
+$\texttt{JointWin}(401)$ and $\texttt{ThmBc}(401)$ imply \texttt{VWin}.
+\end{theorem}
+\begin{proof}
+\uses{sha:vvle-of-parts, sha:fields}
+Put $t(x)=\lfloor x^{C_t}\rfloor$; for $e(x)$ on page the pair $(e,t)$ is admitted for
+$(4,C_t)$. Given $J$ from \texttt{JointWin}, use $J'=\max(J,1)$. For a window pair
+$(q,d)$ at $X^{1/J'}$ and $X$ large: $q,d$ exceed $2X^{C_t}+1$, $P$ and $N_{\psi}$ (so
+$(q,d)$ is a prime pair for $N_{\psi}$), and $\log(qd)\le X^{\eps/(4J)}$. \texttt{JointWin}
+gives $Y$. For $x\in[Y,Y^2]$ and a $\psi$-field $E$: $E$ is CM because $q\equiv3\pmod4$;
+the $2$-budget and plus budget come from \texttt{JointWin}, the minus budget from
+\texttt{ThmBc}; bounds on $[E:\Q]$ and $\operatorname{cond}(E)$ from the field definition
+turn $\operatorname{mB}$ into a bound $\exp(O(x^{\eps/4}))$. Lemma~\ref{sha:vvle-of-parts}
+adds the three parts, and the total is at most $\exp(x^{\eps})^{1/2}$ for large $x$ (the
+analytic helper lemmas \texttt{minusBound\_le\_exp\_of\_log\_le},
+\texttt{error\_terms\_le\_sqrt\_exp\_rpow} and \texttt{log\_conductor\_mul\_height\_le\_of\_pageN}).
+\end{proof}
+
+\section{Hosts, characters and cases}
+
+\begin{definition}[the bad set of a primitive character]\label{sha:bchi}
+\lean{UpperTheory.V.ordC, UpperTheory.V.Kstar, UpperTheory.V.pK, UpperTheory.V.hStar, UpperTheory.V.pOne, UpperTheory.V.Bchi}
+Let $\chi$ be primitive of conductor $N_{\chi}$ and order $o=\operatorname{ord}\chi$. Let
+$p_K$ be the least prime $p\equiv3\pmod4$ with $p\ge7$ and $\gcd(p,N_{\chi})=1$;
+$K^*=\Q(\sqrt{-p_K})$; $h^*$ its class number; $p_1$ the least prime with
+$p_1\equiv1$ modulo the odd part of $o$ and $\gcd(p_1,2N_{\chi} p_K)=1$. The \emph{bad set}
+$B_{\chi}$ is $\{3\}$ together with the odd prime divisors of $o\,N_{\chi}\,p_K\,h^*\,p_1$.
+\end{definition}
+
+\begin{definition}[hosts]\label{sha:host}
+\lean{UpperTheory.V.HV.Host, UpperTheory.V.HV.Host.N, UpperTheory.V.HV.Host.H, UpperTheory.V.HV.Host.IsChar, UpperTheory.V.HV.Host.Big, UpperTheory.V.HV.Host.X}
+\uses{sha:bchi, sha:thmbc}
+A \emph{host} $h$ is a primitive character $\chi$, an integer $\mathrm{ex}\ge2$ and a prime
+pair $(q_1,d)$ for $N_{\chi}$. Its modulus is
+$N_h=\operatorname{lcm}(2^{\mathrm{ex}+2},N_{\chi})\,q_1d$, and $H_h\le(\Z/N_h)^{\times}$ is the
+subgroup of $a$ with $a\equiv\pm1\pmod{2^{\mathrm{ex}+2}}$, $\chi(a)=1$, and $a$ a square
+modulo $q_1$ and modulo $d$. A Dirichlet character $\psi$ modulo $N_h$ is a
+\emph{host character} if $H_h\subseteq\ker\psi$. The host is \emph{large for $t$} if
+$2t+1<q_1$, $2t+1<d$, and $N_{\chi},o,p_K,h^*,p_1$ are all $<q_1$ and $<d$. For coefficient
+data $c$ and $e\ge0$, $X(h,c,e)$ is the finite set of host characters with values in
+$\mathcal O_c$ and $\psi(-1)=(-1)^e$.
+\end{definition}
+
+\begin{definition}[coefficients and the rational Sha length]\label{sha:vlen}
+\lean{UpperTheory.V.HV.Coef, UpperTheory.V.Chr.rho, UpperTheory.V.Chr.VS, UpperTheory.V.Chr.V', UpperTheory.V.Chr.nrm, UpperTheory.V.HV.Vlen, UpperTheory.V.HV.Vn, UpperTheory.V.HV.VLe, UpperTheory.V.HV.orb}
+\uses{sha:sha}
+\emph{Coefficient data} $c$ for $l$ is a $\Z_l$-subalgebra $\mathcal O_c$ of
+$\overline{\Q}_l$ that is a discrete valuation ring, finite over $\Z_l$; $e(\mathcal O_c)$
+is the length of $\mathcal O_c/l$. Let $\Omega$ be an algebraic closure of $\Q$, $N\ge1$, $\psi$
+a Dirichlet character modulo $N$ with values in $\mathcal O_c$, viewed as a character of
+$G_{\Q}$ through the mod-$N$ cyclotomic character. For $e\ge0$ let
+$\operatorname{Vlen}(\Omega,c,e,\psi)$ be the $\mathcal O_c$-length of the group of classes in
+$H^1(G_{\Q},(\mathcal O_c\otimes\Q_l/\Z_l)(\psi^{-1}\chi_{\mathrm{cyc}}^{-e}))$ whose restriction
+vanishes on the decomposition group of every valuation ring of $\Omega$ over a prime
+dividing $lN$ and on the inertia group of every valuation ring of $\Omega$. Put
+$\operatorname{Vn}=\operatorname{Vlen}/e(\mathcal O_c)$ (with $\infty\mapsto0$), and
+$\operatorname{VLe}(\psi,B)$: $\operatorname{Vlen}<\infty$ and
+$\operatorname{Vn}\cdot\log l\le B$. For $H'\le(\Z/N)^{\times}$, the \emph{orbit}
+$\operatorname{orb}(c,H')$ is the finite set of $\mathcal O_c$-valued $\psi$ modulo $N$ with
+$\ker\psi=H'$ exactly.
+\end{definition}
+
+\begin{definition}[parts of a character]\label{sha:charparts}
+\lean{UpperTheory.V.HV.lPart, UpperTheory.V.HV.lPrime, UpperTheory.V.HV.proj, UpperTheory.V.HV.comp, UpperTheory.V.HV.kap, UpperTheory.V.HV.th0, UpperTheory.V.HV.chiP, UpperTheory.V.HV.PsiEven, UpperTheory.V.HV.EV}
+For a character $\psi$ modulo $N$ and a prime $l$: $\kappa_l(\psi)$ is the component of
+$\psi$ of $l$-power order and $\theta_0=\psi\kappa_l(\psi)^{-1}$ the component of order
+prime to $l$. For a prime $r$, $\operatorname{proj}_r$ is the endomorphism of
+$(\Z/N)^{\times}$ that keeps the component in $(\Z/r^{v_r(N)})^{\times}$ of the Chinese
+remainder decomposition and sends the others to $1$; $\psi_{(r)}=\psi\circ\operatorname{proj}_r$.
+Put $\chi'_l(\psi)=\theta_0\,(\theta_{0,(l)})^{-1}$. $\psi$ is \emph{even for $e$} if
+$\psi(-1)=(-1)^e$, and $\mathrm{EV}_l(\psi)$ means $\chi'_l(\psi)$ has even order.
+\end{definition}
+
+\begin{definition}[cases]\label{sha:cases}
+\lean{UpperTheory.V.HV.Host.CaseI, UpperTheory.V.HV.Host.CaseZ, UpperTheory.V.HV.Host.CaseII, UpperTheory.V.HV.Host.CaseIII, UpperTheory.V.HV.Host.CaseIV, UpperTheory.V.HV.Host.CaseV, UpperTheory.V.HV.Host.R1, UpperTheory.V.HV.c2}
+\uses{sha:host, sha:charparts, sha:bchi}
+Let $h$ be a host with character $\chi$, $l$ a prime, $e\ge1$ and $\psi$ a character
+modulo $N_h$. The triple $(l,e,\psi)$ is in
+\begin{itemize}
+\item Case I if $l\notin B_{\chi}$ and $(l-1)\nmid2e$;
+\item Case Z if $l\notin B_{\chi}$, $(l-1)\mid2e$ and $\psi=1$;
+\item Case II if $e\ge2$, $\chi'_l(\psi)$ has even order, and $l\in B_{\chi}$ or $(l-1)\mid2e$;
+\item Case III if $l\notin B_{\chi}$, $(l-1)\mid 2e$, $\psi$ has odd order and $\psi\ne1$;
+\item Case IV if $l\in B_{\chi}$, $e\ge2$ and $\chi'_l(\psi)$ has odd order;
+\item Case V if $l\in B_{\chi}$ and $e=1$.
+\end{itemize}
+Case V is subdivided by the quantity $R_1(l,\psi)=16\,o\,(lN_{\chi})^2\,4^{n_0(l,\psi)}$
+against $2^{c_2(\psi)}$, with $c_2(\psi)$ the exponent of $2$ in the conductor of
+$\psi_{(2)}$ and $n_0$ a $2$-adic order defined from $l$ and $\psi$.
+\end{definition}
+
+\begin{theorem}[the cases are exhaustive]\label{sha:cases-exh}
+\lean{UpperTheory.V.HV.cases}
+\uses{sha:cases, sha:host}
+Let $h$ be a host large for $t$, $\mathcal O$ a domain, $\psi$ an $\mathcal O$-valued host
+character, $l$ an odd prime and $0<e<t$. If $l\notin B_{\chi}$, then $l\nmid\operatorname{ord}\psi$,
+$\psi_{(l)}^2=1$, $\theta_0=\psi$, $\kappa_l(\psi)=1$, $\chi'_l(\psi)=\psi$ when $(l-1)\mid2e$,
+and the triple is in Case I, Z, II or III. If $l\in B_{\chi}$, it is in Case II, IV or V.
+\end{theorem}
+\begin{proof}
+% uses-lean: UpperTheory.V.HV.bchiFacts, UpperTheory.V.HV.hostComp, UpperTheory.V.HV.partOrd
+For $l\notin B_{\chi}$, the facts about $B_{\chi}$ for a large host give $l\nmid o$, $l\nmid N_h$
+when $(l-1)\mid2e$, and $e\ge2$ in that case; the order of $\psi$ divides a number prime to
+$l$, so $\theta_0=\psi$; when $(l-1)\mid2e$ one has $\psi_{(l)}=1$, so $\chi'_l(\psi)=\psi$.
+Then split on $(l-1)\mid2e$, $\psi=1$ and the parity of $\operatorname{ord}\psi$. For
+$l\in B_{\chi}$ split on $e=1$ and the parity of $\operatorname{ord}\chi'_l(\psi)$.
+\end{proof}
+
+\begin{remark}[the parity test]\label{sha:rem-parity}
+Cases II and IV test the order of $\chi'_l(\psi)$, not of $\psi$ or of its $l$-part;
+$\operatorname{proj}_l$ is the Chinese-remainder projection, not the projection to the
+Sylow $l$-subgroup. Only Case III tests the order of $\psi$. The prime $l=2$ is outside the
+case split; the $2$-part is bounded by the first clause of \texttt{ThmBab}.
+\end{remark}
+
+\begin{lemma}[reduction to rational characters]\label{sha:redprime}
+\lean{UpperTheory.V.HV.redPrime}
+\uses{sha:vlen, sha:parts}
+Let $E$ be a CM field that is the fixed field of $H\le(\Z/N)^{\times}$ in $\Q(\zeta_N)$, $l$
+an odd prime not dividing $[(\Z/N)^{\times}:H]$, $c$ coefficient data containing the
+$\varphi(N)$-th roots of unity, $D$ any $l$-adic data for $E$, $\Omega$ an algebraic closure
+of $\Q$, $e\ge1$, and $T$ the set of $\mathcal O_c$-valued characters $\psi$ modulo $N$ with
+$H\subseteq\ker\psi$ and $\psi(-1)=(-1)^e$. Then
+\[
+\operatorname{plusLen}_D(e)\cdot e(\mathcal O_c)\le\sum_{\psi\in T}\operatorname{Vlen}(\Omega,c,e,\psi).
+\]
+\end{lemma}
+\begin{proof}
+% uses-lean: UpperTheory.V.Chr.partModel
+The proof models the plus part of $\Sha_D(e)$ over $\mathcal O_c$ and decomposes it into
+$\psi$-eigenspaces for $\Gal(E/\Q)$ (\texttt{Chr.partModel}); only the top level was read.
+\end{proof}
+
+\section{The count statements}
+
+\begin{definition}[count statements]\label{sha:counts}
+\lean{UpperTheory.V.HV.CountShape, UpperTheory.V.HV.CountI, UpperTheory.V.HV.CountII, UpperTheory.V.HV.CountIII, UpperTheory.V.HV.CountV, UpperTheory.V.HV.CountVs, UpperTheory.V.HV.CountZ, UpperTheory.V.HV.PropZ}
+\uses{sha:cases, sha:vlen, sha:host}
+For a predicate $P(h,l,c,e,\psi)$, $\mathrm{Shape}(P)$ asserts: for every primitive $\chi$ there
+is $C$ such that for every host $h$ with character $\chi$, every $t$ with $h$ large for $t$,
+every $\Omega$, odd prime $l$, coefficient data $c$, $0<e<t$ and $\psi\in X(h,c,e)$ with
+$P$: $\operatorname{VLe}(\psi,(lN_he)^C)$.
+\texttt{CountII}, \texttt{CountIII}, \texttt{CountZ} are $\mathrm{Shape}$ of Cases II, III, Z;
+\texttt{CountV} is $\mathrm{Shape}$ of Case V with $R_1(l,\psi)\le2^{c_2(\psi)}$, and
+\texttt{CountVs} of Case V with $2^{c_2(\psi)}<R_1(l,\psi)$.
+\texttt{CountI} asserts: for every $\chi$ there are $C$ and primes $r_1,r_2$ such that for
+every host $h$ with character $\chi$ and $r_1,r_2<q_1,d$, every $t$ with $h$ large, every
+$0<e<t$, every $\Omega$, every family $(c_l)_l$ of coefficient data and every finite set
+$L_s$ of odd primes in Case I for $e$: $\operatorname{Vlen}(\Omega,c_l,e,\psi)<\infty$ for
+$l\in L_s$, $\psi\in X(h,c_l,e)$, and
+\[
+\sum_{l\in L_s}\log l\sum_{\psi\in X(h,c_l,e)}\operatorname{Vn}(\Omega,c_l,e,\psi)\le(N_ht)^C .
+\]
+\texttt{PropZ} asserts that for every $\Omega$, $c$, $l\ge5$, $e\ge2$ even with
+$(l-1)\mid2e$, the length of Definition~\ref{sha:vlen} for the trivial character, with the
+decomposition conditions imposed only above $l$ (level $l$ in place of $lN$), is $0$.
+\end{definition}
+
+\begin{definition}[plus-part assembly statements]\label{sha:assembly}
+\lean{UpperTheory.V.HV.LayerLe, UpperTheory.V.HV.CountIV, UpperTheory.V.HV.PlusLe, UpperTheory.V.HV.SumIn, UpperTheory.V.HV.SumOut, UpperTheory.V.HV.PointHV}
+\uses{sha:counts, sha:parts, sha:fields}
+\begin{itemize}
+\item $\mathrm{LayerLe}(\chi,l,j,t,B)$: for every abelian field $L_0\cong\Q(\zeta_{lN_{\chi}})$
+and every $l$-power cyclotomic $L_1/L_0$ of degree $l^j$, $L_1$ has $l$-budget $(t,B)$.
+\item \texttt{CountIV}: for every $\chi$, $l\in B_{\chi}$ and $j$ there is $C$ such that for every
+host $h$ with character $\chi$, $t\ge2$ with $h$ large, every $B$ with
+$\mathrm{LayerLe}(\chi,l,j,t,B)$, every $\Omega$, $c$ and host character $\psi$ with
+$\chi'_l(\psi)$ of odd order: $\operatorname{Vlen}(\Omega,c,e,\psi)<\infty$ for $0<e<t$ and
+$\sum_{1\le e<t}\operatorname{Vn}(\Omega,c,e,\psi)\le B+(N_ht)^C$.
+\item \texttt{SumIn}: for $l\in B_{\chi}$ and $j$ there is $C$ such that, for large hosts,
+$t\ge2$, $B\ge0$ with $\mathrm{LayerLe}(\chi,l,j,t,B)$, and every CM $\chi$-field $E$ for
+$(\chi,\mathrm{ex},q_1,d)$: the plus lengths at $l$ are finite for $0<e<t$ and
+$\log l\sum_{e}\operatorname{plusLen}_l(e)\le(N_ht)^C+CB$.
+\item \texttt{SumOut}: for every $\chi$ there are $C$, primes $r_1,r_2$ such that for large
+hosts with $r_1,r_2<q_1,d$, $t\ge2$ and every finite set $S$ of odd primes outside $B_{\chi}$,
+the same holds over $S$ with bound $(N_ht)^C$.
+\item \texttt{PointHV}: for every $\chi$ and $j:\N\to\N$ there are $C,r_1,r_2$ such that for
+large hosts with $r_1,r_2<q_1,d$, $t\ge2$, $B\ge0$ with $\mathrm{LayerLe}(\chi,l,j(l),t,B)$ for
+all $l\in B_{\chi}$: every CM $\chi$-field for $(\chi,\mathrm{ex},q_1,d)$ has plus budget
+$(t,(N_ht)^C+CB)$.
+\end{itemize}
+\end{definition}
+
+\begin{lemma}[cases needing no automorphy]\label{sha:easy-cases}
+\lean{UpperTheory.V.HV.countIV, UpperTheory.V.X.propZ, UpperTheory.V.HV.countZ, UpperTheory.V.HV.countVs}
+\uses{sha:assembly, sha:counts, sha:lemmak}
+% uses-lean: GlobalTheory.Published.PoitouTateDuality, Formalism.GaloisCohomology.LocalFinitenessK, Formalism.GaloisCohomology.LocalTateDualityK
+\texttt{CountIV} and \texttt{PropZ} hold. \texttt{PropZ} implies \texttt{CountZ}. Assume
+Poitou--Tate duality, local finiteness and local Tate duality (as archive statements) and
+$\mathrm{LemmaK}(C_K)$ for some $C_K$. Then \texttt{CountVs} holds.
+\end{lemma}
+\begin{proof}
+\uses{sha:vlen}
+% uses-lean: UpperTheory.V.X.zOne, UpperTheory.V.X.zQuad, UpperTheory.V.Chr.V'_le_V
+\texttt{CountIV} has a proof term with no hypotheses (constant $l N_{\chi} l^j+3$; it bounds
+the $\psi$-part by the layer budget). \texttt{PropZ} splits on $(l-1)\mid e$ (\texttt{zOne},
+\texttt{zQuad}). For \texttt{CountZ}: in Case Z, $\psi=1$ is even for $e$, so $e$ is even and
+$e\ge2$; since $\operatorname{Vlen}$ at level $lN$ is at most the length at level $l$, which
+vanishes by \texttt{PropZ}, one gets $\operatorname{Vlen}=0$ with constant $C=0$.
+\texttt{CountVs} uses \texttt{LemmaK} at $e=1$; its proof was read only at the top.
+\end{proof}
+
+\begin{lemma}[outside the bad set]\label{sha:sumout}
+\lean{UpperTheory.V.HV.sumOut}
+\uses{sha:assembly, sha:counts, sha:cases-exh, sha:redprime}
+Assume \texttt{CountI}, \texttt{CountZ}, \texttt{CountII} and \texttt{CountIII}. Then \texttt{SumOut}.
+\end{lemma}
+\begin{proof}
+\uses{sha:redprime, sha:cases-exh}
+% uses-lean: UpperTheory.V.HV.bchiFacts, UpperTheory.V.Chr.sumBack, UpperTheory.V.HV.exists_coef, UpperTheory.V.HV.hostLevel
+Choose for each $l$ coefficient data with $\varphi(N_h)$-th roots of unity. For $l\notin
+B_{\chi}$ odd, $l\nmid[(\Z/N_h)^{\times}:H_h]$, so Lemma~\ref{sha:redprime} bounds
+$\sum_e\operatorname{plusLen}_l(e)$ by $\sum_e\sum_{\psi\in X}\operatorname{Vn}$. For fixed $e$
+split $S$ by Case I: the Case I primes are bounded together by \texttt{CountI}; for the
+others $(l-1)\mid2e$, so $l\le2t$, and Theorem~\ref{sha:cases-exh} places each $\psi$ in Case
+Z, II or III, bounded pointwise by $(lN_he)^C\le(N_ht)^{3C}$; there are at most $2t$ such $l$
+and at most $N_h$ characters. Summing over $e<t$ gives a bound $(N_ht)^{C'}$.
+\end{proof}
+
+\begin{lemma}[inside the bad set]\label{sha:sumin}
+\lean{UpperTheory.V.HV.sumIn}
+\uses{sha:assembly, sha:counts}
+Assume \texttt{CountII}, \texttt{CountV}, \texttt{CountVs} and \texttt{CountIV}. Then \texttt{SumIn}.
+\end{lemma}
+\begin{proof}
+\uses{sha:cases-exh}
+% uses-lean: UpperTheory.V.HV.redAll, UpperTheory.V.HV.lossLe, UpperTheory.V.Chr.sumBack
+For $l\in B_{\chi}$ the triples are in Case II, IV or V (Theorem~\ref{sha:cases-exh}); Case
+V is split by $R_1(l,\psi)$ against $2^{c_2(\psi)}$ into \texttt{CountV} and \texttt{CountVs},
+and Case IV uses \texttt{CountIV} with the layer budget $B$. Since $l$ may divide the index of
+$H_h$, the reduction from the plus part of $E$ to rational characters goes through
+\texttt{redAll} with a loss term (\texttt{lossLe}) in place of Lemma~\ref{sha:redprime}. The
+final constant is $C_4+2\max(C_2,C_5,C_6)+9+lN_{\chi}$. The proof was read at the level of its
+case split.
+\end{proof}
+
+\begin{lemma}[the plus window statement]\label{sha:point-thmhv}
+\lean{UpperTheory.V.HV.point, UpperTheory.V.HV.thmHV, UpperTheory.V.HV.hostCond}
+\uses{sha:assembly, sha:jointwin, sha:thmbab, sha:host}
+\texttt{SumIn} and \texttt{SumOut} imply \texttt{PointHV}. \texttt{PointHV} implies
+$\texttt{ThmHV}(K,C_t)$ for every constant datum $K$ and $C_t>0$. For a host $h$ and a
+$\chi$-field $E$ for $(\chi,\mathrm{ex},q_1,d)$, $\operatorname{cond}(E)=N_h$.
+\end{lemma}
+\begin{proof}
+For \texttt{point}: sum the bounds of \texttt{SumIn} over the finitely many $l\in B_{\chi}$ and
+add \texttt{SumOut} for the rest. For \texttt{thmHV}: take $j(l)=\lfloor\log_l R_l(L_{\psi}(l))\rfloor+3$,
+matching the bad-prime clause of \texttt{ThmBab}, and the host $(\psi,e(x),q,d)$; it is
+large for $t(x)$ because $t(x)\le X^{C_t}$ and $2X^{C_t}+1<q,d$. Take
+$B=\exp(x^{4\eps/5})$ from the bad-prime clause and rewrite $N_h$ as
+$\operatorname{cond}(E)$ by \texttt{hostCond}.
+\end{proof}
+
+\section{The 2-part, bad primes and the minus part}
+
+\begin{definition}[the a-priori bound LemmaK]\label{sha:lemmak}
+\lean{UpperTheory.V.HasMuQ, UpperTheory.V.kBound, UpperTheory.V.LemmaK}
+\uses{sha:sha}
+$\mathrm{LemmaK}(C_K)$: for every prime $l$, every totally imaginary number field $L$
+containing a primitive $l$-th root of unity ($4$-th if $l=2$), every $l$-adic data $D$ and
+every $e\ge1$, the group $H^2(G_{L,S_l},\Z_l(e+1))$ is finite and
+\[
+\log\bigl|H^2(G_{L,S_l},\Z_l(e+1))\bigr|\le(2|d_L|)^{(2e[L:\Q])^{C_K}} .
+\]
+\end{definition}
+
+\begin{remark}[one name, one statement]\label{sha:rem-lemmak}
+The archive's \texttt{LemmaK} is only this doubly exponential bound. The Bloch--Kato
+vanishing statement \texttt{KatoTwoW} (Definition~\ref{sha:u3-inputs}) is a separate
+archive statement.
+\end{remark}
+
+\begin{lemma}[Ferrero--Washington as stated]\label{sha:fw}
+\lean{UpperTheory.V.Published.FerreroWashington, UpperTheory.V.FW.ferreroWashington}
+For every prime $l$ and every abelian number field $K$ containing a primitive $l$-th root of
+unity ($4$-th if $l=2$), there is $r$ such that for every $n$ and every
+$K'=K(\zeta_{l^n})$, $|\mathrm{Cl}(K')/l|\le l^r$.
+\end{lemma}
+\begin{proof}
+The archive gives a proof term (\arch{Development/AutomorphicArithmetic/AutomorphicVarieties/GaloisLibrary/FerreroWashingtonIndex/}); only its top level was read. That top level is short, but it assembles a development of about 62 files and 4{,}700 lines (a Sinnott-type lemma, Stickelberger elements and others), which was not audited. A uniform bound on the $l$-rank of $\mathrm{Cl}(K(\zeta_{l^n}))$ is equivalent to $\mu=0$, so the statement is not materially weaker than Ferrero--Washington.
+\end{proof}
+
+\begin{theorem}[window statement from LemmaK]\label{sha:thmbab-of}
+\lean{UpperTheory.V.Win.thmBab_of_lemmaK, UpperTheory.V.Win.thmBab_of}
+\uses{sha:thmbab, sha:lemmak, sha:fw}
+% uses-lean: GlobalTheory.Published.PoitouTateDuality, Formalism.GaloisCohomology.LocalFinitenessK, Formalism.GaloisCohomology.LocalTateDualityK
+Assume Poitou--Tate duality, local finiteness, local Tate duality, the Ferrero--Washington
+statement, and $\mathrm{LemmaK}(C_K)$ for some $C_K$. Then there is a constant datum $K$ with
+$\texttt{ThmBab}(K,C_t)$ for every $C_t\ge1$.
+\end{theorem}
+\begin{proof}
+% uses-lean: UpperTheory.V.PropA.aBound_of_isTower, UpperTheory.V.Two.fixedIn, UpperTheory.V.Two.twoIn, UpperTheory.V.Win.window
+The three duality statements give a tower bound (\texttt{aBound\_of\_isTower}): in an
+$l$-power cyclotomic tower over an abelian field the Sha lengths at a layer are bounded
+linearly in the layer and in $B$ for every twist $e$ at $l$-adic distance at least $l^{-B}$
+from each of at most $R$ centres. With Ferrero--Washington this is supplied for the odd bad
+primes (\texttt{fixedIn}) and for $l=2$ (\texttt{twoIn}). \texttt{thmBab\_of} then combines it
+with \texttt{LemmaK} for the at most $R$ exceptional twists, through the pigeonhole lemma
+\texttt{Win.window}: among at most $R$ exceptional twists there is $Y$ in range for
+$J=2^{R+2}(C_t/\eta)^R$ such that on $[Y,Y^2]$ every exceptional twist up to $x^{C_t}$ is at
+most $x^{\eta}$. Only the statements of \texttt{thmBab\_of} and \texttt{window} were read.
+\end{proof}
+
+\begin{definition}[the Bernoulli bound for the minus part]\label{sha:psibound}
+\lean{UpperTheory.V.Odd.alN, UpperTheory.V.Odd.psiLen, UpperTheory.V.Odd.PsiBound}
+\uses{sha:vlen}
+\texttt{PsiBound}: for every abelian CM field $E$ realised in $\Q(\zeta_N)$ (through a
+cyclotomic action $\rho:(\Z/N)^{\times}\to\Gal(E/\Q)$), every odd prime $l\nmid[E:\Q]$, every
+finite discrete valuation ring $\mathcal O\subset\overline\Q_l$ over $\Z_l$, every $e\ge1$ and
+every character $\psi$ of $\Gal(E/\Q)$ with $\psi(\rho(-1))=(-1)^{e+1}$: the $\mathcal
+O$-length of the $\psi$-eigenspace, under $\Gal(E/\Q)$, of the group of classes in
+$H^1(G_E,(\mathcal O\otimes\Q_l/\Z_l)(-e))$ trivial on decomposition groups above $l$ and on
+all inertia groups, is at most the valuation of $a\in\mathcal O$ whenever $a$ equals
+$\mathrm{alN}(e+1,\psi\circ\rho)$, a generalised Bernoulli number $B_{e+1,\psi\circ\rho}$
+times a denominator factor depending on $(N,e+1)$.
+\end{definition}
+
+\begin{theorem}[the minus part]\label{sha:thmbcfree-of}
+\lean{UpperTheory.V.ML.iv, UpperTheory.V.Odd.thmBcFree_of}
+\uses{sha:psibound, sha:thmbc}
+% uses-lean: GlobalTheory.Published.PoitouTateDuality, ReciprocityTheory.Gal.UnramifiedOrthogonality
+Poitou--Tate duality and unramified orthogonality imply \texttt{PsiBound}, and
+\texttt{PsiBound} implies \texttt{ThmBcFree}.
+\end{theorem}
+\begin{proof}
+% uses-lean: UpperTheory.V.ML.psiOf, UpperTheory.V.ML.recip, UpperTheory.V.Odd.stickBound, UpperTheory.V.Odd.primeBound_of, UpperTheory.V.Odd.thmBc_of
+\texttt{ML.iv} is \texttt{psiOf}$\circ$\texttt{recip}. \texttt{thmBcFree\_of} combines a
+degree bound, a Stickelberger-type bound for $l\mid[E:\Q]$ (\texttt{stickBound}) and the
+bound for $l\nmid[E:\Q]$ from \texttt{PsiBound}. Summing $\log l\cdot v_l$ of a Bernoulli
+number over all $l$ is at most the logarithm of its absolute value, which is how a sum over
+all primes is controlled by one archimedean bound. The proofs below the top level were not
+read.
+\end{proof}
+
+\begin{theorem}[VWin from the counts]\label{sha:vwin-of-counts}
+\lean{UpperTheory.V.HV.pointHV_of_counts, UpperTheory.V.HV.thmHV_of_counts, UpperTheory.V.HV.jointWin_of_counts, UpperTheory.V.HV.vwin_of_counts}
+\uses{sha:vwin-of-joint, sha:jointwin-of, sha:point-thmhv, sha:sumin, sha:sumout, sha:easy-cases, sha:thmbc-iff, sha:counts, sha:lemmak, sha:thmbab}
+% uses-lean: GlobalTheory.Published.PoitouTateDuality, Formalism.GaloisCohomology.LocalFinitenessK, Formalism.GaloisCohomology.LocalTateDualityK
+Assume Poitou--Tate duality, local finiteness and local Tate duality, $\mathrm{LemmaK}(C_K)$,
+$\texttt{ThmBab}(K,401)$ for some constant datum $K$, \texttt{ThmBcFree}, \texttt{CountI},
+\texttt{CountII}, \texttt{CountIII}, \texttt{CountV} and \texttt{CountZ}. Then \texttt{VWin}.
+\end{theorem}
+\begin{proof}
+\uses{sha:sumin, sha:sumout, sha:easy-cases, sha:point-thmhv, sha:jointwin-of, sha:vwin-of-joint, sha:thmbc-iff}
+\texttt{PointHV} is \texttt{point}(\texttt{sumIn}(II, V, Vs, IV), \texttt{sumOut}(I, Z, II, III)),
+with \texttt{CountVs} and \texttt{CountIV} from Lemma~\ref{sha:easy-cases}. Then
+\texttt{thmHV} gives \texttt{ThmHV}$(K,401)$, Lemma~\ref{sha:jointwin-of} gives
+\texttt{JointWin}$(401)$, Lemma~\ref{sha:thmbc-iff} turns \texttt{ThmBcFree} into
+\texttt{ThmBc}$(401)$, and Theorem~\ref{sha:vwin-of-joint} concludes.
+\end{proof}
+
+\section{Case I: the converse to Ribet on U(3)}
+
+\begin{definition}[the generic datum GD]\label{sha:gd}
+\lean{UpperTheory.V.HV.GD}
+\uses{sha:vlen, sha:charparts}
+Let $\Omega$ be an algebraic closure of $\Q$, $\mathbb K\subset\Omega$ a number field, $l$ a
+prime, $e\in\N$ and $\psi$ a character modulo $N$. $\mathrm{GD}(\Omega,\mathbb K,l,e,\psi)$
+holds if: $l$ is odd; $e\ge1$; $N$ is even; $l\nmid\operatorname{ord}\psi$;
+$\psi_{(l)}^2=1$; $\psi(-1)=(-1)^e$; $\mathbb K$ is imaginary quadratic;
+$l\nmid|d_{\mathbb K}|h_{\mathbb K}$; $\gcd(|d_{\mathbb K}|,N)=1$; $(l-1)\nmid2e$; and the
+intersection of the kernels in $G_{\Q}$ of the mod-$l$ cyclotomic character and of
+$\chi'_l(\psi)$ is not contained in $G_{\mathbb K}$.
+\end{definition}
+
+\begin{definition}[PropGK and CorGK]\label{sha:propgk}
+\lean{UpperTheory.V.U3.PropGK, UpperTheory.V.U3.CorGK}
+\uses{sha:gd, sha:vlen}
+\texttt{PropGK}: for every number field $\mathbb K$ there are naturals $c_5,A$ such that for
+all $e\ge1$, $N\ge1$, $H'\le(\Z/N)^{\times}$ and every prime $p\nmid30N|d_{\mathbb K}|$ there is
+a nonzero integer $N_{\mathrm{GK}}$ with
+$\log|N_{\mathrm{GK}}|\le c_5\,\varphi([(\Z/N)^{\times}:H'])\,(N(e+1))^A\log p$ such that for
+every $\Omega$ containing $\mathbb K$, every prime $l\ne p$ and every coefficient data $c$
+for $l$: if $\mathrm{GD}(\Omega,\mathbb K,l,e,\psi)$ for some $\psi\in\operatorname{orb}(c,H')$,
+then $\operatorname{Vlen}(\Omega,c,e,\psi)<\infty$ for all $\psi\in\operatorname{orb}(c,H')$ and
+$\sum_{\psi\in\operatorname{orb}(c,H')}\operatorname{Vn}\le2v_l(N_{\mathrm{GK}})$.
+\texttt{CorGK}: for every $\mathbb K$ there are $c_5,A$ such that for two distinct primes
+$p,p'\nmid30N|d_{\mathbb K}|$, every family $(c_l)$ and finite set $L_s$ of primes each having a
+$\mathrm{GD}$ character in its orbit: finiteness, and
+$\sum_{l\in L_s}\log l\sum_{\psi}\operatorname{Vn}\le2c_5\varphi(i)(N(e+1))^A(\log p+\log p')$.
+\end{definition}
+
+\begin{lemma}[summing over primes]\label{sha:corgk}
+\lean{UpperTheory.V.U3.corGK}
+\uses{sha:propgk}
+\texttt{PropGK} implies \texttt{CorGK}.
+\end{lemma}
+\begin{proof}
+Apply \texttt{PropGK} at $p$ and at $p'$, getting $N_{\mathrm{GK}},N'_{\mathrm{GK}}$. Each $l$
+differs from $p$ or from $p'$, so the $\psi$-sum at $l$ is at most
+$2v_l(N_{\mathrm{GK}})+2v_l(N'_{\mathrm{GK}})$. Then
+$\sum_l\log l\,v_l(n)\le\log|n|$ for a nonzero integer $n$ (\texttt{corG\_sum\_log}).
+\end{proof}
+
+\begin{theorem}[Case I from CorGK]\label{sha:counti}
+\lean{UpperTheory.V.U3.countI, UpperTheory.V.HV.gdOfHost}
+\uses{sha:propgk, sha:counts, sha:gd, sha:host, sha:bchi}
+For a large host $h$, an odd prime $l$ in Case I for $0<e<t$, and an even host character
+$\psi$, $\mathrm{GD}(\Omega,\Q(\sqrt{-p_K}),l,e,\psi)$ holds (\texttt{gdOfHost}).
+\texttt{CorGK} implies \texttt{CountI}.
+\end{theorem}
+\begin{proof}
+\uses{sha:corgk}
+% uses-lean: UpperTheory.V.HV.orbSum, UpperTheory.V.HV.orbFacts, UpperTheory.V.HV.hostIndex
+Take $\mathbb K=K^*=\Q(\sqrt{-p_K})$ and primes $r_1>30N_{\chi} p_K$, $r_2>r_1$; for hosts with
+$r_1,r_2<q_1,d$ neither divides $30N_h|d_{\mathbb K}|$. Group $X(h,c_l,e)$ by kernel $H'$;
+each class lies in $\operatorname{orb}(c_l,H')$ and contains a $\mathrm{GD}$ character by
+\texttt{gdOfHost}. Apply \texttt{CorGK} for each kernel; the quotients by the kernels are
+cyclic, so $\sum_{H'}\varphi([(\Z/N_h)^{\times}:H'])\le\varphi(N_h)\le N_h$. The constants are
+absorbed into $(N_ht)^{k+1+A}$ using $N_h\ge16$.
+\end{proof}
+
+\begin{definition}[U(3) congruence inputs]\label{sha:u3-inputs}
+\lean{UpperTheory.V.Af.eis3, UpperTheory.V.Af.Adm3Alt, UpperTheory.V.Z.Win.Dn.Adm2A, UpperTheory.V.Z.J.Adm3U_s, UpperTheory.V.Z.J.NumberU3U_s, UpperTheory.V.Z.J.OneCharU_s, UpperTheory.V.Z.Kato.WeilSphericalRecords.KatoTwoW, UpperTheory.V.Aut.AutomorphyUnramifiedCoefficientsAlt}
+\uses{sha:gd, sha:vlen}
+% uses-lean: UpperTheory.V.Z.Win.IsAutCsdA, UpperTheory.V.Z.Win.IsAutQA
+Let $\mathbb K$ be an imaginary quadratic field and
+$\mathrm{eis}_3(q,e,z)=q^{-e}z+1+q^ez^{-1}$.
+\begin{itemize}
+\item A representation $\rho:G_{\mathbb K}\to\GL_3(\overline\Q_l)$ is \emph{admissible of
+type 3} for $(\iota,e,N)$ if it is irreducible, its twist by the inverse cyclotomic character
+is automorphic in the archive's conjugate self-dual sense (\texttt{IsAutCsdA}), it has level
+$N$ with weights $(e,0,-e)$, and (for \texttt{Adm3U\_s}) an unramifiedness condition. It is
+\emph{admissible of type 2} if $\rho\cong W|_{G_{\mathbb K}}\oplus1$ (in the block form of
+the definition) with $W:G_{\Q}\to\GL_2$ irreducible, attached to a newform of weight $2e+1$ after
+twist by $\chi_{\mathrm{cyc}}^{-e}$, of level $N|d_{\mathbb K}|$ and weights $(e,-e)$, with
+determinant of cyclotomic weight $0$.
+\item \texttt{NumberU3U\_s} (congruence number): for every such $\mathbb K$ there are $c,A$
+such that for $e,N\ge1$, a prime $p\ge7$ with $p\nmid N$, $p\nmid d_{\mathbb K}$, a place
+$w\mid p$ of $\mathbb K$, and a finite family $(z_o)$ of roots of unity stable under
+$\mathrm{Aut}(\CC)$, there is a nonzero integer $N_{\mathrm{GK}}$ with
+$\log|N_{\mathrm{GK}}|\le c\,|\{o\}|\,(N(e+1))^A\log p$ such that for every odd $l\ne p$, every
+Frobenius $\sigma$ at $w$ and every family of finite sets $X_o$ of pairwise non-isomorphic
+admissible $\rho$: $\operatorname{tr}\rho(\sigma^{-1})\ne\mathrm{eis}_3(Nw,e,z_o)$ and
+$\|N_{\mathrm{GK}}\|_l\le\prod_o\prod_{\rho\in X_o}\|\operatorname{tr}\rho(\sigma^{-1})-
+\mathrm{eis}_3(Nw,e,z_o)\|_l$.
+\item \texttt{OneCharU\_s}: if $\mathrm{GD}(\Omega,\mathbb K,l,e,\psi)$, $\sigma\in G_{\mathbb K}$,
+$t=\Psi(\sigma)+1+\Psi(\sigma)^{-1}$ with $\Psi=\chi_{\mathrm{cyc}}^e\psi$, and no admissible
+$\rho$ has $\operatorname{tr}\rho(\sigma)=t$, then $\operatorname{Vlen}(\psi)<\infty$ and there
+is a finite set $X$ of pairwise non-isomorphic admissible $\rho$ with
+$\operatorname{Vn}(\psi)\le2\sum_{\rho\in X}v_l(\operatorname{tr}\rho(\sigma)-t)$.
+\item \texttt{KatoTwoW}: for a newform $f$ of weight $2e+1$ attached to $W(-e)$ (under the
+archive's conditions \texttt{Used}), the Bloch--Kato Selmer groups of $W$ and $W\otimes\theta$
+vanish.
+\item \texttt{AutomorphyUnramifiedCoefficientsAlt}: for every datum $D$ of the $\U(3)$ setting
+with $e(\mathcal O)=1$ and every $\iota$ there is a marked $g_1\in G_{\Q}$ with a finiteness
+condition such that every characteristic-zero point of type I of the associated deformation
+rings is automorphic and every type II point has modular two-dimensional part.
+\end{itemize}
+\end{definition}
+
+\begin{remark}[what U3 means here]\label{sha:rem-u3}
+The deformation rings of the last item take values in the archive's group
+$\mathrm{GG}\,3$, which encodes $\GL_3\rtimes\{\pm1\}$ (conjugate self-duality). No unitary
+group appears in the statements of \texttt{PropGK}; ``$\U(3)$'' refers to this setting and to
+the conjugate self-dual automorphy of the type-3 points.
+\end{remark}
+
+\begin{definition}[abstract congruence lemmas]\label{sha:lemmam}
+\lean{UpperTheory.V.Alg.LemmaM, UpperTheory.V.Alg.LemmaM', UpperTheory.V.Alg.M.main_holds, UpperTheory.V.Alg.M.mprime_holds}
+Let $\mathcal O$ be a complete discrete valuation ring of characteristic zero, $A$ a
+$\Z$-graded $\mathcal O$-algebra with an $\mathcal O$-point $x$, $I$ an ideal, $a\in A_0$ with
+$x(a)=0$, and $K$ an algebraically closed field over $\mathcal O$ with a normalised valuation
+$v$. A $K$-point $\xi$ of $A/I$ is \emph{two-signed} if it is nonzero on some element of
+positive degree and on some element of negative degree. \texttt{LemmaM}: under conditions
+(smoothness of $x$ with given graded dimensions, spanning of the cotangent pieces of degrees
+$-1,-2,0$ by given equations, finiteness of $(A/I)_0$, and three conditions on two-signed
+points, among them $\xi(a)\ne0$ for all two-signed $\xi$), there is a finite set $T$ of
+two-signed points meeting every orbit, the weight $-1$ cotangent length at $x$ is finite, and
+for every such $T$ it is at most $2\sum_{\xi\in T}v(\xi(a))$. \texttt{LemmaM'}: a module $M$
+embedded into derivations at $x$ of weight $j$ modulo $c$ that kill given equations and lift
+to point-derivations has length at most the weight-$j$ cotangent length. Both are archive
+theorems (\texttt{main\_holds}, \texttt{mprime\_holds}).
+\end{definition}
+
+\begin{remark}[the mechanism]\label{sha:rem-mech}
+In the $\U(3)$ case $x$ is the Eisenstein point $\Psi\oplus1\oplus\Psi^{-1}$ of an ordinary
+deformation ring, $a$ is the difference between the trace at a Frobenius and the Eisenstein
+trace, and the Sha group injects into the weight $-1$ cotangent piece (\texttt{U3.vlen\_le},
+\arch{Development/AutomorphicArithmetic/AutomorphicVarieties/UnitaryThreeGroups/VlenLe.lean},
+statement read). \texttt{LemmaM} then bounds its length by valuations of
+$\operatorname{tr}\rho(\sigma)-t$ over the two-signed points, which
+\texttt{AutomorphyUnramifiedCoefficientsAlt} makes automorphic, and \texttt{NumberU3U\_s}
+turns into one integer. This reading of the roles of $x$ and $a$ is taken from the statement
+shapes and the names, not from a full reading of the proofs.
+\end{remark}
+
+\begin{theorem}[PropGK from the congruence number]\label{sha:propgk-of}
+\lean{UpperTheory.V.Z.J.propGK_of_numberU3U_of_oneCharU}
+\uses{sha:propgk, sha:u3-inputs}
+\texttt{NumberU3U\_s} and \texttt{OneCharU\_s} imply \texttt{PropGK}.
+\end{theorem}
+\begin{proof}
+If $\mathbb K$ is not imaginary quadratic, $\mathrm{GD}$ never holds and one takes
+$N_{\mathrm{GK}}=1$, $c_5=A=0$. Otherwise $p\ge7$ (as $p\nmid30$); choose a place $w\mid p$
+and apply \texttt{NumberU3U\_s} to the orbit of complex characters with kernel $H'$ and
+$z_{\chi}=\chi(Nw)^{-1}$; the orbit has $\varphi(i)$ elements. For a Frobenius $\sigma$ at $w$,
+\texttt{OneCharU\_s} at $\sigma^{-1}$ (its hypothesis supplied by the trace nonvanishing of
+\texttt{NumberU3U\_s}) gives sets $X_{\psi}$ with $\operatorname{Vn}(\psi)\le2\sum v_l(\ldots)$;
+the product inequality for $\|N_{\mathrm{GK}}\|_l$ bounds the sum by $2v_l(N_{\mathrm{GK}})$.
+\end{proof}
+
+\begin{lemma}[OneCharU from Kato, rigidity and automorphy]\label{sha:onecharu}
+\lean{UpperTheory.V.Z.J.oneCharU_of_katoTwoW_rig_admI_automorphy}
+\uses{sha:u3-inputs, sha:lemmam}
+% uses-lean: UpperTheory.V.U3.CohInp, UpperTheory.V.Alg.LemmaP, UpperTheory.V.Th.RigidityFirstCase, UpperTheory.V.Th.RigiditySecondCase, UpperTheory.V.Z.J.AdmI_s
+Assume the cohomological inputs \texttt{CohInp}, \texttt{LemmaM}, \texttt{LemmaM'},
+\texttt{LemmaP}, \texttt{KatoTwoW}, the two rigidity statements, \texttt{AdmI\_s} and
+\texttt{AutomorphyUnramifiedCoefficientsAlt}. Then \texttt{OneCharU\_s}.
+\end{lemma}
+\begin{proof}
+Replace $c$ by coefficient data with $e(\mathcal O)=1$ carrying the same character
+(\texttt{exists\_unram}; $\operatorname{Vlen}$, $\operatorname{Vn}$ and $\mathrm{GD}$ are
+unchanged, \texttt{coefIndep}) and apply \texttt{oneChar\_unramU}, whose proof was not read.
+\end{proof}
+
+\begin{theorem}[Case I on the main chain]\label{sha:counti-main}
+\lean{UpperTheory.V.Z.J.count_i_of_printed_bound_k_kato_automorphy}
+\uses{sha:counti, sha:corgk, sha:propgk-of, sha:onecharu, sha:lemmak, sha:lemmam}
+% uses-lean: UpperTheory.V.Af.HypothesesH', UpperTheory.GalN.V.Win.N.numberU3U_of_prints, UpperTheory.V.HV.Core0.cohInp_alt, UpperTheory.V.Z.J.linkedUnlE_alt, UpperTheory.V.Z.J.rigIUE_alt, UpperTheory.V.Z.Win.RR.rigII_a_alt, UpperTheory.V.Z.J.admissible_typeI_even_level_alt, UpperTheory.V.HV.DescentVanishingReductions.adjoint_lifting_of_cohomology, UpperTheory.V.Alg.lemmaP
+Assume the literature bundle \texttt{HypothesesH'}, $\mathrm{LemmaK}(C_K)$ for some $C_K$,
+\texttt{KatoTwoW} and \texttt{AutomorphyUnramifiedCoefficientsAlt}. Then \texttt{CountI}.
+\end{theorem}
+\begin{proof}
+\texttt{CountI} = \texttt{U3.countI}(\texttt{corGK}(\texttt{propGK\_of\_numberU3U\_of\_oneCharU}
+(\texttt{numberU3U\_of\_prints}, \texttt{oneCharU\_of\_{\ldots}}))), with \texttt{LemmaM},
+\texttt{LemmaM'}, \texttt{LemmaP} supplied by archive theorems and the rigidity and
+admissibility inputs derived from \texttt{HypothesesH'}.
+\end{proof}
+
+\section{Cases II, III and V: GSp(4) and the reduced unitary lift}
+
+\begin{definition}[GSp(4) congruence inputs]\label{sha:gsp4-inputs}
+\lean{UpperTheory.V.Af.NumberSp4Alt, UpperTheory.V.Aut.SymplecticFourImageDense}
+\uses{sha:host}
+\texttt{NumberSp4Alt}: there are $c,A$ such that for $e\ge2$, $M\ge1$, a prime $p\ge5$,
+$p\nmid M$, $k>0$ and $k$-th roots of unity $z_1,z_2,z_3$, there is a nonzero integer
+$N_{\mathrm{Sp}}$ with $\log|N_{\mathrm{Sp}}|\le c\,\varphi(k)(M(e+1))^A\log p$ such that for
+every odd $l\ne p$, Frobenius $\sigma$ at $p$ and finite set $X$ of pairwise non-isomorphic
+admissible $r:G_{\Q}\to\GL_4(\overline\Q_l)$ (irreducible, automorphic over imaginary quadratic
+fields in the archive's sense, level $M$ with weights $(e+1,e,1,0)$, dual to a cyclotomic twist
+of weight $e+1$): $\operatorname{tr}r(\sigma)\ne\mathrm{eis}_4(p,e,z_1,z_2,z_3)$ and
+$\|N_{\mathrm{Sp}}\|_l\le\prod_{r\in X}\|\operatorname{tr}r(\sigma)-\mathrm{eis}_4\|_l$.
+\texttt{SymplecticFourImageDense}: for every large host, odd $l$, $0<e<t$, $\psi\in X(h,c,e)$
+and every good raw $\GSp_4$ datum $D$ of the case of $(h,e,\psi)$: $D$ satisfies a finiteness
+condition and a no-endpoint condition, and for some $\iota$ every irreducible point of $D$ is
+automorphic.
+\end{definition}
+
+\begin{remark}[a misleading name]\label{sha:rem-sp4name}
+\texttt{SymplecticFourImageDense} says nothing about the density of an image. It asserts
+finiteness, a no-endpoint condition and automorphy of all irreducible points of the
+$\GSp_4$ deformation data.
+\end{remark}
+
+\begin{theorem}[Cases II and III]\label{sha:count23}
+\lean{UpperTheory.V.Th.sp4Main_alt, UpperTheory.V.HV.DescentVanishingReductions.countII_and_countIII_of_printsH_of_sp4In}
+\uses{sha:gsp4-inputs, sha:counts, sha:lemmam, sha:lemmak}
+% uses-lean: UpperTheory.V.Th.RigiditySymplecticFour, UpperTheory.V.X.CorX, UpperTheory.V.Alg.LemmaP, UpperTheory.V.Af.HypothesesH', UpperTheory.GalN.V.numberSp4_n_alt, UpperTheory.V.Th.rigSp4_alt, UpperTheory.V.X.corX, UpperTheory.V.X.soBar, UpperTheory.V.X.soFin
+Assume \texttt{SymplecticFourImageDense}, a cohomology bundle, \texttt{LemmaM},
+\texttt{LemmaM'}, \texttt{LemmaP}, \texttt{NumberSp4Alt}, the rigidity statement for $\GSp_4$,
+\texttt{CorX} and two statements \texttt{SoV}, \texttt{SoFin}. Then \texttt{CountII} and
+\texttt{CountIII}. On the main chain these hypotheses are supplied from \texttt{HypothesesH'},
+$\mathrm{LemmaK}$ and \texttt{SymplecticFourImageDense}.
+\end{theorem}
+\begin{proof}
+Prove the bound for $\psi$ in Case II or III together, then specialise. Enlarge the
+coefficients to contain $2^{n_{II}+n_{III}}$-th roots of unity (lengths unchanged). For a
+good $\GSp_4$ datum $D$ of the case, the Sha length is at most a cotangent length
+(\texttt{shaEq}); automorphy of all irreducible points, rigidity and \texttt{NumberSp4Alt} at
+an auxiliary prime $p_0\nmid lN_h$ give a Frobenius $\sigma$ for which the bound holds
+(\texttt{galoisRep\_ineq\_of\_allIrreducible\_nonvanishing}); arithmetic absorbs it into
+$(lN_he)^C$. The helper \texttt{main\_big} was read at the top level only.
+\end{proof}
+
+\begin{theorem}[Case V]\label{sha:countv}
+\lean{UpperTheory.V.Z.J.count_v_of_printed_bound_k_reduced_unitary_lift}
+\uses{sha:counts, sha:lemmak}
+% uses-lean: UpperTheory.V.Af.HypothesesH', UpperTheory.V.Aut.ThmS6Core_s, UpperTheory.V.UnitaryThreeInertia.countV_of_finiteness_duality_euler_host, UpperTheory.V.UnitaryThreeInertia.unitary_lift_of_reduced_core, UpperTheory.V.X.residual_bernoulli_nonvanishing, UpperTheory.V.Z.J.hostRigidUE_alt, UpperTheory.V.Z.J.hostNumberUE_alt
+Assume \texttt{HypothesesH'}, $\mathrm{LemmaK}(C_K)$ for some $C_K$ and the reduced core
+statement \texttt{ThmS6Core\_s}. Then \texttt{CountV}.
+\end{theorem}
+\begin{proof}
+A single application of \texttt{countV\_of\_finiteness\_duality\_euler\_host} to a reduced
+unitary lift, the global and local duality and Euler characteristic statements of the
+literature bundle, a vanishing statement from \texttt{LemmaK}, a residual Bernoulli
+nonvanishing input, and rigidity and congruence-number statements for the host. Not read
+further.
+\end{proof}
+
+\section{From the Galois representation hypothesis to VWin}
+
+\begin{theorem}[VWin from the literature bundle]\label{sha:vwin-hyp}
+\lean{UpperTheory.V.HV.Core.of_four_alt, UpperTheory.V.HV.DescentVanishingReductions.vwin_of_hypotheses_H_E_alt, UpperTheory.V.HV.DescentVanishingReductions.v_window_of_automorphy_csd_ss_mono_odd, UpperTheory.V.v_window_of_literal_automorphy_n}
+\uses{sha:vwin-of-counts, sha:thmbab-of, sha:fw, sha:thmbcfree-of, sha:easy-cases, sha:counti-main, sha:count23, sha:countv, sha:litn}
+% uses-lean: UpperTheory.V.HV.U.pt_s, UpperTheory.V.ZK.lemmaK_litN_alt, UpperTheory.V.Z.Win.Dn.ends0_alt, UpperTheory.V.HV.DescentVanishingReductions.sp4In0_alt, UpperTheory.V.Z.Kato.WeilSphericalRecords.katoTwoW_of_printsH, UpperTheory.V.HV.Core0.automorphyUnramified_of_litN_of_gdEnd, UpperTheory.V.HV.DescentVanishingReductions.published_hypotheses_from_patching_alt, UpperTheory.V.Z.Tf.SR.descWeak
+Let \texttt{LitN} be the literature bundle of Definition~\ref{sha:litn}. Assume
+\texttt{LitN}, $\mathrm{LemmaK}(C_K)$ for some $C_K$, \texttt{CountI}, \texttt{CountII},
+\texttt{CountIII} and \texttt{CountV}. Then \texttt{VWin} (\texttt{of\_four\_alt}).
+Consequently \texttt{LitN} alone implies \texttt{VWin}.
+\end{theorem}
+\begin{proof}
+\uses{sha:vwin-of-counts, sha:thmbab-of, sha:thmbcfree-of, sha:easy-cases, sha:fw}
+For \texttt{of\_four\_alt}: Poitou--Tate duality comes from \texttt{LitN} (\texttt{pt\_s}),
+local finiteness, local Tate duality and unramified orthogonality from its cohomology part;
+Theorem~\ref{sha:thmbab-of} with Lemma~\ref{sha:fw} gives $\texttt{ThmBab}(K,401)$;
+Theorem~\ref{sha:thmbcfree-of} gives \texttt{ThmBcFree}; Lemma~\ref{sha:easy-cases} gives
+\texttt{CountZ}; Theorem~\ref{sha:vwin-of-counts} concludes. For the second statement,
+\texttt{published\_hypotheses\_from\_patching\_alt} builds \texttt{HypothesesH'} from
+\texttt{LitN} and a descent statement; \texttt{LemmaK} comes from \texttt{lemmaK\_litN\_alt};
+\texttt{CountII}, \texttt{CountIII} from Theorem~\ref{sha:count23}; \texttt{CountI} from
+Theorem~\ref{sha:counti-main}, with \texttt{KatoTwoW} and the automorphy statement derived
+from \texttt{HypothesesH'}; \texttt{CountV} from Theorem~\ref{sha:countv}.
+\end{proof}
+
+\begin{definition}[the literature bundle and the open image condition]\label{sha:litn}
+\lean{GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis, UpperTheory.LiteratureTheorems.OpenImageCondition}
+% uses-lean: GlobalTheory.Mem.LiteralAutomorphy.LitLocAlt, GlobalTheory.Mem.LiteralAutomorphy.LiteratureAutomorphyHypothesis, GlobalTheory.Mem.LiteralAutomorphy.LitCoh, GlobalTheory.Mem.LiteralAutomorphy.LiteratureCMHypothesis, UpperTheory.V.Z.Win.RowT
+\texttt{LiteratureRankNHypothesis} is the conjunction of four records of statements: local
+representation theory of $\GL_n$ (\texttt{loc}), automorphic forms and Galois representations
+(\texttt{aut}, which contains the Galois-representation statement as its field \texttt{gal}
+and base change as \texttt{bc}), Galois cohomology (\texttt{coh}), and CM theory
+(\texttt{cm}). \texttt{OpenImageCondition} is a record with one field: the statement
+\texttt{RowT}, existence of Galois representations attached to regular algebraic polarized
+cuspidal representations with the archive's local--global compatibility.
+\end{definition}
+
+\begin{remark}[the open image condition is a repackaging]\label{sha:rem-open}
+Despite its name, \texttt{OpenImageCondition} contains no open-image statement; it is
+\texttt{RowT} in a structure. The theorems \texttt{*\_of\_open} that fill the other fields of
+the literature bundle from it ignore their argument and are discharged by archive proof terms
+(for example \texttt{clozel\_purity\_of\_open}, \texttt{deligne\_ribet\_of\_open}).
+\end{remark}
+
+\begin{theorem}[VWin from Galois representations]\label{sha:vwin-of-row}
+\lean{UpperTheory.One.vwin_of_row, UpperTheory.One.Join.automorphic_window_of_inputs, UpperTheory.One.Join.v_window_of_depth_zero_residual_bc_cm}
+\uses{sha:vwin-hyp, sha:litn, sha:vwin}
+% uses-lean: UpperTheory.GalStar.Row0b, UpperTheory.Zero.LLC.IsRecT, UpperTheory.BaseChangeIdentities.baseChangeN, PositivityTheory.Rg.BcN.BaseChangeIsobaricN, UpperTheory.One.Join.local_inputs_from_literature, UpperTheory.One.Join.automorphic_inputs_from_literature, UpperTheory.One.Join.cm_abelian_inputs_from_literature, UpperTheory.LiteratureTheorems.galois_cohomology_from_literature
+\uses{fam:laws-t, fam:props-b} % resolved
+Assume the Galois-representation statement $\mathrm{Row0b}$ for the local Langlands
+parameters satisfying the archive's laws \texttt{IsRecT}. Then \texttt{VWin}.
+\end{theorem}
+\begin{proof}
+\uses{sha:vwin-hyp}
+Put $O=\texttt{OpenImageCondition.mk}(h)$. \texttt{automorphic\_window\_of\_inputs}$(O,
+\texttt{baseChangeN},h)$ is \texttt{v\_window\_of\_depth\_zero\_residual\_bc\_cm} with the CM
+record built from $O$, which assembles the literature bundle from the four records (the
+Galois-representation field \texttt{gal} is $h$, base change is the archive theorem
+\texttt{baseChangeN}) and applies Theorem~\ref{sha:vwin-hyp}.
+\end{proof}

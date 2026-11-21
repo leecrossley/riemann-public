@@ -1,0 +1,895 @@
+\chapter{The geometric inequality II: local sizes, covolume and the Chebyshev inequality}\label{ch:geob}
+
+This chapter covers the size data that the archive attaches to a package: the
+archimedean main term (Stirling's $y\log y-y$ and a period $\log\Omega$ built
+from $L'/L(1,\chi_{-d})$), the local sizes at finite places with the
+Legendre-type count at inert primes, the two ``link'' predicates that bundle
+these with the period lattices, and the covolume statements on the indefinite
+side. It ends with the passage from a slope record to the gap bound
+(\texttt{ch\_top}) and from tied families to the Chebyshev inequality on
+windows (\texttt{level\_gm\_le\_on\_family\_scales}), together with the
+statement \texttt{TopG} that the existence part of the archive must supply.
+The lattices, slopes and the slope record itself are treated in the preceding
+chapter and are referred to here only through their Lean names.
+
+Throughout, $D$ is a package (the archive's \texttt{D7}) and $L$ a size datum
+for $D$ (\texttt{SizeData₂ D}). The scale of $L$ has real numbers $x>1$ and
+$0<\eps<1/52$, and the archive sets
+\[
+L_x=x^{\eps},\quad b=e^{x^{\eps}},\quad a=xb,\quad X'=e^{x^{\eps/3}},\quad
+b'=a/X',\quad w''(n)=b'/(xn),\quad X''(n)=a/w''(n)=xnX'
+\]
+(\arch{Formalism/LocalRingCardinality/DataParams₂.lean}, lines 9--47).
+We write $n$ for the order $|A|$ of the host's group, $f=2n$, $m$ for the
+number of lifts and $k$ for the base rank of $D$.
+
+\section{The archimedean side}
+
+\begin{definition}[Stirling's function and the prime-sum comparison]\label{geob:phF}
+\lean{Formalism.BasicNotions.phF, Formalism.BasicNotions.Gfun}
+For real $y$ put $\operatorname{ph}(y)=y\log y-y$. Put
+\[
+G(y)=\sum_{1\le n\le\lfloor y\rfloor}\Lambda(n)\Bigl(\frac yn-1\Bigr)-y\log y+(1+\gamma)y,
+\]
+with $\Lambda$ Mathlib's von Mangoldt function and $\gamma$ Euler's constant.
+\end{definition}
+
+\begin{definition}[the quadratic character of the host and its logarithmic derivative]\label{geob:dlogL}
+\lean{Formalism.BasicNotions.chiK, Formalism.BasicNotions.dlogL}
+% uses-lean: Formalism.BasicNotions.D7, Formalism.BasicNotions.Host
+\uses{host:host-full} % resolved
+Let $d$ be the prime of the host of $D$ (so $K=\Q(\sqrt{-d})$ sits in the host
+field $E$). Let $\chi_K$ be the Dirichlet character modulo $d$ obtained from
+the quadratic character of $\Z/d\Z$ (the Legendre symbol modulo $d$), viewed
+with values in $\CC$. For $s\in\CC$ put
+\[
+\operatorname{dlogL}(D,s)=\Re\frac{L'(s,\chi_K)}{L(s,\chi_K)},
+\]
+where $L(s,\chi_K)$ is Mathlib's $L$-function of $\chi_K$ and $L'$ its complex
+derivative.
+\end{definition}
+
+\begin{definition}[root discriminant, $v$ and the period $\log\Omega$]\label{geob:logOm}
+\lean{Formalism.BasicNotions.Host.rdE, Formalism.BasicNotions.Host.v, Formalism.BasicNotions.SizeData₂.logOm}
+% uses-lean: Formalism.BasicNotions.SizeData₂
+\uses{geob:dlogL}
+For the host field $E$ put $\operatorname{rd}_E=|\operatorname{disc}E|^{1/[E:\Q]}$
+and $v=\operatorname{rd}_E/2$. A size datum $L$ records a real number
+$\ell_K$ (\texttt{logDerivativeAtOne}) together with the field
+$\ell_K=\operatorname{dlogL}(D,1)$. Put
+\[
+\log\Omega=\gamma+\log\frac{\pi}{v}-\ell_K
+=\gamma+\log\frac{2\pi}{\operatorname{rd}_E}-\Re\frac{L'(1,\chi_K)}{L(1,\chi_K)}.
+\]
+The symbol $\log\Omega$ is notation; the archive does not define $\Omega$ itself.
+\end{definition}
+
+\begin{definition}[the archimedean main term of a word]\label{geob:main}
+\lean{Formalism.BasicNotions.SizeData₂.MAIN}
+\uses{geob:phF, geob:logOm}
+% uses-lean: Formalism.BasicNotions.SizeData₂
+Let $TT$ be the set of top places of the host and $a_t$ ($t\in TT$) the integer
+weights recorded by $L$; the size datum requires $a\le a_t\le a+a/(kx^{13})$.
+For a word $u$ of $D$ let $T(u)$ be its level prime. Put
+\[
+\mathcal M(u)=\sum_{t\in TT}\Bigl(m\bigl(\operatorname{ph}(a_t)-a_t\log\Omega\bigr)-a_t\log T(u)\Bigr).
+\]
+\end{definition}
+
+\begin{remark}[three functions called \texttt{MAIN}]
+The archive has at least three unrelated declarations named \texttt{MAIN}: the
+one above (\arch{Formalism/LocalRingCardinality/DataParams₂.lean}, line 232), a
+complex-valued main term for one weight in
+\arch{Formalism/SizeWindowBrackets/FirstPrimeNeSecondPrime.lean} (line 89),
+and a third in \arch{Development/AutomorphicArithmetic/DedekindLFunctions/RunBaseDimensionLeRankAddGenusTerm.lean}
+(line 110). There are also at least four declarations named \texttt{logOm},
+all of the shape $\gamma+\log(\pi/v)-\ell$ for different records. Only the first
+\texttt{MAIN} enters the upper link below.
+\end{remark}
+
+\begin{remark}[reading the main term]
+Stirling's formula gives $\log\Gamma(y+1)=y\log y-y+O(\log y)$, so
+$\operatorname{ph}(a_t)$ is the size of $\log a_t!$. The term
+$-a_t\log\Omega$ normalises by the $a_t$-th power of a period whose logarithm
+is $\gamma+\log(\pi/v)-L'/L(1,\chi_K)$, a formula of Chowla--Selberg or
+Kronecker-limit type for CM by $K$, and the factor $m$ counts the lifts. This is
+the only place in the size data where $L'(1,\chi_K)/L(1,\chi_K)$ enters. The
+reading as a CM period is an interpretation; the archive only defines the
+number.
+\end{remark}
+
+\section{Local sizes at finite places}
+
+\begin{definition}[local sizes]\label{geob:sz}
+\lean{Formalism.BasicNotions.lw, Formalism.BasicNotions.SizeData₂.lwP, Formalism.BasicNotions.SizeData₂.sz, Formalism.BasicNotions.SizeData₂.lifts, Formalism.BasicNotions.SizeData₂.gainD, Formalism.BasicNotions.SizeData₂.Fo, Formalism.BasicNotions.SizeData₂.Ga, Formalism.BasicNotions.SizeData₂.Ee}
+% uses-lean: Formalism.BasicNotions.SizeData₂
+Let $\mathbb L$ be the coefficient number field of $D$. For a finite place $w$
+of $\mathbb L$ put $\operatorname{lw}_w=\log N(w)/[\mathbb L:\Q]$, let $e_w$ be
+its ramification index over $\Z$, and for real $y$ put
+$\operatorname{sz}_w(y)=2\operatorname{lw}_w\,e_w\,y$. The lift indices are
+$j\in\{1,\dots,m\}$. A size datum carries a finite support set $S$ of places
+and real functions $\operatorname{gain}_j(w)$, $F_j(w)$, $E(u,j,w)$,
+$\operatorname{ta}_w$, $\operatorname{io}_w$ vanishing off $S$, and a set
+$\mathrm{drop}$ of primes; $\operatorname{gainD}_j(w)$ is $0$ if the residue
+characteristic of $w$ is in $\mathrm{drop}$ and $\operatorname{gain}_j(w)$
+otherwise. Put
+\[
+\mathrm{Fo}=\sum_j\sum_{w\in S}\operatorname{sz}_w(F_j(w)),\quad
+\mathrm{Ga}=\sum_{w\in S}\operatorname{sz}_w\Bigl(\sum_j\operatorname{gainD}_j(w)-\operatorname{ta}_w\Bigr),\quad
+\operatorname{Ee}(u)=\sum_j\sum_{w\in S}\operatorname{sz}_w(E(u,j,w)).
+\]
+The size datum also forces $\operatorname{gain}_j(w)=0$ at the two auxiliary
+primes $g_0,g_1$, and $\operatorname{gain}_j(w)=\operatorname{ta}_w=\operatorname{io}_w=0$
+unless the residue characteristic of $w$ is inert in $K$ in the sense of
+Definition~\ref{geob:inert}.
+\end{definition}
+
+\begin{definition}[prime classes and inert primes]\label{geob:inert}
+\lean{Formalism.BasicNotions.PrimeClass, Formalism.BasicNotions.primeClass, Formalism.BasicNotions.Host.cls, Formalism.MainNotions.InertK}
+% uses-lean: Formalism.BasicNotions.Host
+\uses{host:host-full} % resolved
+A host assigns to each natural number $p$ one of six classes: $\mathrm{ram2}$
+if $p$ lies in a fixed finite set of small primes; $\mathrm{ramQ}$ if $p=q$;
+$\mathrm{ramD}$ if $p=d$; otherwise $\mathrm{splitK}$ if the Jacobi symbol
+$\bigl(\frac{-d}{p}\bigr)$ equals $1$; otherwise $\mathrm{signal}$ if the first
+sign component of the Artin symbol of $p$ in the host is $+1$; and
+$\mathrm{inertClass}$ in the remaining case. The prime $p$ is \emph{inert}
+(\texttt{InertK}) if its class is $\mathrm{signal}$ or $\mathrm{inertClass}$.
+\end{definition}
+
+\begin{remark}[five predicates called \texttt{InertK}]
+The name \texttt{InertK} has at least five declarations with different
+bodies. The one in \arch{Formalism/SharpRestriction/GlobalTheoremInputs.lean}
+(line 97) is the one above; the copy in
+\arch{Formalism/SharpRestriction/GlobalSchurBounds/ZetaZeroFreeRegion.lean}
+adds that $p$ is prime, and the one in
+\arch{Formalism/SharpRestriction/GlobalSchurBounds/GL3Theta.lean} is
+$\bigl(\frac{-d}{p}\bigr)=-1$. The lower link uses the first.
+\end{remark}
+
+\begin{definition}[the Legendre-type class sum]\label{geob:vm}
+\lean{Formalism.BasicNotions.SizeData₂.vonMangoldtClassSum}
+% uses-lean: Formalism.BasicNotions.SizeData₂
+A size datum carries real numbers $w_{\mathrm{part}}(j,t,p,i)\ge1$. For a lift
+index $j$, a top place $t$ and a natural number $p$ put
+\[
+\mathrm{vM}(j,t,p)=\sum_{\substack{0\le i<\lfloor\log_p a_t\rfloor+2\\ i\text{ odd}}}
+\max\Bigl(0,\ \frac{a_t}{p^i}-w_{\mathrm{part}}(j,t,p,i)\Bigr),
+\]
+with $\lfloor\log_p a_t\rfloor$ Mathlib's \texttt{Nat.log}.
+\end{definition}
+
+\begin{remark}[Legendre's formula restricted to odd powers]
+Legendre's formula is $v_p(N!)=\sum_{i\ge1}\lfloor N/p^i\rfloor$. The sum
+$\mathrm{vM}$ keeps only odd $i$ and replaces $\lfloor N/p^i\rfloor$ by
+$\max(0,a_t/p^i-w_{\mathrm{part}})$ with $w_{\mathrm{part}}\ge1$, which is at
+most $\lfloor a_t/p^i\rfloor$ when $w_{\mathrm{part}}\ge1$. So
+$\mathrm{vM}(j,t,p)\log p$ is a lower bound for the part of $\log_p$-valuation
+of $a_t!$ coming from odd powers of $p$. Summed over inert $p$ the leading terms
+give $\sum_{p\text{ inert}}(a_t/p)\log p$, a prime sum over a Frobenius class,
+which against $\operatorname{ph}(a_t)$ is the archimedean-versus-finite balance
+of $\log N!$ that the function $G$ of Definition~\ref{geob:phF} measures. This
+reading is an interpretation of the definitions; the archive states the gain
+bounds only as hypotheses (Definition~\ref{geob:lowerlink}).
+\end{remark}
+
+\begin{definition}[the lower-order terms of the lower link]\label{geob:loG}
+\lean{Formalism.MainNotions.flG, Formalism.MainNotions.rG, Formalism.MainNotions.leastPowerExponent, Formalism.MainNotions.loG}
+\uses{geob:inert}
+For real $C$ and a natural number $p$ put
+$\mathrm{fl}(p)=Cf\,N_m^2\log_p a+Cf(\log_p a)^2$, with $N_m=k+m(t+1)$ the
+top rank of $D$. Put $r_G(\eps)=\lceil 8(4+8\eps)/\eps\rceil+1$ and
+$e_p=\lceil\log_p(k^2x^{78})\rceil+1$. For real $C,\beta$ put
+$\mathrm{lo}(p)=C(\mathrm{Sc}+k+\eta)\log_p(2a)+\mathrm{pr}(p)+\mathrm{or}(p)$,
+where $\mathrm{Sc},\eta$ are fields of $L$, and $\mathrm{pr}(p)$,
+$\mathrm{or}(p)$ vanish unless $p$ has class $\mathrm{inertClass}$ and
+$p<X'$; in that case, with $p_0=k^2x^{26}$,
+\[
+\mathrm{pr}(p)=\begin{cases}Cr_G(\eps)\,b'\log x,&p<p_0,\\
+C\bigl(b'/x+\eta+\mathrm{Sc}+(w''(n)+t)\log x/\delta_1\bigr)+\beta,&p_0\le p<X',\end{cases}
+\]
+with $\delta_1=x^{-\eps/8}$, and
+$\mathrm{or}(p)=C\log x\bigl(\mathrm{La}_G\,a/(pk)+a\,p^{-e_p}\bigr)$ if
+$p<p_0$, $\mathrm{or}(p)=C\log x\bigl(\mathrm{La}_G\,a/(pk)+a/p^2\bigr)$ if
+$p_0\le p<X'$.
+\end{definition}
+
+\begin{definition}[the lower link]\label{geob:lowerlink}
+\lean{Formalism.MainNotions.LinkG_at, Formalism.MainNotions.LinkG}
+\uses{geob:sz, geob:inert, geob:vm, geob:loG}
+% uses-lean: Formalism.MainNotions.G.Inst, Formalism.MainNotions.G.Consts, Formalism.MainNotions.G.VV, Formalism.MainNotions.G.Sv, Formalism.MainNotions.G.Nv, Formalism.MainNotions.G.ServedOrbitsContained, Formalism.MainNotions.G.MeanKappaBound, Formalism.MainNotions.FamP
+\uses{geoa:famcore} % resolved
+Let $X$ be an instance of the archive's gain data for $(D,L)$, $K$ a set of
+gain constants and $C,\beta$ real. The package \emph{satisfies the lower link}
+(\texttt{LinkG\_at}) if:
+\begin{enumerate}
+\item for every word $u$ and place $w$ whose residue characteristic is not
+$T(u)$: a local length comparison (\texttt{LocLe}) at $w$ holds between the sublattice $\mathrm{NuLat}(u)$ recorded by $L$ and
+the ramified lattice of $u$, with exponent
+$\lfloor\operatorname{ur}_w(\operatorname{ta}_w)\rfloor$; the recorded length
+at $(u,w)$ is at most $\dim(\text{ramified forms of }u)\cdot(\operatorname{ta}_w+\operatorname{io}_w)$;
+and if the archive's set $\mathrm{VV}$ at the residue characteristic is empty,
+then $\operatorname{ta}_w=\operatorname{io}_w=0$ and the recorded length is $0$;
+\item for every prime $p$ and $t_0\in\mathrm{VV}(p)$, the archive's sum
+$S_v(p,t_0)$ is at most $2m\,N_v(p,t_0)\,a/p$;
+\item for every place $w$ whose residue characteristic $p$ is inert and
+satisfies $p\le X''(n)$:
+\begin{enumerate}
+\item $0\le\operatorname{gain}_j(w)\le 4|TT|a/p$ for every lift index $j$;
+\item with $TT_w\subseteq TT$ the set of top places attached to $w$ by $L$,
+\[
+\sum_{j=1}^m\sum_{t\in TT_w}\bigl(\mathrm{vM}(j,t,p)-\mathrm{lo}(p)\bigr)-m\,\mathrm{fl}(p)
+\le\sum_{j=1}^m\operatorname{gain}_j(w)-\operatorname{ta}_w;
+\]
+\end{enumerate}
+\item the archive's predicates \texttt{ServedOrbitsContained} and
+\texttt{MeanKappaBound} hold.
+\end{enumerate}
+A family $\mathrm{Fm}$ satisfies \texttt{LinkG} if there are $C$, $x_0$ and a
+function $\delta$ with $\delta(x)\to0$ such that every member $D(x,i)$ with
+$x\ge x_0$ satisfies the lower link with the family's gain data and constants,
+this $C$, and $\beta=b^{\delta(x)}$.
+\end{definition}
+
+\begin{remark}[what the lower link does and does not say]
+Clause (3) is the finite-side input: at inert $p\le X''(n)$ the total gain is
+bounded below by the Legendre-type sum, and each gain by $4|TT|a/p$. These are
+hypotheses on the real numbers $\operatorname{gain}_j(w)$ of the size datum;
+the archive's statement does not mention periods. That the gains are $p$-adic
+valuations of lifted periods is the role assigned to them by the rest of the
+package and was not traced here. The size datum's field \texttt{TTw\_full}
+forces $TT_w=TT$ when $p$ has class $\mathrm{signal}$ or $p\ge X'$.
+\end{remark}
+
+\section{The upper link}
+
+\begin{definition}[the Bessel identity]\label{geob:bessel}
+\lean{Formalism.MainNotions.BesselId, Formalism.BasicNotions.D7.BuRational, Formalism.BasicNotions.D7.besS}
+% uses-lean: Formalism.BasicNotions.D7, Formalism.BasicNotions.DivData
+\uses{geoa:divdata} % resolved
+The package $D$ satisfies the \emph{Bessel identity} if:
+\begin{enumerate}
+\item (rationality) for every word $u$, every $\varphi$ in the $\mathbb L$-space
+of $N_u$ and every $y$ in that of $R$, the complex pairing
+$B_u(\varphi,y)$ of the package's spaces equals the image under the fixed
+embedding $\mathbb L\to\CC$ of the $\mathbb L$-valued pairing
+$B_k(u)(\varphi)(y)$;
+\item there is a unitary automorphism $V$ of the test space $\mathcal E$ such
+that for every word $u$ there are $a_u\in\CC^{\times}$ and a unitary
+automorphism $U_u$ of the source space $\mathcal M_u$ with
+$B_u(\varphi,F)=a_u\operatorname{bes}_u(U_u\varphi,VF)$ for all $\varphi,F$,
+where $\operatorname{bes}_u(\varphi,F)=\langle s(F),P_u(\varphi)\rangle$ is the
+inner product of the spectral image of $F$ with the period image of $\varphi$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[vanishing above the cutoff]\label{geob:zeroabove}
+\lean{Formalism.BasicNotions.SizeData₂.ZeroAbove}
+\uses{geob:sz}
+The size datum $L$ \emph{vanishes above the cutoff} if for every word $u$,
+lift index $j$ and place $w$ whose residue characteristic $p$ satisfies
+$p>X''(n)$, $p\ne T(u)$, $p\notin\{g_0,g_1\}$, $p\ne d$ and $p\nmid
+\Gamma_u$ (the stabiliser bound of $u$), one has
+$\operatorname{gain}_j(w)=E(u,j,w)=0$.
+\end{definition}
+
+\begin{definition}[the upper link]\label{geob:upperlink}
+\lean{Formalism.MainNotions.LinkDIV_at}
+\uses{geob:main, geob:sz, geob:bessel, geob:zeroabove}
+% uses-lean: Formalism.BasicNotions.DivData.OneMapIntoCC, Formalism.BasicNotions.sFrame, Formalism.BasicNotions.D7.RRFull, Formalism.HN.htMap, Formalism.BasicNotions.SizeData₂.La, Formalism.BasicNotions.SizeData₂.B0, Formalism.BasicNotions.SizeData₂.Nc
+\uses{geoa:divdata, geoa:slopes} % resolved
+Let $R$ be the test lattice of $D$, $N_u$ the source lattices,
+$B_k(u)\colon N_u\otimes\mathbb L\to R^{\vee}\otimes\mathbb L$ the period maps and
+$h_u$ the recorded heights (the period lattice data of the preceding chapter).
+Put $L_a=\log(a\operatorname{rd}_E)$ and let $B_0$, $N_c$ be the size budgets of
+$L$. For real $C$, $C_{\mathrm{abs}}$, $C_H$, the size datum \emph{satisfies
+the upper link} (\texttt{LinkDIV\_at}) if all of the following hold:
+\begin{enumerate}
+\item each $B_k(u)$ maps the lattice $N_u$ into the dual lattice of $R$;
+\item $s_{\mathrm{frame}}+\mu_{\max}(R)\le x^{C_H}b$, where
+$s_{\mathrm{frame}}=\sum_u\rk N_u\,(\mu(N_u)-h_u)/\sum_u\rk N_u$;
+\item $L$ vanishes above the cutoff (Definition~\ref{geob:zeroabove});
+\item the Bessel identity holds (Definition~\ref{geob:bessel});
+\item $R$ is full: its lattice is finitely generated and spans $R\otimes\mathbb L$;
+\item for every $u$ with $B_k(u)\ne0$, the height of $B_k(u)$ relative to the
+hermitian structures of $N_u$ and $R^{\vee}$ is at most $h_u$;
+\item for every word $u$,
+\[
+\mu(R^{\vee})+h_u-\mathrm{Fo}\le\mathcal M(u)+C\,|TT|\,a\,L_a+C\,m\,(B_0+N_c)\,x^{C_{\mathrm{abs}}\eps};
+\]
+\item for every word $u$ and lift index $j$,
+$\bigl|\sum_{w\in S}\operatorname{sz}_w(E(u,j,w))-\bigl(\sum_{t}a_t\bigr)\log(g_0g_1)\bigr|\le CB_0$;
+\item for all words $u,u'$,
+$\bigl|\bigl(h_u+\sum_ta_t\log T(u)\bigr)-\bigl(h_{u'}+\sum_ta_t\log T(u')\bigr)\bigr|
+\le C\bigl(|TT|aL_a+mB_0\bigr)$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[the upper link for a family]\label{geob:upperlink-fam}
+\lean{Formalism.MainNotions.LinkDIV, Formalism.MainNotions.LinkDIVt}
+\uses{geob:upperlink}
+% uses-lean: Formalism.MainNotions.FamP, Formalism.MainNotions.LinkEta, Formalism.MainNotions.DIVinN
+\uses{geoa:famcore} % resolved
+A family $\mathrm{Fm}$ satisfies \texttt{LinkDIV} with exponents
+$C_{\mathrm{abs}},C_H$ if there are $C,x_0$ such that every member with
+$x\ge x_0$ satisfies the upper link with $C,C_{\mathrm{abs}},C_H$. The
+predicate \texttt{LinkDIVt} is the implication: if the family satisfies
+\texttt{LinkEta} and \texttt{DIVinN}, then it satisfies \texttt{LinkDIV}.
+\end{definition}
+
+\begin{remark}[the upper link and clause (2) of the record]
+Clause (7) of the upper link is, word for word, the inequality
+$\mu_R+h-\mathrm{Fo}\le\sum_t\bigl(m(\operatorname{ph}(a_t)-a_t\log\Omega)-a_t\log T\bigr)+\cdots$
+that the slope record calls \texttt{DIV}
+(\texttt{Formalism.RankGapBounds.WeightedMeanData.Data.DIV}); clause (8) has the
+shape of the record's \texttt{EComp5} and clause (9) that of \texttt{HComp}.
+The upper link is a hypothesis on the package; the archive's supply of it goes
+through \texttt{LinkDIVt} and the covolume statements below, and is outside
+this chapter.
+\end{remark}
+
+\section{Closed properties and the covolume}
+
+\begin{definition}[thresholds and large families]\label{geob:threshold}
+\lean{Formalism.MainNotions.TransportedAlt, Formalism.MainNotions.TransportedAlt.sup, Formalism.MainNotions.FamP.Large, Formalism.MainNotions.FamP.cPre, Formalism.MainNotions.FamP.cOut, Formalism.MainNotions.FamP.cMid, Formalism.MainNotions.FamP.cLast}
+% uses-lean: Formalism.MainNotions.FamP
+\uses{geoa:famcore} % resolved
+A \emph{threshold} $K$ is a real number $K_{\mathrm{pre}}$ and three functions
+$K_t,K_{\mathrm{mid}},K_{\mathrm{last}}$ from finite lists of reals to reals;
+$K\vee K'$ is the pointwise maximum. A family $\mathrm{Fm}$ carries constant
+lists $\mathrm{cPre}$ (one entry), $\mathrm{cOut}$ (sixteen entries),
+$\mathrm{cLast}$ (thirty-two entries) and, for each real $c$, a list
+$\mathrm{cMid}(c)$ of ten entries whose first entry is $c$. The family is
+\emph{large for $(K,c)$} if every entry of $\mathrm{cPre}$ is at least
+$K_{\mathrm{pre}}$, every entry of $\mathrm{cMid}(c)$ is at least
+$K_{\mathrm{mid}}(\mathrm{cOut})$, and every entry of $\mathrm{cLast}$ is at
+least $K_{\mathrm{last}}(\mathrm{cOut}\text{ followed by }\mathrm{cMid}(c))$.
+\end{definition}
+
+\begin{remark}[an unused component]
+The second conjunct of \texttt{FamP.Large} is the literal \texttt{True}, so
+the component $K_t$ of a threshold plays no role. In particular the entries
+of $\mathrm{cOut}$ are not bounded below; they enter only as the argument of
+$K_{\mathrm{mid}}$ and $K_{\mathrm{last}}$.
+\end{remark}
+
+\begin{definition}[closed properties]\label{geob:closed}
+\lean{Formalism.MainNotions.FamClass, Formalism.MainNotions.Closed}
+\uses{geob:threshold}
+A class of families is a predicate $\mathcal C$ on families at every $\eps$.
+Let $P(\mathrm{Fm},c)$ be a property of a family and a real number. Then $P$ is
+\emph{closed on $\mathcal C$} if there is $\eps_1>0$ such that for every
+$\eps\in(0,\eps_1]$ there is a threshold $K$ with: for every family
+$\mathrm{Fm}$ at $\eps$ in $\mathcal C$ and every real $c$ such that
+$\mathrm{Fm}$ is large for $(K,c)$, $P(\mathrm{Fm},c)$ holds.
+\end{definition}
+
+\begin{lemma}[closed properties combine]\label{geob:closed-and}
+\lean{Formalism.MainNotions.FamP.large_sup, Formalism.MainNotions.Closed.and, Formalism.MainNotions.Closed.imp}
+\uses{geob:closed}
+A family is large for $(K\vee K',c)$ if and only if it is large for $(K,c)$
+and for $(K',c)$. If $P$ and $Q$ are closed on $\mathcal C$, so is $P\wedge Q$.
+If $P$ is closed on $\mathcal C$ and $P(\mathrm{Fm},c)$ implies
+$Q(\mathrm{Fm},c)$ for every family at a positive $\eps$, then $Q$ is closed
+on $\mathcal C$.
+\end{lemma}
+\begin{proof}
+\uses{geob:threshold}
+The first claim is the componentwise statement $\max(\alpha,\beta)\le\gamma$
+iff $\alpha\le\gamma$ and $\beta\le\gamma$. For the conjunction take
+$\eps_1=\min$ of the two values and, for each $\eps$, the threshold
+$K\vee K'$; then use the first claim. The implication keeps $\eps_1$ and $K$.
+\end{proof}
+
+\begin{definition}[size of the field of values]\label{geob:fieldsmall}
+\lean{GlobalTheory.FinalJoin2.FieldSmall, Formalism.MainNotions.WeightAlgebra.PO, Formalism.L2.Pj.FO}
+% uses-lean: Formalism.BasicNotions.D7, Formalism.BasicNotions.SizeData₂
+Let $F_O\subseteq\CC$ be the field generated over $\Q$ by the values of the
+map \texttt{phiO} of the package, and put
+$P_O=19\,f\,r^2L_x+198\,f^2L_x$ with $r=k+m-1$. The pair $(D,L)$ has a
+\emph{small field of values} if $\log[F_O:\Q]\le P_O$ and
+$\log|\operatorname{disc}F_O|/[F_O:\Q]\le P_O$.
+\end{definition}
+
+\begin{definition}[label tie of the $E$-series]\label{geob:esertie}
+\lean{GlobalTheory.GLq.ESerTie}
+% uses-lean: GlobalTheory.GLq.LabelDatum, GlobalTheory.GLq.eSerC
+\uses{fam:green} % resolved
+The package satisfies the \emph{label tie} if for $k=0,1$ there is a label
+datum $\mathcal L_k$ for the auxiliary prime $g_k$ whose Teichmüller datum is the
+one recorded by $D$ at $k$, and such that for every polynomial $f$ over
+$\Z/g_k\Z$ the $E$-series of $D$ at $(k,f)$ equals the $E$-series of
+$\mathcal L_k$ in rank $r$ at $f$.
+\end{definition}
+
+\begin{definition}[tied points]\label{geob:rectied}
+\lean{GlobalTheory.CovTop.RecTied, GlobalTheory.CovTop.RowsT, GlobalTheory.CovTop.EvTied}
+\uses{geob:fieldsmall, geob:esertie}
+% uses-lean: GlobalTheory.BigTop.Pt, GlobalTheory.BigTop.PtAt
+Put $\mathrm{RecTied}(D,L)$ for the conjunction of
+Definitions~\ref{geob:fieldsmall} and~\ref{geob:esertie}. A point $p$ of a
+member $D(x,i)$ of a family (the archive's \texttt{Pt}: a realisation of the
+member by row data) is \emph{tied} (\texttt{RowsT}) if its rows hold and
+$\mathrm{RecTied}(D(x,i),L(x,i))$. A property $Q$ of points holds
+\emph{eventually at tied points} (\texttt{EvTied}) if there is $x_0$ such that
+$Q$ holds at every tied point of every member $D(x,i)$ with $x>x_1$ and
+$x\ge x_0$.
+\end{definition}
+
+\begin{remark}[\texttt{RecTied} is not the tie of a chain]
+Despite its name, \texttt{RecTied} is a size bound on $F_O$ together with a
+label condition on $E$-series. Both are conditions on the member's package and
+size datum, not on the point $p$, and the predicate is unrelated to the tie
+\texttt{ChainTied} of a family used in the last section.
+\end{remark}
+
+\begin{definition}[the covolume predicate]\label{geob:L3}
+\lean{Formalism.L2.Indef.IndefData.L3, Formalism.L2.Indef.IndefScale.num, Formalism.L2.DIV.ZscOfNum, Formalism.L2.DIV.ZscOfNum3}
+% uses-lean: Formalism.L2.Indef.IndefData, Formalism.L2.Indef.IndefNum, Formalism.L2.Indef.IndefScale
+An indefinite datum $S$ has a degree $D_S$ and, for each lift index $j$, a
+lattice $M_j$ in a space with archimedean Gram matrices $X_{W,j}$; let
+$\operatorname{lcv}(M_j)=\frac2{[\mathbb L:\Q]}\log\operatorname{ht}(M_j)$ be its
+normalised logarithmic covolume. For a numerical datum $N$ with bounds
+$l_3(j)$, the predicate $\mathrm{L3}(S,N)$ is
+$\operatorname{lcv}(M_j)/D_S\le l_3(j)$ for all $j$. A scale $Z$ gives, for
+real $C,c$, the numerical datum $Z.\mathrm{num}(C,c)$ with
+$l_3(j)=l_{3,\mathrm{main}}(j)+C\,l_{3,\mathrm{unit}}$ (and with $hh=x^cb$). For
+the scale \texttt{ZscOfNum} built from a numerical datum, and its variant
+\texttt{ZscOfNum3} which copies these two fields,
+\[
+l_{3,\mathrm{main}}(j)=\sum_{\rho}\bigl((k+j-1)-(m-j)\bigr)\,w(j,\rho)\,\log\Omega,
+\qquad l_{3,\mathrm{unit}}=B_0\log\log x,
+\]
+the sum over the real places $\rho$ and $w(j,\rho)$ the weights.
+\end{definition}
+
+\begin{definition}[the covolume condition]\label{geob:covolx}
+\lean{GlobalTheory.CovTop.CovolX}
+\uses{geob:closed, geob:rectied, geob:L3}
+% uses-lean: GlobalTheory.BigTop.FamHyp
+The \emph{covolume condition} \texttt{CovolX} is the statement that the
+following property of a family $\mathrm{Fm}$ and a real $c$ is closed on the
+class \texttt{FamHyp}: there is $C_0\ge0$ such that, eventually at tied points
+$p$ of $\mathrm{Fm}$, for every $C\ge C_0$ the covolume predicate
+$\mathrm{L3}$ holds for the indefinite datum $p.S(\mathrm{false})$ and the
+numerical datum $p.N(C,c)$.
+\end{definition}
+
+\begin{definition}[the covolume statement on the main chain]\label{geob:covolbound}
+\lean{GlobalTheory.CovTop.RowsTAlt, GlobalTheory.CovTop.EventuallyAtAllPoints, GlobalTheory.CovTop.CovolumeBoundOfX}
+\uses{geob:closed, geob:rectied, geob:L3}
+% uses-lean: GlobalTheory.BigTop.FamHyp
+\texttt{CovolumeBoundOfX} is \texttt{CovolX} with the condition ``the rows of
+$p$ hold'' replaced by the archive's \texttt{PointConditions'} of $p$; the
+condition $\mathrm{RecTied}$ is kept (\texttt{RowsTAlt}).
+\end{definition}
+
+\begin{theorem}[supply of the covolume statement]\label{geob:covolsupply}
+\lean{SelfIntersectionVolumeEstimates.topCovolSlim2_use_alt_alt}
+\uses{geob:covolbound}
+% uses-lean: GlobalTheory.CompanionTheory.Hypotheses₂.ResolutionCharZero, GlobalTheory.CompanionTheory.Hypotheses₂.PrincipalisationCharZero, GlobalTheory.CompanionTheory.Hypotheses₂.PoincareLelongInv, PositivityTheory.MbHsUse.HSUse, ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.MoriwakiBigStatement, GlobalTheory.Published.SemiAbelianLieSeminegative, GlobalTheory.CovTop.PublishedHodgeBundleTheorems
+Assume the archive's statements of: resolution of singularities and
+principalisation in characteristic zero; a Poincaré--Lelong formula; a use of
+the arithmetic Hilbert--Samuel theorem (\texttt{HSUse}); Moriwaki's bigness
+statement; an exactness statement of Fargues; Zarhin's statement; nef
+Riemann--Roch; a Siegel toroidal integral; toroidal compactification for a fan;
+seminegativity of the Lie algebra of a semi-abelian scheme; separation of
+points; an arithmetic degree statement; the record of published theorems on
+the Hodge bundle; and Grothendieck's deformation statement. Then
+\texttt{CovolumeBoundOfX} holds.
+\end{theorem}
+\begin{proof}
+% uses-lean: SelfIntersectionVolumeEstimates.topCovolG_alt_alt, PositivityTheory.HtPt.Ah.deep_slim_use, GlobalTheory.GreenBridge.green_of_regular
+The proof is a single term: it assembles two hypothesis records from the
+inputs (adding Green's parametrisation of cuspidal characters, proved in the
+archive) and applies \texttt{topCovolG\_alt\_alt} together with
+\texttt{deep\_slim\_use}. The development behind these lives under
+\arch{Development/AutomorphicArithmetic/ThetaCorrespondence/ThetaPairLifts/HodgeBundleWeights/}
+and was not expanded.
+\end{proof}
+
+\begin{remark}[where the covolume enters]
+The lattices bounded by $\mathrm{L3}$ are the $M_j$ on the indefinite side, one
+per lift index; they are not the test lattice $R$ of the upper link. The
+coefficient $(k+j-1)-(m-j)$ is $p_j-q_j$ for the signature
+$(p_j,q_j)=(k+j-1,m-j)$ of the $j$-th indefinite space, and the $\log\Omega$ in
+$l_{3,\mathrm{main}}$ is the same period as in $\mathcal M(u)$. That the
+covolume bounds summed over $j$ produce the term $-ma_t\log\Omega$ of the
+upper link is an interpretation; the supply of the upper link was not traced.
+\end{remark}
+
+\section{From the slope record to the gap bound}
+
+\begin{definition}[large scales and the error exponent]\label{geob:largex}
+\lean{Formalism.LFunctionChainParameters.LErr.KBig, Formalism.LFunctionChainParameters.LErr.LargeX, Formalism.LFunctionChainParameters.LErr.CErr}
+% uses-lean: Formalism.RankGapBounds.WeightedMeanData.Consts
+\uses{geoa:record} % resolved
+Put $K_{\mathrm{big}}(K,c_{HH},e_K)=200(1+K)^2(1+c_{HH})(1+e_K)$. A real $x$ is
+\emph{large} for $(\eps,K,c_{HH},e_K)$ if $\log x\le x^{\eps}$ and
+$K_{\mathrm{big}}(K,c_{HH},e_K)\le x^{\eps}$. For record constants $C$ put
+$C_{\mathrm{Err}}=e_{\mathrm{Div}}+e_{\mathrm{Loss}}+3$.
+\end{definition}
+
+\begin{definition}[the pointwise error and the pointwise bound]\label{geob:pointwise}
+% overlaps (deduplicated): geoa:clauses-5
+\lean{Formalism.LFunctionChainParameters.WeightedSlopeBounds.MLo5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.UBar5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.ErrX5at, Formalism.LFunctionChainParameters.WeightedSlopeBounds.PointwiseBoundVariant}
+% uses-lean: Formalism.RankGapBounds.WeightedMeanData.Data, Formalism.RankGapBounds.WeightedMeanData.Data.HidaSetting, Formalism.RankGapBounds.WeightedMeanData.Data.DIV, Formalism.RankGapBounds.WeightedMeanData.Data.HComp, Formalism.RankGapBounds.WeightedMeanData.Data.Slopes, Formalism.RankGapBounds.WeightedMeanData.Data.SlopeIneq, Formalism.RankGapBounds.WeightedMeanData.Data.HHBound, Formalism.RankGapBounds.WeightedMeanData.Data.FParams, Formalism.RankGapBounds.WeightedMeanData.Data.Vvar, Formalism.RankGapBounds.WeightedMeanData.Data.LoP
+\uses{geoa:clauses, geoa:record, geoa:record-derived} % resolved
+Let $\mathcal D$ be a slope record with index set $U_0$, word sets $W(u_0)$,
+constants $C$, and a real $X''$. With the record's fields, put
+\[
+\mathrm{Lo}_5(u_0,u)=c_{Sl1}\mathrm{IO}(u_0)+c_{Sl1}n_Tm\Bigl(\frac ak+b'\Bigr)\log T(u_0,u)+c_{Sl1}X''+1 .
+\]
+The variants of the record clauses used here are: \texttt{QuotientSlopeBoundsWith}
+($\mu_N^{\max}\le\mu_M^{\max}+\mathrm{Ga}+\mathrm{Fo}-\operatorname{Ee}+c_{Sl1}mB_0$ and
+$\mu_M+\mathrm{Ga}+\mathrm{Fo}-\operatorname{Ee}-\mathrm{Lo}_5\le\mu_N$ for all
+$u_0,u$); \texttt{EComp5}
+($|\operatorname{Ee}(u_0,u)-m\,(\sum_ta_t)\lg|\le c_Em B_0$); \texttt{Count5}
+(the lower bound
+$\sum_j\frac1f\sum_{\rho}\log(w(u_0,j,\rho)v/\pi)+m\lg-c_{\mathrm{Count}}(L_a+m^2L_a/k)\le\log T(u_0,u)$,
+the upper bound $\log T\le c_{\mathrm{Count}}mL_x$, and
+$|\log T(u_0,u)-\log T(u_0,u')|\le c_{\mathrm{Count}}\log k$); and
+\texttt{LossBounds} ($\mathrm{PS}(u_0)-\mathrm{Ga}(u_0)\le\mathrm{Lo}_P$ and
+$\mathrm{IO}(u_0)\le\mathrm{Lo}_P$ for every $u_0$). The quantity
+$\mathrm{Err}_5(u_0)$ (\texttt{ErrX5at}) is the explicit sum
+\begin{multline*}
+\textstyle(\sum_ta_t)c_{\mathrm{Count}}\bigl(L_a+\frac{m^2L_a}k\bigr)+c_{\mathrm{Div}}n_TaL_a+c_{\mathrm{Div}}m(B_0+N_c)x^{e_{\mathrm{Div}}\eps}
++mc_EB_0+c_{\mathrm{Slope}}n_TaL_a\bigl(1+\frac mk\bigr)\\
+\textstyle+\log|W(u_0)|+\mathrm{Lo}_P+\overline{\mathrm{Lo}}_5
++(1-\bar\delta)^{-1}\bigl(4\log(1+x^{c_{HH}})(\bar U_5+b)+(\bar\eta+4\sqrt{\bar e})x^{c_{HH}}b\bigr),
+\end{multline*}
+where $\overline{\mathrm{Lo}}_5$ is $\mathrm{Lo}_5$ with $\mathrm{IO}$ replaced by
+$\mathrm{Lo}_P$ and $\log T$ by $c_{\mathrm{Count}}mL_x$, and
+$\bar U_5=c_{\mathrm{Slope}}n_TaL_a(2+m/k)+V_{\mathrm{var}}+c_{Sl1}mB_0+\overline{\mathrm{Lo}}_5$.
+The \emph{pointwise bound} for $(\mathcal D,C,X'')$ is the statement: if the
+record satisfies \texttt{HidaSetting}, \texttt{DIV}, \texttt{EComp5},
+\texttt{HComp}, \texttt{Count5}, \texttt{Slopes},
+\texttt{QuotientSlopeBoundsWith}, \texttt{LossBounds}, \texttt{SlopeIneq},
+\texttt{HHBound} and \texttt{FParams}, then
+$\mathrm{PS}(u_0)\le\operatorname{Main}(u_0)+\mathrm{Err}_5(u_0)$ for every
+$u_0$.
+\end{definition}
+
+\begin{lemma}[lower bound for the mean source slope]\label{geob:slower}
+\lean{Formalism.LFunctionChainParameters.WeightedSlopeBounds.s_lower5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.K5v5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.Lam5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.exponent_le_upper}
+\uses{geob:pointwise, geoa:clauses, geoa:clauses-5}
+% uses-lean: Formalism.RankGapBounds.WeightedMeanData.Data.s, Formalism.RankGapBounds.WeightedMeanData.wmean
+\uses{geoa:record-derived} % resolved
+Assume the record satisfies \texttt{HidaSetting}, \texttt{DIV}, \texttt{EComp5},
+\texttt{Count5}, \texttt{Slopes} and \texttt{QuotientSlopeBoundsWith}. Then for
+every $u_0$,
+\[
+\mathrm{Ga}(u_0)+\mu_R(u_0)-K_5(u_0)-\operatorname{wmean}_{d(u_0,\cdot)}\mathrm{Lo}_5(u_0,\cdot)\le s(u_0),
+\]
+where $s(u_0)$ is the $d$-weighted mean of $\mu_N(u_0,u)-h(u_0,u)$ over $u$ and
+$K_5(u_0)=c_{\mathrm{Slope}}n_TaL_a(1+m/k)+m\bigl((\sum_ta_t)\lg+c_EB_0\bigr)+\mathrm{SDiv}-(\sum_ta_t)\Lambda_5(u_0)+\mathrm{EDiv}$,
+with $\Lambda_5(u_0)$ the lower bound for $\log T$ in \texttt{Count5},
+$\mathrm{SDiv}=\sum_t m(\operatorname{ph}(a_t)-a_t\log\Omega)$ and
+$\mathrm{EDiv}$ the error of \texttt{DIV}.
+\end{lemma}
+\begin{proof}
+It suffices to bound $\mu_N(u_0,u)-h(u_0,u)$ from below for each word $u$ and
+average. The second inequality of \texttt{QuotientSlopeBoundsWith} bounds
+$\mu_N$ below by $\mu_M+\mathrm{Ga}+\mathrm{Fo}-\operatorname{Ee}-\mathrm{Lo}_5$;
+\texttt{DIV} bounds $-h$ below by $\mu_R-\mathrm{Fo}$ minus the main term and its
+error; the main term contains $-(\sum_ta_t)\log T$, bounded using the lower
+bound of \texttt{Count5} (with $\sum_ta_t\ge0$ from \texttt{HidaSetting});
+\texttt{EComp5} bounds $\operatorname{Ee}$ above; \texttt{Slopes} bounds $\mu_M$
+below. The terms $\mathrm{Fo}$ cancel and the rest is linear arithmetic.
+\end{proof}
+
+\begin{lemma}[the gain is at most the main term]\label{geob:gabound}
+\lean{Formalism.LFunctionChainParameters.WeightedSlopeBounds.Ga_bound5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.K0v5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.key_identity5, Formalism.LFunctionChainParameters.WeightedSlopeBounds.u_function_le_mean, Formalism.LFunctionChainParameters.WeightedSlopeBounds.Vvar_bound5}
+\uses{geob:slower, geob:pointwise}
+% uses-lean: Formalism.RankGapBounds.WeightedMeanData.Data.key_identity, Formalism.RankGapBounds.WeightedMeanData.Data.uF, Formalism.RankGapBounds.WeightedMeanData.Data.K3
+\uses{geoa:record-derived} % resolved
+Assume in addition \texttt{HComp}, \texttt{SlopeIneq}, \texttt{HHBound} and
+\texttt{FParams}. Then for every $u_0$,
+\[
+\mathrm{Ga}(u_0)\le\operatorname{Main}(u_0)+\log|W(u_0)|+K_0+\overline{w}
++(1-\bar\delta)^{-1}\Bigl(4\log(1+x^{c_{HH}})\bigl(K_3+\overline{w}+b\bigr)+(\bar\eta+4\sqrt{\bar e})x^{c_{HH}}b\Bigr),
+\]
+with $\overline{w}=\operatorname{wmean}_{d(u_0,\cdot)}\mathrm{Lo}_5(u_0,\cdot)$,
+$K_0=(\sum_ta_t)c_{\mathrm{Count}}(L_a+m^2L_a/k)+\mathrm{EDiv}+mc_EB_0+c_{\mathrm{Slope}}n_TaL_a(1+m/k)$
+and $K_3$ the record's constant.
+\end{lemma}
+\begin{proof}
+\texttt{SlopeIneq}, applied with the bounds of \texttt{FParams} and
+\texttt{HHBound}, gives
+$s-\log|W|-(1-\delta)^{-1}\bigl(4u_F\log(1+HH/u_F)+(\eta+4\sqrt e)HH\bigr)\le\mu_R$,
+where $u_F=\max_u(\mu_N^{\max}-h)-s\ge0$. Lemma~\ref{geob:slower} gives
+$s\ge\mathrm{Ga}+\mu_R-K_5-\overline{w}$, so $\mu_R$ cancels. The archive bounds
+$u_F\le K_3+\overline w$ (\texttt{u\_function\_le\_mean}, from both halves of
+\texttt{QuotientSlopeBoundsWith}, \texttt{Slopes}, and the variation bound
+\texttt{Vvar\_bound5} built on \texttt{EComp5}, \texttt{HComp} and
+\texttt{Count5}), then bounds $4u_F\log(1+HH/u_F)$ through \texttt{phi\_bound}
+using $HH\le x^{c_{HH}}b$, replaces $\delta,\eta,e$ by their bars, and uses the
+identity \texttt{key\_identity5}, which rewrites
+$\mathrm{SDiv}-(\sum_ta_t)\Lambda_5+m(\sum_ta_t)\lg$ as
+$\operatorname{Main}(u_0)+(\sum_ta_t)c_{\mathrm{Count}}(L_a+m^2L_a/k)$. The
+remaining step is linear arithmetic.
+\end{proof}
+
+\begin{remark}[the test lattice cancels]
+The slope $\mu_R$ of $R^{\vee}$ enters Lemma~\ref{geob:slower} with sign $+$
+(through the upper bound \texttt{DIV}) and \texttt{SlopeIneq} with sign $-$, so
+it does not appear in Lemma~\ref{geob:gabound}. Neither do the heights $h$. The
+two lattice inequalities therefore act only as a sandwich for the one number
+$\mu_R$.
+\end{remark}
+
+\begin{theorem}[the pointwise bound]\label{geob:eachunit}
+\lean{Formalism.LFunctionChainParameters.WeightedSlopeBounds.each_unit_bound_statement, Formalism.LFunctionChainParameters.WeightedSlopeBounds.weighted_mean_lower_bound_le}
+\uses{geob:pointwise, geob:gabound}
+For every slope record $\mathcal D$, constants $C$ and real $X''$ the pointwise
+bound of Definition~\ref{geob:pointwise} holds: under the eleven listed
+clauses, $\mathrm{PS}(u_0)\le\operatorname{Main}(u_0)+\mathrm{Err}_5(u_0)$ for
+every $u_0$.
+\end{theorem}
+\begin{proof}
+\texttt{LossBounds} gives $\mathrm{PS}\le\mathrm{Ga}+\mathrm{Lo}_P$ and
+$\mathrm{IO}\le\mathrm{Lo}_P$. The weighted mean of $\mathrm{Lo}_5$ is at most
+$c_{Sl1}\mathrm{IO}+c_{Sl1}n_Tm(a/k+b')c_{\mathrm{Count}}mL_x+c_{Sl1}X''+1$ by the
+upper bound for $\log T$ in \texttt{Count5}, hence at most
+$\overline{\mathrm{Lo}}_5$. Insert this into Lemma~\ref{geob:gabound}; the
+coefficient $(1-\bar\delta)^{-1}4\log(1+x^{c_{HH}})$ is nonnegative since
+$\bar\delta<1$. Linear arithmetic gives the claim.
+\end{proof}
+
+\begin{lemma}[size of the pointwise error]\label{geob:errx5}
+\lean{Formalism.LFunctionChainParameters.LChain.errX5at_le, Formalism.LFunctionChainParameters.LErr.ErrText}
+\uses{geob:pointwise, geob:largex}
+% uses-lean: Formalism.LFunctionChainParameters.LErr.ErrWindows
+\uses{geoa:errwindows} % resolved
+Assume the record satisfies \texttt{ErrWindows} with $(C,X'',e_K,K)$ and that
+$x$ is large for $(\eps,K,c_{HH},e_K)$. Then for every $u_0$,
+\[
+\mathrm{Err}_5(u_0)\le x^{C_{\mathrm{Err}}\eps}\Bigl(n_Ta\bigl(1+\tfrac{m^2}k\bigr)+m(B_0+N_c)\Bigr).
+\]
+\end{lemma}
+\begin{proof}
+Not expanded. The proof
+(\arch{Formalism/SizeWindowBrackets/ChainSlopeWindows/PChain.lean}, from line
+613) bounds each summand of $\mathrm{Err}_5$ using the size conditions in
+\texttt{ErrWindows} and the two inequalities of largeness.
+\end{proof}
+
+\begin{theorem}[the gap bound]\label{geob:chtop}
+% overlaps (deduplicated): geoa:main-eq
+\lean{Deduction.ch_top}
+\uses{geob:eachunit, geob:errx5, geob:largex}
+% uses-lean: Deduction.CH.IdentU, Deduction.CH.BNBoundsU, Deduction.CH.gapA, Formalism.LFunctionChainParameters.LChain.SizeData₂, Formalism.LFunctionChainParameters.LErr.ErrWindows, Formalism.LFunctionChainParameters.LErr.errorBracketSizeWindows, Formalism.LFunctionChainParameters.characterSumData.MAIN
+\uses{bal:gap, bal:main-defect, bal:rest-size, geoa:errwindows, geoa:sizedata} % resolved
+Let $H$ be a finite abelian group, $\mathcal D$ a slope record with index set
+$U_0$ (nonempty word sets $W(u_0)$), $\operatorname{tr}\colon U_0\to H$ a map,
+$C$ constants, $X'',e_K,K$ real, and let $(D,\ell,N,TT,T_2,a,w)$ be arithmetic
+data on $H$ with bijections $e_T$ from the top index set onto $TT$ and $e_P$
+from $\{1,\dots,f\}$ onto the set $\Phi$ of places. Assume
+\begin{enumerate}
+\item the identification \texttt{IdentU} along $\operatorname{tr}$ (the record's
+weights, $\gamma$, $L'/L$ value and $\mathrm{PS}$ are those of the arithmetic
+data);
+\item the eleven record clauses (\texttt{LChain.SizeData₂});
+\item \texttt{ErrWindows} with $(C,X'',e_K,K)$;
+\item \texttt{BNBoundsU} for $T_2$:
+$B_0\le2|H|mbx^{\eps}$ and $N_c\le|T_2|kbx^{\eps}/(|H|^2x^{-\eps})$;
+\item $x$ is large for $(\eps,K,c_{HH},e_K)$.
+\end{enumerate}
+Then for every $u\in U_0$,
+\[
+\operatorname{gap}(\operatorname{tr}u)\le x^{(e_{\mathrm{Div}}+e_{\mathrm{Loss}}+3)\eps}\,
+\mathcal E(x,\eps,|H|,|TT|,|T_2|,m,b,k,a),
+\]
+where $\operatorname{gap}(h)=\sum_{t\in TT}\sum_j\bigl(\mathrm{ASK}-\Re\,\mathrm{MAIN}\bigr)(a_t,w(h,j))$
+and $\mathcal E=n_Ta(1+m^2/k)+m\bigl(2nmbx^{\eps}+|T_2|kbx^{\eps}/(n^2x^{-\eps})\bigr)$
+with $n=|H|$, $n_T=|TT|$.
+\end{theorem}
+\begin{proof}
+By \texttt{ch\_top\_main\_eq}, \texttt{IdentU} gives
+$\operatorname{Main}(u)=\sum_{t\in TT}\sum_j\Re\,\mathrm{MAIN}(\ell,a_t,w(\operatorname{tr}u,j))$,
+and the last clause of \texttt{IdentU} gives $\mathrm{PS}(u)=\sum_t\sum_j\mathrm{ASK}$;
+hence $\operatorname{gap}(\operatorname{tr}u)=\mathrm{PS}(u)-\operatorname{Main}(u)$.
+Theorem~\ref{geob:eachunit} bounds this by $\mathrm{Err}_5(u)$, and
+Lemma~\ref{geob:errx5} by $x^{C_{\mathrm{Err}}\eps}(n_Ta(1+m^2/k)+m(B_0+N_c))$.
+Finally \texttt{BNBoundsU} and $n_T=|TT|$ (from $e_T$) give
+$n_Ta(1+m^2/k)+m(B_0+N_c)\le\mathcal E$, monotonically.
+\end{proof}
+
+\begin{remark}[the size of the bracket]
+Divide $\mathcal E$ by $n_Tmb$. Under \texttt{RestSize}
+($a\le2xb$, $n_T\ge x^{-\eps/8}n/2$, $m\ge x^{1/2-\eps}$, $k\le n^2x^{1/2-\eps}$)
+and the bounds $xm\le k$, $m\le x^{1/2+\eps/2}$ of \texttt{ErrWindows}, one
+gets $\mathcal E/(n_Tmb)\ll(x/m+m+x^{1/2})x^{O(\eps)}$, whose largest term is
+smallest at $m\approx x^{1/2}$. This is where the exponent $1/2$ of the
+Chebyshev inequality comes from. The constraints on $m$ and $k$ are hypotheses
+of the record, not consequences.
+\end{remark}
+
+\section{The Chebyshev inequality on windows}
+
+\begin{definition}[core constants at a host]\label{geob:coreath}
+% overlaps (deduplicated): bal:to-E
+\lean{UpperTheory.Comparison₂.CoreAtH, UpperTheory.Comparison₂.FamCoreConstantBounds}
+% uses-lean: Formalism.HC.HostRaw, Formalism.MainNotions.FamCore, Deduction.CH.IdentU, Deduction.CH.BNBoundsU, Deduction.CH.SizesA, Formalism.LFunctionChainParameters.LChain.SizeData₂, Formalism.LFunctionChainParameters.LErr.ErrWindows, Formalism.LFunctionChainParameters.LChain.CostWindows, Formalism.LFunctionChainParameters.LChain.RestSize, Formalism.LFunctionChainParameters.ThickSetMeanBounds.ThinScales, UpperTheory.Comparison₂.arith
+\uses{bal:rest-size, bal:scales, bal:sizes, bal:to-E, geoa:errwindows, geoa:famcore, geoa:sizedata, host:host-raw} % resolved
+Let $H$ be a raw host on a frame $\varphi$ with group $A$, and $TT\subseteq A$.
+The host has \emph{core constants} $(e_D,e_L,K,c_{HH},e_K)$ at $(\eps,x)$
+(\texttt{CoreAtH}) if there are a slope record $\mathcal D$ with index set $U_0$
+and a map $\operatorname{tr}\colon U_0\to A$ whose image contains the subgroup
+$A_0$, constants $C$, and data $\ell,N,T_2,a,w,e_T,e_P,\eta,X',\vartheta$ such
+that:
+\begin{enumerate}
+\item $\ell(\psi)=L'(1,\chi)/L(1,\chi)$ for every nontrivial additive character
+$\psi$ of $\{\pm1\}\times A$ and every primitive Dirichlet character $\chi$
+whose values at $n\ne0$ are the values $\operatorname{pv}(\psi,n)$ given by the
+host's Artin map;
+\item the record has $x$ and $\eps$ as its scale, $e_{\mathrm{Div}}\le e_D$,
+$e_{\mathrm{Loss}}\le e_L$ and $c_{HH}^{\mathcal D}\le c_{HH}$;
+\item \texttt{IdentU} along $\operatorname{tr}$ for the arithmetic data of the
+host, the eleven record clauses, \texttt{ErrWindows} with $(C,X'',e_K,K)$,
+\texttt{BNBoundsU} for $T_2$;
+\item the size conditions \texttt{SizesA}, the thin-scale bound
+\texttt{ThinScales}, \texttt{CostWindows} and \texttt{RestSize};
+\item $T_2\subseteq A_0$.
+\end{enumerate}
+A family core has \emph{core constants} at $x$ if some member $D(x,i)$ has a host
+with core constants at $(\eps,x)$ for its top set $TT$
+(\texttt{FamCoreConstantBounds}).
+\end{definition}
+
+\begin{lemma}[a tie gives core constants]\label{geob:tiedcore}
+\lean{UpperTheory.Comparison₂.tiedCore_of_chainTied, UpperTheory.Comparison₂.arithOf_eq}
+\uses{geob:coreath}
+% uses-lean: Formalism.MainNotions.ChainTied, Formalism.MainNotions.FamP
+\uses{geoa:famcore, geoa:tied} % resolved
+Let $\mathrm{Fm}$ be a family at $\eps$ and suppose it is tied at $x$ with
+constants $(e_D,e_L,K,c_{HH},e_K,C_L)$ (\texttt{ChainTied}). Then its core has
+core constants $(e_D,e_L,K,c_{HH},e_K)$ at $x$.
+\end{lemma}
+\begin{proof}
+Take the index $i_0$ of the tie, $U_0=A$ with $\operatorname{tr}$ the identity,
+and the tie's record and data. The tie's $TT$ equals the host's top set by the
+first arithmetic tie. The tie's clauses \texttt{Ident}, \texttt{BNBounds} and
+the record clauses are the $\operatorname{tr}=\mathrm{id}$ cases of
+\texttt{IdentU}, \texttt{BNBoundsU} and the same clauses; the size and
+thin-scale parts of \texttt{GrowthInequalityRemainingHyps} give \texttt{SizesA}
+and \texttt{ThinScales}; and $T_2\subseteq A_0$ follows from the second
+arithmetic tie, since each element of $T_2$ is a digit, which lies in the cyclic
+subgroup. The point, global and local ties, the weight tie, the clause
+\texttt{ValuesAtX} and the constant $C_L$ are discarded.
+\end{proof}
+
+\begin{remark}[the Chebyshev inequality forgets the lattices]
+Lemma~\ref{geob:tiedcore} drops \texttt{TiePts}, \texttt{TieGlobal} and
+\texttt{TieLocal}, which identify the record's ranks, slopes, heights and local
+sums with invariants of actual lattices and size data. Everything after this
+point uses only inequalities among real numbers and the arithmetic identification
+of $\ell$ with $L'/L(1,\chi)$. The lattice content of a tie matters only for
+whether tied families exist, which is the statement \texttt{TopG} below.
+\end{remark}
+
+\begin{theorem}[the Chebyshev inequality at a host]\label{geob:coregm}
+\lean{UpperTheory.Comparison₂.core_gm}
+\uses{geob:coreath, geob:chtop, geob:largex}
+% uses-lean: Deduction.ch_core, UpperTheory.Comparison₂.gmA_eq, UpperTheory.Comparison₂.sigA_le, UpperTheory.Comparison₂.charsA, UpperTheory.Comparison₂.hostFactsS, Formalism.LFunctionChainParameters.LErr.large_x_eventually, Formalism.HC.EAtH, Formalism.HC.Level.Gm
+\uses{an:level, bal:ch-core, bal:charsA, bal:gmA-eq, bal:host-split, bal:sigA-le} % resolved
+Let $\Lambda$ be a level and $e_D,e_L,K,c_{HH},e_K,C$ real, $\eps>0$. There is
+$x_1$ such that for every $x\ge x_1$, every frame $\varphi$, every host $H$ on
+$\varphi$ and every $TT\subseteq A$: if $H$ satisfies the explicit-formula
+condition \texttt{EAtH} for $\Lambda$ at $(x,\eps,C)$ and has core constants
+$(e_D,e_L,K,c_{HH},e_K)$ at $(\eps,x)$, then
+\[
+G_{\Lambda}(x)\le x^{1/2+(e_D+e_L+7)\eps}.
+\]
+\end{theorem}
+\begin{proof}
+Choose $x_1$ beyond three thresholds: that of \texttt{ch\_core} with exponent
+$e_D+e_L+3$, that of largeness of $x$ for $(\eps,K,c_{HH},e_K)$, and one past
+which $x^{\eps}\ge1+4o_{\Lambda}$. Given the core data, \texttt{ch\_core} is applied
+with the character facts of the host (\texttt{charsA}, from \texttt{EAtH}) and
+with the gap bound of Theorem~\ref{geob:chtop} at each element of $A_0$ (each is
+$\operatorname{tr}u$ for some $u$), where
+$x^{C_{\mathrm{Err}}\eps}\le x^{(e_D+e_L+3)\eps}$ since
+$e_{\mathrm{Div}}\le e_D$ and $e_{\mathrm{Loss}}\le e_L$. After rewriting with
+\texttt{gmA\_eq} and \texttt{sigA\_le} this gives
+$G_{\Lambda}(x)\le x^{1/2+(e_D+e_L+6)\eps}+4o_{\Lambda} x^{1/2+\eps}$ up to the form
+of the constants, and $x^{\eps}\ge1+4o_{\Lambda}$ absorbs the second term into the
+extra factor $x^{\eps}$.
+\end{proof}
+
+\begin{definition}[Chebyshev inequality on windows]\label{geob:chebdefs}
+\lean{Formalism.HC.ChebyshevInequalityOnFamilyWindows, Formalism.HC.ChebyshevInequalityOnWindows, Formalism.HC.ChebyshevInequalityAtWindowScale}
+% uses-lean: Formalism.HC.EFamC, Formalism.MainNotions.FamCore, Formalism.MainNotions.FamCore.Windows, Formalism.HC.Level.Gm
+\uses{an:level, geoa:efamc, geoa:famcore} % resolved
+Fix a type of families $\mathrm{Fam}_{\eps}$ with a core map to family cores and a
+tie predicate $\mathrm{Tied}(\mathrm{Fm},e_D,e_L,K,c_{HH},e_K,C_L,x)$.
+\begin{enumerate}
+\item $\mathrm{Fm}$ is \emph{tied on its windows} with $(e_D,e_L)$ if there are
+$K,c_{HH},e_K,C_L,x_0$ such that $\mathrm{Tied}$ holds at every $x\ge x_0$ in
+the window set $\mathrm{Win}$ of its core.
+\item The \emph{Chebyshev inequality on windows} for a level $\Lambda$ is: for
+all real $e_D,e_L$ and $\eps>0$, and every family $\mathrm{Fm}$ at $\eps$ whose
+core satisfies \texttt{EFamC} for $\Lambda$ and which is tied on its windows
+with $(e_D,e_L)$, there is $x_1$ with
+$G_{\Lambda}(x)\le x^{1/2+(e_D+e_L+7)\eps}$ for every $x\ge x_1$ in $\mathrm{Win}$.
+\item For $\lambda$ real, \texttt{ChebyshevInequalityAtWindowScale}$(\lambda,\Lambda)$
+is: there are $e_D,e_L$ and $\eps_1>0$ such that for every $\eps\in(0,\eps_1)$
+there is a family at $\eps$ whose core satisfies \texttt{EFamC} for $\Lambda$,
+has windows of ratio $\lambda$, and is tied on its windows with $(e_D,e_L)$.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}[a misleading name]
+Despite its name, \texttt{ChebyshevInequalityAtWindowScale} contains no
+inequality for $G_{\Lambda}$: besides the order conditions $0<\eps_1$, $\eps<\eps_1$
+and $x\ge x_0$, it asserts the existence of a family satisfying \texttt{EFamC}, with
+windows, that is tied. On the main chain the tie is \texttt{ChainTied}, which does contain
+inequalities between real numbers (for instance $e_{\mathrm{Div}}\le e_D$).
+The inequality is \texttt{ChebyshevInequalityOnWindows}. The archive's Landau
+step (\texttt{level\_of\_tiedWin}) combines the two, choosing $\eps$ so small
+that $(e_D+e_L+7)\eps$ is below half the distance of $\Re s$ from $1/2$.
+\end{remark}
+
+\begin{lemma}[core constants give the Chebyshev inequality]\label{geob:windowineq}
+\lean{UpperTheory.Comparison₂.windowInequality_of_artinInputs}
+\uses{geob:coreath, geob:coregm, geob:chebdefs}
+Let the tie predicate be such that a tie at $x$ with
+$(e_D,e_L,K,c_{HH},e_K,C_L)$ gives core constants
+$(e_D,e_L,K,c_{HH},e_K)$ at $x$ for the core. Then the Chebyshev inequality on
+windows holds for every level $\Lambda$.
+\end{lemma}
+\begin{proof}
+Given $\mathrm{Fm}$ with \texttt{EFamC} constants $(C,x_E)$ and tie constants
+$(K,c_{HH},e_K,C_L,x_0)$, take $x_1$ from Theorem~\ref{geob:coregm} for
+$(e_D,e_L,K,c_{HH},e_K,C,\eps)$ and put $x_1'=\max(x_1,x_0,x_E)$. For
+$x\ge x_1'$ in $\mathrm{Win}$ the tie gives a member with core constants, and
+\texttt{EFamC} gives the explicit-formula condition for that member's host.
+Apply Theorem~\ref{geob:coregm}.
+\end{proof}
+
+\begin{theorem}[the Chebyshev inequality for tied families]\label{geob:levelgm}
+\lean{UpperTheory.Comparison₂.level_gm_le_on_family_scales}
+\uses{geob:windowineq, geob:tiedcore}
+% uses-lean: Formalism.MainNotions.FamP, Formalism.MainNotions.ChainTied
+\uses{geoa:famcore, geoa:tied} % resolved
+For every level $\Lambda$, the Chebyshev inequality on windows holds for the
+families \texttt{FamP} with their cores and the tie \texttt{ChainTied}.
+Explicitly: for all $e_D,e_L$, $\eps>0$ and every family $\mathrm{Fm}$ at $\eps$
+satisfying \texttt{EFamC} for $\Lambda$ and \texttt{ChainTied} with $(e_D,e_L)$
+at every large $x$ in $\mathrm{Win}$, there is $x_1$ with
+$G_{\Lambda}(x)\le x^{1/2+(e_D+e_L+7)\eps}$ for all $x\ge x_1$ in $\mathrm{Win}$.
+\end{theorem}
+\begin{proof}
+Lemma~\ref{geob:windowineq} applied with Lemma~\ref{geob:tiedcore}.
+\end{proof}
+
+\begin{definition}[the existence statement \texttt{TopG}]\label{geob:topg}
+\lean{UpperTheory.Top.FamilyClassConnected, UpperTheory.Top.TopG}
+% uses-lean: UpperTheory.Top.FReq, UpperTheory.Top.FReq.cls, UpperTheory.Top.FReq.req, UpperTheory.Top.HypV, GlobalTheory.EX.HostExW, Formalism.MainNotions.FamClass, Formalism.MainNotions.ChainTied, Formalism.MainNotions.FamP
+\uses{geoa:famcore, geoa:tied, geob:closed, host:gchi, host:host-exw} % resolved
+A class $\mathcal E$ of families is \emph{connected}
+(\texttt{FamilyClassConnected}) if there are $e_D,e_L$ and $\eps_1>0$ such that
+for every $\eps\in(0,\eps_1)$ there are a family $\mathrm{Fm}$ at $\eps$ in
+$\mathcal E$ and $K,c_{HH},e_K,C_L,x_0$ such that $\mathrm{Fm}$ is tied
+(\texttt{ChainTied}) with these constants at every $x\ge x_0$ in its window set.
+\texttt{TopG} is the statement: for every $\lambda>1$ and every host requirement
+$G$, if hosts meeting $G$ exist on a system of windows of ratio $\lambda$
+(\texttt{HostExW}$(\lambda,G)$), and every family in the class
+$G.\mathrm{cls}(\lambda)$ satisfies the Sha bound \texttt{HypV}, then the class
+$G.\mathrm{cls}(\lambda)$ is connected. Here $G.\mathrm{cls}(\lambda)$ consists
+of the families with windows of ratio $\lambda$ all of whose members beyond the
+family threshold meet $G$.
+\end{definition}
+
+
+
+\begin{remark}[what remains]
+After Theorem~\ref{geob:levelgm}, the whole content of the geometric
+inequality is the hypothesis \texttt{TopG}: the existence, at every small
+$\eps$, of a family on windows that is tied at every large $x$ in its windows.
+The tie requires the slope record clauses, in particular \texttt{DIV}
+(the upper link), \texttt{SlopeIneq} and the losses, to hold for the actual
+lattices and size data of the members. The archive's proof of \texttt{TopG}
+goes through the record of hypotheses \texttt{Hyps}, in which the links of this
+chapter and the covolume condition are inputs; it is outside this chapter.
+\end{remark}

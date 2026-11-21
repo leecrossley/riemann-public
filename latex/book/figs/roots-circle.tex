@@ -1,0 +1,102 @@
+\pgfplotsset{
+  sb curve/.style={x filter/.expression={\thisrow{id}==#1 ? x : nan}},
+  sb q3/.style={sbWeil, mark size=1.9pt, mark options={solid, fill=sbWeil,
+    draw=sbWeil}},
+  sb q5/.style={sbWeil, mark size=3.1pt, mark options={solid, fill=white,
+    draw=sbWeil, line width=0.8pt}},
+  sb q7/.style={sbWeil, mark size=2.5pt, mark options={solid,
+    fill=sbWeil!35, draw=sbWeil, line width=0.6pt}},
+  sb g1/.style={mark=diamond*, every mark/.append style={scale=1.35}}, sb
+g2/.style={mark=square*},
+  sb g3/.style={mark=triangle*},
+}
+\begin{tikzpicture}[sb]
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.6cm},
+  sb axis, tick label style={font=\footnotesize},
+  scale only axis, width=5.4cm, height=5.4cm]
+\nextgroupplot[axis equal image,
+  xmin=-1.25, xmax=1.25, ymin=-1.25, ymax=1.25,
+  axis lines=middle,
+  xtick={1}, ytick=\empty,
+  xticklabel style={anchor=north west, inner sep=1pt},
+  xlabel={$\Real$}, ylabel={$\operatorname{Im}$},
+  xlabel style={anchor=north west, at={(ticklabel* cs:1)}},
+  ylabel style={anchor=south, at={(ticklabel* cs:1)}},
+  title={(a) reciprocal roots $\alpha/\sqrt q$},
+  title style={font=\small, yshift=4pt},
+  legend to name=sbrootslegend,
+  legend columns=4,
+  legend style={/tikz/every even column/.append style={column sep=1em}},
+]
+\addplot[sb weil line, domain=0:360, samples=181, smooth, forget plot]
+  ({cos(x)},{sin(x)});
+\draw[sb other line, densely dashed] (axis cs:0.377964,0.925820) --
+  (axis cs:0.377964,-0.925820);
+\node[font=\scriptsize, anchor=west, align=left, inner sep=1pt]
+  at (axis cs:0.40,0.30) {$\alpha$ and\\$q/\alpha=\bar\alpha$};
+\addplot[forget plot, only marks, sb q3, sb g1, sb curve=1]
+  table[x=re, y=im] {\sbdata{roots_curves.dat}};
+\addplot[forget plot, only marks, sb q5, sb g1, sb curve=2]
+  table[x=re, y=im] {\sbdata{roots_curves.dat}};
+\addplot[forget plot, only marks, sb q7, sb g1, sb curve=3]
+  table[x=re, y=im] {\sbdata{roots_curves.dat}};
+\addplot[forget plot, only marks, sb q5, sb g2, sb curve=5]
+  table[x=re, y=im] {\sbdata{roots_curves.dat}};
+\addplot[forget plot, only marks, sb q3, sb g2, sb curve=4]
+  table[x=re, y=im] {\sbdata{roots_curves.dat}};
+\addplot[forget plot, only marks, sb q7, sb g2, sb curve=6]
+  table[x=re, y=im] {\sbdata{roots_curves.dat}};
+\addplot[forget plot, only marks, sb q5, sb g3, sb curve=7]
+  table[x=re, y=im] {\sbdata{roots_curves.dat}};
+\addlegendimage{only marks, sb q3, sb g1}\addlegendentry{$q=3$, $g=1$}
+\addlegendimage{only marks, sb q5, sb g1}\addlegendentry{$q=5$, $g=1$}
+\addlegendimage{only marks, sb q7, sb g1}\addlegendentry{$q=7$, $g=1$}
+\addlegendimage{sb weil line}
+\addlegendentry{RH: $\lvert\alpha\rvert=\sqrt q$, $\lvert e_n\rvert\le1$}
+\addlegendimage{only marks, sb q3, sb g2}\addlegendentry{$q=3$, $g=2$}
+\addlegendimage{only marks, sb q5, sb g2}\addlegendentry{$q=5$, $g=2$}
+\addlegendimage{only marks, sb q7, sb g2}\addlegendentry{$q=7$, $g=2$}
+\addlegendimage{only marks, sb q5, sb g3}\addlegendentry{$q=5$, $g=3$}
+\nextgroupplot[
+  xmin=0.5, xmax=7.5, ymin=-1.25, ymax=1.25,
+  xtick={1,...,7}, ytick={-1,-0.5,0,0.5,1},
+  xlabel={$n$},
+  title={(b) $e_n=(N_n-q^n-1)/(2g\,q^{n/2})$},
+  title style={font=\small, yshift=4pt},
+  axis on top=false,
+]
+\addplot[draw=none, fill=sbWeil!15, forget plot]
+  coordinates {(0.5,-1) (7.5,-1) (7.5,1) (0.5,1)} -- cycle;
+\addplot[sb weil line, forget plot] coordinates {(0.5,1) (7.5,1)};
+\addplot[sb weil line, forget plot] coordinates {(0.5,-1) (7.5,-1)};
+\addplot[sb other line, forget plot] coordinates {(0.5,0) (7.5,0)};
+\node[font=\scriptsize, sbWeil!70!black, anchor=south east]
+  at (axis cs:7.45,1) {Weil interval};
+\foreach \sbid/\sbst in {1/{sb q3, sb g1}, 2/{sb q5, sb g1},
+  3/{sb q7, sb g1}, 5/{sb q5, sb g2}, 4/{sb q3, sb g2}, 6/{sb q7, sb g2},
+  7/{sb q5, sb g3}} {
+  \edef\sbtmp{\noexpand\addplot[\sbst, sb other line, sb curve=\sbid]
+    table[x=n, y=e] {\noexpand\sbdata{errors_curves.dat}};}
+  \sbtmp
+}
+\end{groupplot}
+\node[anchor=north] at ($(group c1r1.south)!0.5!(group c2r1.south)
+  + (0,-0.95)$) {\pgfplotslegendfromname{sbrootslegend}};
+\end{tikzpicture}
+\caption{The Riemann hypothesis (Theorem~\ref{thm:rh}) for seven curves
+$y^2=f(x)$ of genus $1$, $2$, $3$ over $\F_3$, $\F_5$, $\F_7$. Marker shape
+gives the genus
+(diamond $g=1$, square $g=2$, triangle $g=3$) and marker fill gives $q$
+(filled $q=3$, open $q=5$, light $q=7$); all data are green, the colour
+of genuine curves. (a) The reciprocal roots $\alpha$ of each $L$,
+divided by $\sqrt q$, lie on the unit circle (green). By
+Theorem~\ref{thm:rationality}\eqref{item:rat-roots}, $\alpha\mapsto
+q/\alpha$ permutes them, and on the circle $q/\alpha=\bar\alpha$, so
+they come in conjugate pairs (dashed: one pair). The curve over $\F_5$
+of genus $2$ has double roots $\pm i\sqrt5$; the curve over $\F_3$ of
+genus $2$ also has roots at $\pm i\sqrt3$. (b) The normalised errors
+$e_n$ from brute-force point counts lie in the Weil interval $[-1,1]$
+(green band), which the curve over $\F_5$ of genus $2$ reaches at $n=2$
+and $n=4$; grey lines join the values of one curve. The roots were
+computed numerically from the $L$-polynomials determined by the counts.}
+\label{fig:roots-circle}

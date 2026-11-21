@@ -1,0 +1,80 @@
+\pgfplotstableread{\sbdata{twists.dat}}\sbtwists
+\newcommand*{\sbtv}[2]{\csname sbtw#1@#2\endcsname}
+\newcommand*{\sbtwrow}[1]{%
+  \foreach \c in {q,g,a,b,Nid,Ninv,bound,total,lower,weil}{%
+    \pgfplotstablegetelem{#1}{\c}\of{\sbtwists}%
+    \global\expandafter\let\csname sbtw#1@\c\endcsname\pgfplotsretval}%
+  \pgfmathsetmacro{\sbtwtmp}{\sbtv{#1}{total}/2}%
+  \global\expandafter\let\csname sbtw#1@mid\endcsname\sbtwtmp
+  \pgfmathsetmacro{\sbtwtmp}{\sbtv{#1}{total}-\sbtv{#1}{weil}}%
+  \global\expandafter\let\csname sbtw#1@weillow\endcsname\sbtwtmp
+  \pgfmathsetmacro{\sbtwtmp}{1.16*\sbtv{#1}{bound}}%
+  \global\expandafter\let\csname sbtw#1@ymax\endcsname\sbtwtmp}
+\sbtwrow{0}\sbtwrow{1}\sbtwrow{5}
+\newcommand*{\sbtwpanel}[1]{%
+  \nextgroupplot[title={$q=\sbtv{#1}{q}$, $g=\sbtv{#1}{g}$,
+      $(a,b)=(\sbtv{#1}{a},\sbtv{#1}{b})$}, ymin=0, ymax=\sbtv{#1}{ymax}]
+  \fill[sbWeil!15] (axis cs:0.35,\sbtv{#1}{weillow}) rectangle
+    (axis cs:2.65,\sbtv{#1}{weil});
+  \draw[sb weil line] (axis cs:0.35,\sbtv{#1}{weillow}) --
+    (axis cs:2.65,\sbtv{#1}{weillow})
+    (axis cs:0.35,\sbtv{#1}{weil}) -- (axis cs:2.65,\sbtv{#1}{weil});
+  \addplot[ybar, bar width=0.5, fill=sbZero!45, draw=sbZero,
+    nodes near coords, every node near coord/.append style={font=\scriptsize,
+    text=sbZero!70!black}]
+    coordinates {(1,\sbtv{#1}{Nid}) (2,\sbtv{#1}{Ninv})};
+  \draw[sbOther, line width=0.7pt, densely dotted]
+    (axis cs:0.35,\sbtv{#1}{mid}) -- (axis cs:2.65,\sbtv{#1}{mid});
+  \draw[sb bound line, line width=1.1pt] (axis cs:0.35,\sbtv{#1}{bound}) --
+    (axis cs:2.65,\sbtv{#1}{bound})
+    node[pos=1, anchor=south east, font=\scriptsize, text=sbInk,
+      inner sep=1pt] {$\sbtv{#1}{bound}$};
+  \draw[sbBound, line width=0.9pt] (axis cs:0.35,\sbtv{#1}{lower}) --
+    (axis cs:2.65,\sbtv{#1}{lower})
+    node[pos=1, anchor=south east, font=\scriptsize, text=sbInk,
+      inner sep=1pt] {$\sbtv{#1}{lower}$};
+  \draw[sbBound, ->, line width=0.6pt] (axis cs:0.5,\sbtv{#1}{bound}) --
+    (axis cs:0.5,\sbtv{#1}{lower});
+}
+\begin{tikzpicture}[sb]
+\begin{groupplot}[group style={group size=3 by 1, horizontal sep=1.0cm},
+  sb axis, width=0.355\linewidth, height=0.5\linewidth,
+  xmin=0.35, xmax=2.65, xtick={1,2},
+  xticklabels={{$N(K,\mathrm{id})$},{$N(K,\iota)$}},
+  title style={font=\footnotesize},
+  tick label style={font=\footnotesize},
+  clip=false,
+]
+\sbtwpanel{0}
+\sbtwpanel{1}
+\sbtwpanel{5}
+\end{groupplot}
+\end{tikzpicture}
+
+\smallskip
+{\footnotesize
+\tikz[baseline=-0.6ex]\draw[fill=sbZero!45, draw=sbZero] (0,-0.1)
+  rectangle (0.3,0.12); point counts\quad
+\tikz[baseline=-0.6ex]\draw[sb bound line] (0,0) -- (0.6,0); upper bound
+$1+a+M'b$\quad
+\tikz[baseline=-0.6ex]\draw[sbBound, line width=0.9pt] (0,0) -- (0.6,0);
+forced lower bound $2(q+1)-(1+a+M'b)$\par
+\tikz[baseline=-0.6ex]\fill[sbWeil!15] (0,-0.1) rectangle (0.6,0.12);%
+\tikz[baseline=-0.6ex]\draw[sb weil line] (0,0) -- (0.01,0);
+Weil interval $q+1\pm2g\sqrt q$\quad
+\tikz[baseline=-0.6ex]\draw[sbOther, line width=0.7pt, densely dotted]
+  (0,0) -- (0.6,0); $q+1$\par}
+\caption{Route~1 in three computed cases with $G=\Z/2$: $y^2=f(x)$ with
+$\deg f=2g+1$ over $\F_{25}$ and $\F_{49}$ ($g=1$) and over $\F_{121}$
+($g=2$), with $\iota$ the hyperelliptic involution and $M=M'=\sqrt q$. Blue
+bars: the counts
+$N(K,\mathrm{id})$ and $N(K,\iota)$; their sum is exactly $2(q+1)$
+(Proposition~\ref{prop:class-sum}). Orange dash-dot: the upper bound
+$1+a+M'b$ of Theorem~\ref{thm:aux-section} for both counts. Orange solid:
+the lower bound $2(q+1)-(1+a+M'b)$ that it forces on each count
+(Theorem~\ref{thm:averaging}); it is the reflection of the upper bound in
+$q+1$ (arrow). Green band: the Weil interval $q+1\pm2g\sqrt q$; grey dotted:
+$q+1$. The computed $q=27$ cases are omitted; with the split $(M,M')=(9,3)$
+the forced lower bound there is negative. The second computed $q=49$ pair,
+$(a,b)=(6,9)$, is also omitted.}
+\label{fig:twist-bars}

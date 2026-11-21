@@ -1,0 +1,25 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, width=0.82\linewidth, height=0.4\linewidth,
+  xmode=log, xmin=10, xmax=1e7, ymin=-0.06, ymax=0.06,
+  ytick={-0.0462,0,0.0462}, yticklabels={$-c_0$,$0$,$c_0$},
+  scaled y ticks=false,
+  xlabel={$x$ (logarithmic)},
+  ylabel={$(\Gz(x)-\log 2\pi)/\sqrt x$},
+  legend style={at={(0.5,-0.36)}, anchor=north, legend columns=3},
+  legend cell align=left]
+\addplot[biRH, line width=0.8pt, domain=10:1e7, samples=2] {0.046191};
+\addlegendentry{$\pm c_0$}
+\addplot[biRH, line width=0.8pt, domain=10:1e7, samples=2, forget plot]
+  {-0.046191};
+\addplot[biZero, line width=0.35pt] table[x=x, y=r]
+  {data/aq2/gz-large.dat};
+\addlegendentry{computed from $\Lambda$}
+\addplot[biBound, only marks, mark=triangle*, mark size=1.6pt]
+  table[x=x, y=r] {data/aq2/gz-explicit.dat};
+\addlegendentry{first $500$ zeros}
+\end{axis}
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

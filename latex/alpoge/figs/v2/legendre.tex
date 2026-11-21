@@ -1,0 +1,18 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, ybar, width=0.9\linewidth, height=0.4\linewidth,
+  bar width=4.2pt, ymin=0, ymax=175, xmin=0, xmax=62,
+  xlabel={prime $p$}, ylabel={contribution},
+  legend pos=north east, legend cell align=left]
+\addplot[fill=biOther!35, draw=biOther] table[x=p, y=full]
+  {data/aq2/legendre-inert.dat};
+\addlegendentry{Legendre: $\log p\sum_i a/p^i$}
+\addplot[fill=biZero!60, draw=biZero] table[x=p, y=ask]
+  {data/aq2/legendre-inert.dat};
+\addlegendentry{$\PS$-type: $2\log p\sum_{i\text{ odd}}a/p^i$, $p$
+  inert}
+\end{axis}
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

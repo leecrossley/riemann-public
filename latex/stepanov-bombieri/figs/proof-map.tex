@@ -1,0 +1,117 @@
+\scalebox{0.86}{%
+\begin{tikzpicture}[sb, x=1cm, y=1cm,
+  sb box/.append style={align=flush center},
+  nd/.style={sb box, font=\footnotesize, text width=#1},
+  nd/.default=4.2cm,
+  hd/.style={font=\footnotesize\bfseries},
+  proof/.style={->, sbInk, line width=1.1pt},
+  valid/.style={->, sbInk, line width=0.55pt},
+  fail/.style={->, sbFail, line width=0.9pt, dashed},
+  par/.style={->, sbOther, line width=0.7pt, dashed},
+  lab/.style={font=\scriptsize, align=center, fill=white, inner sep=1.2pt},
+  stop/.style={draw=sbFail, solid, line width=1.6pt, cross out, minimum size=9pt,
+    inner sep=0pt},
+]
+\node[nd=14.6cm] (zeta) at (7.5,0) {%
+  {\bfseries Zeta function} (\S\ref{sec:zeta}; Theorem~\ref{thm:rationality},
+  Proposition~\ref{prop:tower}):
+  $L_K(t)=\prod_{i=1}^{2g}(1-\alpha_it)$, functional equation
+  $\alpha\mapsto q/\alpha$, and the tower $L_{K_r}=\prod_i(1-\alpha_i^rt)$
+  with genus $g$ for all $r$};
+\node[sb bound box, font=\footnotesize, text width=3.3cm, dashed]
+  (var) at (1.85,-2.3) {%
+  {\bfseries Stepanov's form} (\S\ref{sec:variantJ},
+  Theorem~\ref{thm:variantJ}):\\ $y^2=f(x)$ over $\F_p$,\\
+  $\lvert S_{\pm1}\rvert\le p/2+B$};
+\node[sb bound box, font=\footnotesize, text width=5.0cm]
+  (up) at (8.05,-2.3) {%
+  {\bfseries Upper bound} (\S\ref{sec:upper}):
+  $N(K,\sigma)\le1+a+M'b$ (Theorem~\ref{thm:aux-section});\\
+  $N(K,\sigma)\le q+(2g+1)\sqrt q$ for square $q>(g+1)^4$
+  (Theorem~\ref{thm:bombieri});\\
+  $N_n\le q^n+O(q^{n/2})$ for all $q$ (Proposition~\ref{prop:all-q})};
+\node[nd=5.0cm] (r1) at (2.75,-5.2) {%
+  {\bfseries Route 1} (\S\ref{sec:route1}; Theorems~\ref{thm:averaging},
+  \ref{thm:two-sided}): class-sum identity and averaging over all twists
+  give $\lvert N_n-q^n-1\rvert\le Aq^{n/2}$ for $n\in n_1\Z_{>0}$};
+\node[sb fail box, font=\footnotesize, text width=4.6cm]
+  (r2) at (12.45,-5.2) {%
+  {\bfseries Route 2} (\S\ref{sec:route2}; Proposition~\ref{prop:landau},
+  Theorem~\ref{thm:dichotomy}): the upper bound and a
+  Landau--Pringsheim lemma};
+\node[sb weil box, font=\footnotesize, text width=4.2cm]
+  (rh) at (2.4,-8.2) {%
+  {\bfseries RH} (\S\ref{sec:rh}; Proposition~\ref{prop:power-sums},
+  Theorem~\ref{thm:rh}):\\ $\lvert\alpha_i\rvert=\sqrt q$ and
+  $\lvert N_n-q^n-1\rvert\le2gq^{n/2}$};
+\node[nd=3.5cm] (sm) at (7.35,-8.2) {%
+  {\bfseries Smoothed sum} (\S\ref{sec:route2},
+  Theorem~\ref{thm:route2prime}): $G(T)\le Aq^{T/2}$ on long windows
+  $\Rightarrow$ RH};
+\node[sb fail box, font=\footnotesize, text width=4.6cm]
+  (dead) at (12.45,-8.2) {%
+  RH, \emph{or} a real zero of $L_K$ in $(q^{-1},q^{-1/2})$\\
+  (Theorem~\ref{thm:route2-input})};
+\node[sb fail box, font=\footnotesize, text width=4.6cm]
+  (cex) at (12.45,-10.35) {%
+  $L^*=1-7t+9t^2$, $q=9$: a formal $L$ with all the formal properties,
+  in the second case (Proposition~\ref{prop:formal-cex})};
+\draw[proof] (zeta.south -| 4.6,0) -- (r1.north -| 4.6,0)
+  node[lab, pos=0.42] {FE,\\ tower};
+\draw[valid] (zeta.south -| 14.3,0) -- (r2.north -| 14.3,0)
+  node[lab, pos=0.12, left=1pt, fill=none] {functional equation};
+\draw[proof] (up.south -| 6.0,0) |- (r1.east)
+  node[lab, pos=0.3, right=1pt, fill=none, align=left]
+  {$N(E_n,\sigma)\le$\\ $q^n+(2g_E+1)q^{n/2}$\\ for all $\sigma\in G_n$};
+\draw[fail] (up.east) -| (r2.north -| 12.0,0)
+  node[lab, pos=0.7, right=1pt, fill=none, text=sbFail, align=left]
+  {upper bound\\ on $N_n$ only};
+\draw[proof] (r1.south -| 2.4,0) -- (rh.north)
+  node[lab, pos=0.5, left=1pt, fill=none, align=right] {two-sided\\ bound};
+\draw[valid] (r1.south -| 4.9,0) -- ++(0,-0.85) coordinate (lb) -| (sm.north -| 6.6,0);
+\node[lab, fill=none, anchor=south west, align=left] at ($(lb)+(0.05,0.02)$)
+  {lower bound on $N_n$\\ (Proposition~\ref{prop:which-bound})};
+\draw[fail] (up.south -| 8.6,0) -- (sm.north -| 8.6,0)
+  node[stop, pos=0.62] {}
+  node[lab, pos=0.8, right=4pt, fill=none, text=sbFail, align=left]
+  {wrong sign:\\ needs a \emph{lower}\\ bound on $N_n$};
+\draw[valid] (sm.west) -- (rh.east);
+\draw[fail] (r2.south) -- (dead.north) node[stop, pos=0.5] {};
+\draw[sbFail, line width=0.9pt, dashed] (cex.north) -- (dead.south)
+  node[lab, pos=0.5, right=2pt, fill=none, text=sbFail] {realises it};
+\draw[par] (var.south) -- (var.south |- r1.north)
+  node[lab, pos=0.5, left=1pt, fill=none, text=sbOther, align=right]
+  {the case\\ $G=\Z/2$, $n=1$};
+\begin{scope}[shift={(0,-10.0)}, font=\scriptsize]
+  \draw[proof] (0,0) -- (0.8,0);
+  \node[anchor=west] at (0.9,0) {the proof of Theorem~\ref{thm:weil}};
+  \draw[valid] (0,-0.4) -- (0.8,-0.4);
+  \node[anchor=west] at (0.9,-0.4) {valid, not needed for it};
+  \draw[fail] (0,-0.8) -- (0.8,-0.8);
+  \node[anchor=west] at (0.9,-0.8) {Route~2: does not reach RH};
+  \draw[par] (0,-1.2) -- (0.8,-1.2);
+  \node[anchor=west] at (0.9,-1.2) {a parallel argument};
+  \node[stop] at (5.2,0) {};
+  \node[anchor=west] at (5.4,0) {stops here};
+  \node[anchor=west, text width=4.3cm, sbOther] at (5.05,-0.8)
+    {\S\ref{sec:dictionary} compares these steps with Alp\"oge's
+    argument (Figure~\ref{fig:dictionary-diagram}).};
+\end{scope}
+\end{tikzpicture}}
+\caption{The structure of the proof of Theorem~\ref{thm:weil}. Thick
+arrows: the proof given (Sections~\ref{sec:zeta}, \ref{sec:upper},
+\ref{sec:route1}, \ref{sec:rh}); thin arrows: valid implications the proof
+does not need. Dashed purple: Route~2 (Section~\ref{sec:route2}), which
+from the upper bound alone reaches only ``the Riemann hypothesis or a real
+zero of $L_K$ in $(q^{-1},q^{-1/2})$'' (Theorem~\ref{thm:route2-input});
+Proposition~\ref{prop:formal-cex} realises the second case for a formal
+$L$-polynomial. The smoothed-sum criterion (Theorem~\ref{thm:route2prime})
+is valid, but its hypothesis is a lower bound on point counts
+(Proposition~\ref{prop:which-bound}), which Route~1 provides and
+Section~\ref{sec:upper} does not. Dashed grey: Section~\ref{sec:variantJ}
+bounds $\lvert S_{\pm1}\rvert$ from above for $y^2=f(x)$ over $\F_p$,
+which gives a two-sided bound as Route~1 does for $G=\Z/2$. Box fills:
+orange, the bounds of the Stepanov--Bombieri method; green, the Riemann
+hypothesis; purple, the failure of Route~2 and the counterexample.
+Arrow labels say what each step passes on. Schematic.}
+\label{fig:proof-map}

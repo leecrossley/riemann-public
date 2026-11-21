@@ -1,0 +1,446 @@
+\chapter{The balance identity and Fourier analysis on the Galois group}\label{ch:bal}
+This chapter covers the finite Fourier analysis that turns a prime sum over primes inert in an imaginary quadratic field into a weighted combination of twisted Chebyshev-type functions. The balance identity (Theorem~\ref{bal:balance}) is exact orthogonality of characters on a group $V_4\times H$. The core estimate (Theorem~\ref{bal:ch-core}) averages the identity over a subgroup $A_0\subset H$ and over a finite set of top places. Given an upper bound for the prime sums, it yields an upper bound for a weighted sum $G_A(x)$ of the functions $\Psi_{\theta}$ over the characters trivial on $A_0$. The last part of the chapter identifies the weights with those of a level when the data come from a host. The upper bound for the prime sums (the geometric inequality) and the analytic criterion that consumes $G_A$ are proved elsewhere in the archive.
+
+\section{The additive model and arithmetic data}
+
+\begin{definition}[The additive model]\label{bal:additive-model}
+\lean{Formalism.D5.E0, Formalism.D5.InPhi, Formalism.D5.PhiSet, Formalism.D5.cconj, Formalism.D5.topPl, Formalism.D5.thickPl, Formalism.LFunctionChainParameters.characterSumData.sgc0, Formalism.LFunctionChainParameters.characterSumData.partner, Formalism.LFunctionChainParameters.characterSumData.chC}
+Let $V_4=(\Z/2\Z)^2$ and let $H$ be a finite abelian group, written additively. Put $\mathfrak G=V_4\times H$ and write its elements as $g=((g_1,g_2),h)$.
+\begin{itemize}
+\item $\Phi=\{g\in\mathfrak G: g_1=0\}$, a subgroup of index $2$; put $f=|\Phi|=2|H|$.
+\item $c=((1,1),0)$, $s_0=((1,0),0)$, and for $t\in H$, $\mathrm{top}(t)=((0,0),t)$ and $\mathrm{thick}(t)=((0,1),t)$.
+\item The \emph{partner map} at $t\in H$ is $\mathrm{pt}_t(g)=c+g+\mathrm{top}(t)=g+((1,1),t)$.
+\item $\chi_K$ is the character $\chi_K(g)=(-1)^{g_1}$ of $\mathfrak G$, with values in $\CC$.
+\end{itemize}
+Characters of $\mathfrak G$ are homomorphisms $\mathfrak G\to\CC^{\times}$ (Mathlib's \texttt{AddChar}); the trivial character is written $0$, following the archive.
+\end{definition}
+
+\begin{definition}[Arithmetic data]\label{bal:arith-data}
+\lean{Formalism.LFunctionChainParameters.characterSumData.ArithData}
+\uses{bal:additive-model}
+Arithmetic data $D$ for $\mathfrak G$ consist of two natural numbers $q_1,d$, a subgroup $I_p\subset\mathfrak G$ for every natural number $p$ (the inertia subgroup), and an element $\Frob_p\in\mathfrak G$ for every $p$. No condition is imposed.
+\end{definition}
+
+\begin{definition}[Primitive values and the functions $\Psi_{\theta}$]\label{bal:gpsi}
+\lean{Formalism.LFunctionChainParameters.characterSumData.cosetMean, Formalism.LFunctionChainParameters.characterSumData.primVal, Formalism.LFunctionChainParameters.characterSumData.GPsi}
+\uses{bal:arith-data}
+% uses-lean: Formalism.Gz
+\uses{an:smoothed} % resolved
+Let $D$ be arithmetic data, $\theta$ a character of $\mathfrak G$ and $\ell$ any function from characters of $\mathfrak G$ to $\CC$.
+\begin{itemize}
+\item For a subgroup $I$ and $h\in\mathfrak G$, the coset mean is $\mu_I(h,\theta)=|I|^{-1}\sum_{z\in I}\theta(h+z)$.
+\item For $n\ge1$, $\nu_D(\theta,n)=\prod_{p\mid n}\mu_{I_p}\bigl(v_p(n)\Frob_p,\theta\bigr)$, the product over the prime factors of $n$.
+\item $\Psi_{\theta}(y)=\Gz(y)$ if $\theta$ is trivial, where $\Gz(y)=\sum_{1\le n\le y}\Lambda(n)(y/n-1)-y\log y+(1+\gamma)y$. Otherwise
+\[\Psi_{\theta}(y)=\sum_{1\le n\le \lfloor y\rfloor}\Lambda(n)\,\nu_D(\theta,n)\Bigl(\frac yn-1\Bigr)+y\,\ell(\theta).\]
+\end{itemize}
+The function $\Psi_{\theta}$ depends on $D$ and $\ell$; the notation suppresses them.
+\end{definition}
+
+\begin{definition}[Split outside $d$; host facts]\label{bal:split-outside}
+\lean{Deduction.CH.HostFactsS, Formalism.LFunctionChainParameters.characterSumData.HostFacts}
+\uses{bal:arith-data}
+Let $D$ be arithmetic data and $S$ a finite set of natural numbers. $D$ is \emph{split outside $d$ on $S$} if:
+\begin{itemize}
+\item $d$ is prime, $2\in S$, $q_1\in S$ and $d\notin S$;
+\item $I_p=0$ for every prime $p\notin S$ with $p\neq d$;
+\item for $p\in S$, $I_p\subset\Phi$ and $\Frob_p\in\Phi$;
+\item $I_d=\{0,s_0\}$.
+\end{itemize}
+$D$ satisfies the \emph{host facts} if $q_1$ and $d$ are primes, both different from $2$, $q_1\neq d$, $I_p=0$ for every prime $p\notin\{2,q_1,d\}$, $I_p\subset\Phi$ and $\Frob_p\in\Phi$ for $p\in\{2,q_1\}$, and $I_d=\{0,s_0\}$.
+\end{definition}
+
+\begin{remark}
+The host facts imply that $D$ is split outside $d$ on $\{2,q_1\}$. The converse fails, since the second notion does not require $q_1$ to be an odd prime. Neither notion constrains $\Frob_p$ for $p\notin S$; those Frobenius elements decide which primes count as inert below.
+\end{remark}
+
+\begin{definition}[The prime sum]\label{bal:ask}
+\lean{Formalism.LFunctionChainParameters.characterSumData.IsInert, Formalism.LFunctionChainParameters.characterSumData.askP, Formalism.LFunctionChainParameters.characterSumData.askD, Formalism.LFunctionChainParameters.characterSumData.ASK}
+\uses{bal:arith-data}
+Let $D$ be arithmetic data, $N\in\N$, $a\in\R$, $t\in H$ and $w\colon\mathfrak G\to\R$. Write $u_+=\max(u,0)$ and $m_t(g)=w(\mathrm{pt}_t(g))$. A number $p$ is \emph{inert} if $p$ is prime, $p\notin\{2,q_1,d\}$ and $\Frob_p\notin\Phi$. The prime sum is
+\[
+\mathrm{ASK}_{t,w}(a)=\sum_{\substack{p\le N\\ p\text{ inert}}}2\log p\sum_{\substack{1\le i\le N\\ i\Frob_p\notin\Phi}}\Bigl(\frac a{p^i}-m_t(i\Frob_p)\Bigr)_+
++\log d\sum_{1\le i\le N}\ \sum_{\substack{g\notin\Phi\\ g-i\Frob_d\in I_d}}\Bigl(\frac a{d^i}-m_t(g)\Bigr)_+ .
+\]
+It depends on $D$ and $N$ as well.
+\end{definition}
+
+\begin{definition}[Main term and defect]\label{bal:main-defect}
+\lean{Formalism.LFunctionChainParameters.characterSumData.MAIN, Formalism.LFunctionChainParameters.characterSumData.De}
+\uses{bal:gpsi, bal:ask}
+With $\ell$, $a$, $t$, $w$ as above, the main term is the complex number
+\[\mathrm{MAIN}_w(a)=a\Bigl(\log a-1-\gamma+\ell(\chi_K)-\frac1f\sum_{\rho\in\Phi}\log w(\rho)\Bigr),\]
+and the defect is
+\[\mathrm{De}_{t,w}(a)=\frac1f\sum_{g\notin\Phi}\ \sum_{\theta}\overline{\theta(g)}\,m_t(g)\,\Psi_{\theta}\bigl(a/m_t(g)\bigr),\]
+the inner sum over all characters $\theta$ of $\mathfrak G$.
+\end{definition}
+
+\section{The balance identity}
+
+\begin{lemma}[The partner map]\label{bal:partner-bij}
+\lean{Formalism.LFunctionChainParameters.characterSumData.partner_bijection, Formalism.LFunctionChainParameters.characterSumData.PB.sum_partner, Formalism.LFunctionChainParameters.characterSumData.PB.card_notPhi}
+\uses{bal:additive-model}
+For every $t\in H$, $\mathrm{pt}_t$ maps $\mathfrak G\smallsetminus\Phi$ bijectively onto $\Phi$. Hence $\sum_{g\notin\Phi}F(\mathrm{pt}_t(g))=\sum_{\rho\in\Phi}F(\rho)$ for any $F$ with values in a commutative monoid, and $|\mathfrak G\smallsetminus\Phi|=f$.
+\end{lemma}
+\begin{proof}
+Translation by $((1,1),t)$ changes the first coordinate $g_1$; its inverse is $\rho\mapsto\rho-\mathrm{top}(t)-c$.
+\end{proof}
+
+\begin{lemma}[Character sums over the complement of $\Phi$]\label{bal:colour-sum}
+\lean{Formalism.LFunctionChainParameters.characterSumData.colour_sum}
+\uses{bal:additive-model}
+For every character $\theta$ of $\mathfrak G$,
+$\sum_{g\notin\Phi}\overline{\theta(g)}$ equals $f$ if $\theta$ is trivial, $-f$ if $\theta=\chi_K$, and $0$ otherwise.
+\end{lemma}
+\begin{proof}
+Write the indicator of $\mathfrak G\smallsetminus\Phi$ as $(1-\chi_K)/2$ and apply orthogonality to $\theta$ and to $\theta\chi_K$, using $|\mathfrak G|=2f$.
+\end{proof}
+
+\begin{lemma}[Primitive values at prime powers]\label{bal:prim-val-pow}
+\lean{Formalism.LFunctionChainParameters.characterSumData.primitive_value_pow, Formalism.LFunctionChainParameters.characterSumData.primitive_value_trivial}
+\uses{bal:gpsi}
+For every $D$ and $n$, $\nu_D(0,n)=1$. For a prime $p$ and $i\ge1$, $\nu_D(\theta,p^i)=\mu_{I_p}(i\Frob_p,\theta)$.
+\end{lemma}
+\begin{proof}
+Each coset mean of the trivial character is $1$. The only prime factor of $p^i$ is $p$, with valuation $i$.
+\end{proof}
+
+\begin{lemma}[Orthogonality at a prime power]\label{bal:ortho}
+\lean{Formalism.LFunctionChainParameters.characterSumData.orthogonality_ramified, Formalism.LFunctionChainParameters.characterSumData.ortho_coset, Formalism.LFunctionChainParameters.characterSumData.orthogonality_unramified}
+\uses{bal:prim-val-pow}
+Let $D$ be arithmetic data, $p$ prime, $i\ge1$ and $g\in\mathfrak G$. Then
+\[\frac1f\sum_{\theta}\overline{\theta(g)}\,\nu_D(\theta,p^i)=\begin{cases}2/|I_p| & \text{if } g-i\Frob_p\in I_p,\\ 0&\text{otherwise.}\end{cases}\]
+In particular, if $I_p=0$ the left side is $2$ when $g=i\Frob_p$ and $0$ otherwise.
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{bal:prim-val-pow} the left side is $f^{-1}|I_p|^{-1}\sum_{z\in I_p}\sum_{\theta}\overline{\theta(g)}\theta(i\Frob_p+z)$, and $\sum_{\theta}\overline{\theta(g)}\theta(h)=|\mathfrak G|[g=h]=2f[g=h]$.
+\end{proof}
+
+\begin{lemma}[Von Mangoldt sums as prime-power sums]\label{bal:vonmangoldt-pp}
+\lean{Formalism.LFunctionChainParameters.characterSumData.sum_vonMangoldt_primePow}
+Let $N\in\N$ and $X\colon\N\to\CC$ with $X(p^i)=0$ whenever $p$ is prime, $i\ge1$ and $p^i>N$. Then
+$\sum_{n=1}^N\Lambda(n)X(n)=\sum_{p\le N\text{ prime}}\ \sum_{i=1}^N\log p\;X(p^i)$.
+\end{lemma}
+\begin{proof}
+The map $(p,i)\mapsto p^i$ is a bijection between the nonzero terms of the two sums, by unique factorization of prime powers.
+\end{proof}
+
+\begin{lemma}[Expansion of the prime sum]\label{bal:ask-expansion}
+\lean{Deduction.CharacterBalance.askExp, Deduction.CharacterBalance.lunram, Deduction.CharacterBalance.lsplit, Deduction.CharacterBalance.ld, Deduction.CharacterBalance.ounram, Deduction.CharacterBalance.cardI, Deduction.CharacterBalance.ramifiedPrimeTerm_eq_zero_of_lt_ramifiedPrime}
+\uses{bal:split-outside, bal:ask, bal:ortho, bal:vonmangoldt-pp, bal:partner-bij}
+Let $D$ be split outside $d$ on $S$, $a,t,w$ as in Definition~\ref{bal:ask}, $w>0$ on $\Phi$, and $N$ with $a/w(\rho)\le N$ for all $\rho\in\Phi$. Then
+\[\mathrm{ASK}_{t,w}(a)=\frac1f\sum_{g\notin\Phi}\sum_{\theta}\overline{\theta(g)}\sum_{n=1}^N\Lambda(n)\,\nu_D(\theta,n)\Bigl(\frac an-m_t(g)\Bigr)_+ .\]
+\end{lemma}
+\begin{proof}
+Exchange the sums and write the right side as $\sum_{n\le N}\Lambda(n)\sum_{g\notin\Phi}K(n,g)F(n,g)$ with $K(n,g)=f^{-1}\sum_{\theta}\overline{\theta(g)}\nu_D(\theta,n)$ and $F(n,g)=(a/n-m_t(g))_+$. Since $\mathrm{pt}_t(g)\in\Phi$, $F(n,g)=0$ for $n>N$, so Lemma~\ref{bal:vonmangoldt-pp} applies. For each prime $p\le N$, Lemma~\ref{bal:ortho} evaluates $K(p^i,g)$:
+\begin{itemize}
+\item $p\in S$: $i\Frob_p+I_p\subset\Phi$ contains no $g\notin\Phi$, so the contribution is $0$; such $p$ is not inert.
+\item $p\notin S$, $p\ne d$: $I_p=0$ and $K=2[g=i\Frob_p]$, giving $2\log p$ times the inner sum of $\mathrm{ASK}$ at $p$. If $p$ is not inert then $\Frob_p\in\Phi$, every multiple is in $\Phi$, and the term vanishes.
+\item $p=d$: $|I_d|=2$ and $K=[g-i\Frob_d\in I_d]$, giving the second sum of $\mathrm{ASK}$.
+\end{itemize}
+If $d>N$ the $d$-term of $\mathrm{ASK}$ is $0$ because $a/d^i<m_t(g)$, so the restriction $p\le N$ on the right does not lose it.
+\end{proof}
+
+\begin{lemma}[Cutting at $a/W$]\label{bal:cut}
+\lean{Formalism.LFunctionChainParameters.characterSumData.sum_cut, Formalism.LFunctionChainParameters.characterSumData.inner_eq}
+\uses{bal:gpsi, bal:prim-val-pow}
+% uses-lean: Formalism.Gz
+\uses{an:smoothed} % resolved
+Let $a>0$, $W>0$ and $N$ with $a/W\le N$. Then
+\[\sum_{n=1}^N\Lambda(n)\nu_D(\theta,n)\Bigl(\frac an-W\Bigr)_+=\sum_{1\le n\le\lfloor a/W\rfloor}\Lambda(n)\nu_D(\theta,n)\Bigl(\frac an-W\Bigr),\]
+and this equals $W\,\Psi_{\theta}(a/W)+c_{\theta}$, where $c_0=a\log a-a\log W-(1+\gamma)a$ and $c_{\theta}=-a\,\ell(\theta)$ for $\theta\ne0$.
+\end{lemma}
+\begin{proof}
+The positive part is nonzero exactly for $n\le a/W$. Then $a/n-W=W(a/(Wn)-1)$; for $\theta=0$ use $\nu_D(0,n)=1$ and $\log(a/W)=\log a-\log W$.
+\end{proof}
+
+\begin{theorem}[Balance identity]\label{bal:balance}
+\lean{Deduction.ch_balance}
+\uses{bal:split-outside, bal:main-defect, bal:ask-expansion, bal:cut, bal:colour-sum, bal:partner-bij}
+Let $D$ be arithmetic data split outside $d$ on a finite set $S$, $\ell$ any function on characters, $a>0$, $t\in H$, $w\colon\mathfrak G\to\R$ with $w(\rho)>0$ for $\rho\in\Phi$, and $N\in\N$ with $a/w(\rho)\le N$ for all $\rho\in\Phi$. Then
+\[\mathrm{ASK}_{t,w}(a)-\mathrm{MAIN}_w(a)=\mathrm{De}_{t,w}(a).\]
+\end{theorem}
+\begin{proof}
+Start from Lemma~\ref{bal:ask-expansion}. For each $g\notin\Phi$ the weight $W=m_t(g)$ is positive, so Lemma~\ref{bal:cut} rewrites the inner $n$-sum as $m_t(g)\Psi_{\theta}(a/m_t(g))+c_{\theta}$. The first terms assemble to $\mathrm{De}_{t,w}(a)$. The trivial character contributes $f^{-1}\sum_{g\notin\Phi}(a\log a-a\log m_t(g)-(1+\gamma)a)$; by Lemma~\ref{bal:partner-bij} this is $a\log a-(1+\gamma)a-(a/f)\sum_{\rho\in\Phi}\log w(\rho)$. The nontrivial characters contribute $f^{-1}\sum_{\theta\ne0}(-a\ell(\theta))\sum_{g\notin\Phi}\overline{\theta(g)}=a\,\ell(\chi_K)$, by Lemma~\ref{bal:colour-sum}. The sum of the two is $\mathrm{MAIN}_w(a)$.
+\end{proof}
+
+\begin{lemma}[Balance under the host facts]\label{bal:balance-hostfacts}
+\lean{Formalism.LFunctionChainParameters.characterSumData.AskMainBalance, Formalism.LFunctionChainParameters.characterSumData.colour_balance, Formalism.LFunctionChainParameters.characterSumData.characterSum_expansion}
+\uses{bal:split-outside, bal:main-defect}
+% described-edge: the proof follows the same steps as bal:balance
+Let $H$ be a finite abelian group. For all arithmetic data $D$ satisfying the host facts and all $\ell,a,t,w,N$ with $a>0$, $w>0$ on $\Phi$ and $a/w(\rho)\le N$ on $\Phi$, one has $\mathrm{ASK}_{t,w}(a)-\mathrm{MAIN}_w(a)=\mathrm{De}_{t,w}(a)$.
+\end{lemma}
+\begin{proof}
+The archive states this as the proposition-valued definition \texttt{AskMainBalance} and proves it as \texttt{colour\_balance}, through an expansion lemma \texttt{characterSum\_expansion} that parallels Lemma~\ref{bal:ask-expansion} with $S=\{2,q_1\}$. Only the top of this proof was read. The statement also follows from Theorem~\ref{bal:balance}, because the host facts imply splitting outside $d$ on $\{2,q_1\}$.
+\end{proof}
+
+\begin{remark}
+Two copies of the identity exist. \texttt{AskMainBalance} (in \arch{Formalism/SizeWindowBrackets/FirstPrimeNeSecondPrime.lean}) uses the host facts and is proved in \arch{Formalism/SizeWindowBrackets/ChainSlopeWindows/StronglyIrreducible.lean}. The general version \texttt{Deduction.ch\_balance} (in \arch{Development/AutomorphicArithmetic/DedekindLFunctions/LandauTheorems/ChBalance.lean}) uses splitting outside $d$ on an arbitrary $S$. The core estimate uses only the general version. Neither file name describes its contents.
+\end{remark}
+
+\section{Sizes, scales and kept characters}
+
+\begin{definition}[Thick nodes and size conditions]\label{bal:sizes}
+\lean{Formalism.D5.IsThickAt, Deduction.CH.SizesA}
+\uses{bal:additive-model}
+Let $A_0\subset H$ be a subgroup, $T,T_2\subset H$ finite, $m\in\N$, $a\colon H\to\R$, $w\colon H\times\{0,\dots,m-1\}\times\mathfrak G\to\R$, $N\in\N$ and $x,b,b',\eta,X',\vartheta\in\R$. A point $\rho$ is \emph{thick at} $u_0\in H$ if $\rho=\mathrm{thick}(s+u_0)$ for some $s\in T_2$; thick points lie in $\Phi$. The \emph{size conditions} hold if $\eta\ge0$, $X'>0$, $b'>0$, $b'X'\le xb$, $\vartheta\ge0$, $|a(t)/b-x|\le1$ for $t\in T$, and for all $u_0\in A_0$, $j<m$:
+\begin{itemize}
+\item $w(u_0,j,\rho)>0$ for $\rho\in\Phi$;
+\item $b\le w(u_0,j,\rho)\le b+\eta+1$ for $\rho$ thick at $u_0$;
+\item $w(u_0,j,\rho)\le 2b'$ for $\rho\in\Phi$ not thick at $u_0$;
+\item $a(t)/w(u_0,j,\rho)\le N$ for $t\in T$ and $\rho\in\Phi$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Thin-scale bound, Lipschitz and derivative bounds]\label{bal:scales}
+\lean{Formalism.LFunctionChainParameters.ThickSetMeanBounds.ThinScales, Formalism.LFunctionChainParameters.ThickSetMeanBounds.LipW, Formalism.LFunctionChainParameters.ThickSetMeanBounds.DerivInt}
+\uses{bal:gpsi}
+% uses-lean: Formalism.Gz
+\uses{an:smoothed} % resolved
+Let $D$ be arithmetic data and $\ell$ a function on characters.
+\begin{itemize}
+\item The \emph{thin-scale bound} with parameters $X',\vartheta$: $|\Psi_{\theta}(y)|\le\vartheta y$ for every character $\theta$ and every $y\ge X'/3$.
+\item The \emph{Lipschitz bound}: for every $\theta$ and $A,w,w'>0$,
+$|w\Psi_{\theta}(A/w)-w'\Psi_{\theta}(A/w')|\le 3A|w-w'|/\min(w,w')$.
+\item The \emph{derivative bound} with constant $C_d$: for $\theta\ne0$ and $y,z\ge1$,
+$|\Psi_{\theta}(y)-\Psi_{\theta}(z)|\le|y-z|\,(\log\max(y,z)+C_d+|\ell(\theta)|)$; and $|\Gz(y)-\Gz(z)|\le C_d|y-z|$ for $y,z\ge1$.
+\end{itemize}
+\end{definition}
+
+\begin{lemma}[The Lipschitz and derivative bounds hold]\label{bal:scales-hold}
+\lean{Formalism.LFunctionChainParameters.ThickSetMeanBounds.lipschitz_weight_all, Formalism.LFunctionChainParameters.ThickSetMeanBounds.derivative_integral_all}
+\uses{bal:scales}
+% uses-lean: Formalism.zetaPrimeSumErrorLipschitz
+The Lipschitz bound holds for every finite abelian $H$, all arithmetic data $D$ and all $\ell$. There is $C_d\ge0$ such that the derivative bound with constant $C_d$ holds for every $H$, $D$ and $\ell$.
+\end{lemma}
+\begin{proof}
+For $\theta\ne0$ both follow from $|\nu_D(\theta,n)|\le1$ and elementary estimates on $\sum_{n\le y}\Lambda(n)(y/n-1)$, with the constant $\log4+4$ in the derivative bound. For $\theta=0$ the archive uses separate estimates for $\Gz$; the derivative bound for $\Gz$ comes from a Lipschitz estimate for the error in the prime sum of $\zeta$, proved elsewhere in the archive. The proofs are in \arch{Formalism/SizeWindowBrackets/ChainSlopeWindows/LipschitzWeightAndMinimum.lean}; only the top level was read.
+\end{proof}
+
+\begin{definition}[The gap]\label{bal:gap}
+\lean{Deduction.CH.gapA}
+\uses{bal:ask, bal:main-defect}
+With data as in Definition~\ref{bal:sizes} and $\ell$, the gap at $u_0\in H$ is
+\[\mathrm{gap}(u_0)=\sum_{t\in T}\sum_{j<m}\Bigl(\mathrm{ASK}_{t,w(u_0,j)}(a(t))-\Re\,\mathrm{MAIN}_{w(u_0,j)}(a(t))\Bigr).\]
+\end{definition}
+
+\begin{definition}[Kept characters and the extracted functions]\label{bal:kept-chars}
+\lean{Deduction.CH.PsiA, Deduction.CH.wtA, Deduction.CH.GmA, Deduction.CH.SigA, Deduction.CH.CharsA}
+\uses{bal:gpsi}
+Let $A_0\subset H$ be a subgroup, $\Psi(A_0)$ the set of characters $\theta$ of $\mathfrak G$ with $\theta(0,s)=1$ for all $s\in A_0$, $\Xi$ a finite set of characters (the kept set), and $c\in\R$.
+\begin{itemize}
+\item $\mathrm{wt}(\theta)=1$ if $\theta(0,h)=1$ for all $h\in H$, and $\mathrm{wt}(\theta)=c$ otherwise.
+\item $G_A(y)=\sum_{\theta\in\Xi}\mathrm{wt}(\theta)\,\Re\Psi_{\theta}(y)$ and $\Sigma_A(y)=\sum_{\theta\in\Psi(A_0)\smallsetminus\Xi}|\Psi_{\theta}(y)|$.
+\end{itemize}
+For $T\subset H$ finite and $M,K_o,C_E,\eps,x\in\R$, the \emph{character conditions} hold if:
+\begin{itemize}
+\item the trivial character lies in $\Xi$, and every $\theta\in\Xi$ lies in $\Psi(A_0)$ and satisfies $\theta(s_0)=1$;
+\item $|\Psi(A_0)|\le M$;
+\item for $\theta\in\Xi$ not trivial on $0\times H$: $\bigl|\sum_{t\in T}\theta(0,t)-c|T|\bigr|\le Mx^{-1+\eps}|T|$;
+\item $|\ell(\theta)|\le K_o$ for nontrivial $\theta\in\Xi$, and $|\ell(\theta)|\le C_E\log x$ for $\theta\in\Psi(A_0)\smallsetminus\Xi$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Costs, rest sizes and the error bracket]\label{bal:rest-size}
+\lean{Formalism.LFunctionChainParameters.LChain.CostWindows, Formalism.LFunctionChainParameters.LChain.RestSize, Formalism.LFunctionChainParameters.LErr.errorBracketSizeWindows, Formalism.LFunctionChainParameters.ThickSetMeanBounds.fPl, Formalism.LFunctionChainParameters.ThickSetMeanBounds.delta2}
+Let $x,f,b,\eta,\vartheta,\eps,k,a_E\in\R$ and $n,n_T,n_{T_2},m\in\N$.
+\begin{itemize}
+\item The \emph{cost conditions} hold if $2f(x+1)\vartheta\le1/x$ and $6f(x+1)(\eta+1)\le b/x$.
+\item The \emph{rest-size conditions} hold if $a_E\le2xb$, $x^{-\eps/8}n/2\le n_T$, $x^{-\eps}\le n_{T_2}/n$, $x^{1/2-\eps}\le m$ and $k\le n^2x^{1/2-\eps}$.
+\item The \emph{error bracket} is
+\[\mathcal E=n_Ta_E\Bigl(1+\frac{m^2}k\Bigr)+m\Bigl(2nmbx^{\eps}+\frac{n_{T_2}kbx^{\eps}}{n^2x^{-\eps}}\Bigr).\]
+\end{itemize}
+In applications $f=|\Phi|$, and the thick density is $\delta_2=|T_2|/|H|$.
+\end{definition}
+
+\begin{definition}[Size windows]\label{bal:size-windows}
+\lean{Formalism.LFunctionChainParameters.ThickSetMeanBounds.SizeWindows, Formalism.LFunctionChainParameters.LChain.size_windows_split}
+\uses{bal:rest-size}
+For $C,\eps,x,b,k,a_E,E\in\R$ and $n,n_T,n_{T_2},m\in\N$, the size windows hold if $3\le x$, $\eps>0$, $C\ge0$, $n>0$, $b>0$, $0\le a_E\le2xb$, $x^{-\eps/8}n/2\le n_T$, $x^{-\eps}\le n_{T_2}/n$, $n_{T_2}\le n$, $x^{1/2-\eps}\le m\le x^{1/2+\eps/2}$, $xm\le k\le n^2x^{1/2-\eps}$, $E\le x^{C\eps}\mathcal E$ and $26\le x^{3\eps/8}$. Equivalently: the rest-size conditions, $E\le x^{C\eps}\mathcal E$, $3\le x$, $26\le x^{3\eps/8}$, and the remaining inequalities ($\eps>0$, $C\ge0$, $n>0$, $b>0$, $a_E\ge0$, $n_{T_2}\le n$, $m\le x^{1/2+\eps/2}$, $xm\le k$).
+\end{definition}
+
+\begin{lemma}[Size bound]\label{bal:size-bound}
+\lean{Formalism.LFunctionChainParameters.ThickSetMeanBounds.proposition_size_bound, Formalism.LFunctionChainParameters.ThickSetMeanBounds.GrowthSizeBound}
+\uses{bal:size-windows}
+Assume the size windows hold for $C,\eps,x,n,n_T,n_{T_2},m,b,k,a_E,E$. Let $G\in\R$ with
+\[n_T\,m\,b\,\frac{n_{T_2}/n}{2}\bigl(G-4x^{1/2+\eps}\bigr)\le E+\frac{2n_Tmb}x.\]
+Then $G\le x^{1/2+(C+3)\eps}$.
+\end{lemma}
+\begin{proof}
+A computation with the inequalities of the size windows: dividing by $n_Tmb\,n_{T_2}/(2n)$ turns each term of $x^{C\eps}\mathcal E$ into at most a constant times $x^{1/2+(C+2)\eps}$, and $26\le x^{3\eps/8}$ absorbs the constants. The proof is in \arch{Formalism/SizeWindowBrackets/ChainSlopeWindows/LipschitzWeightAndMinimum.lean}; only the statement and the unpacking of hypotheses were read.
+\end{proof}
+
+\section{Averaging the balance identity}
+
+\begin{definition}[The thick part]\label{bal:thick-part}
+\lean{Deduction.CharacterBalanceMoves.e1, Deduction.CharacterBalanceMoves.Th}
+\uses{bal:gpsi, bal:sizes}
+For $h\in H$ put $e_1(h)=((1,0),h)$. For $T_2\subset H$, $b,y\in\R$ and $u_0,t\in H$,
+\[\mathrm{Th}(b,y;u_0,t)=\frac1f\sum_{s\in T_2}\sum_{\theta}\theta\bigl(-e_1(s+u_0-t)\bigr)\,b\,\Psi_{\theta}(y).\]
+Since $\mathrm{pt}_t(e_1(s+u_0-t))=\mathrm{thick}(s+u_0)$, this is the part of $\mathrm{De}_{t,w}(A)$ coming from the nodes thick at $u_0$, with each weight replaced by $b$ and $A/w$ by $y$.
+\end{definition}
+
+\begin{lemma}[Averaging over $A_0$]\label{bal:sum-A}
+\lean{Deduction.CharacterBalanceMoves.sum_A, Deduction.CharacterBalanceMoves.sum_Th, Deduction.CharacterBalanceMoves.mem_psi}
+\uses{bal:thick-part, bal:kept-chars}
+Let $A_0\subset H$ be a subgroup. For $s\in A_0$, $t\in H$ and a character $\theta$,
+$\sum_{u\in A_0}\theta(-e_1(s+u-t))$ equals $|A_0|\,\theta(e_1(t))$ if $\theta\in\Psi(A_0)$ and $0$ otherwise. Consequently, if $T_2\subset A_0$,
+\[\sum_{u\in A_0}\mathrm{Th}(b,y;u,t)=|A_0|\,b\,\frac{\delta_2}2\sum_{\theta\in\Psi(A_0)}\theta(e_1(t))\,\Psi_{\theta}(y),\qquad \delta_2=|T_2|/|H|.\]
+\end{lemma}
+\begin{proof}
+Write $-e_1(s+u-t)=e_1(t)+(0,-s)+(0,-u)$. On $A_0$ the character $u\mapsto\theta(0,u)$ is trivial exactly when $\theta\in\Psi(A_0)$; otherwise its sum over $A_0$ vanishes. Summing over $s\in T_2$ gives the factor $|T_2|$, and $f=2|H|$.
+\end{proof}
+
+\begin{lemma}[Thick nodes carry the defect]\label{bal:th-le}
+\lean{Deduction.CharacterBalanceMoves.th_le, Formalism.LFunctionChainParameters.ThickSetMeanBounds.CR.norm_avg_le, Formalism.LFunctionChainParameters.ThickSetMeanBounds.CR.De_re}
+\uses{bal:thick-part, bal:sizes, bal:scales, bal:main-defect}
+Let $x\ge3$, $b>0$, $\eta\ge0$, $X'>0$, $b'>0$, $b'X'\le xb$, $\vartheta\ge0$, and $A$ with $|A/b-x|\le1$. Let $u_0,t\in H$ and $w\colon\mathfrak G\to\R$ with $w>0$ on $\Phi$, $b\le w(\rho)\le b+\eta+1$ for $\rho$ thick at $u_0$, and $w(\rho)\le2b'$ for $\rho\in\Phi$ not thick at $u_0$. Assume the thin-scale bound with $X',\vartheta$ and the Lipschitz bound. Then
+\[\Re\,\mathrm{Th}(b,A/b;u_0,t)\le\Re\,\mathrm{De}_{t,w}(A)+2f\bigl(3(x+1)(\eta+1)+(x+1)b\vartheta\bigr).\]
+\end{lemma}
+\begin{proof}
+$\mathrm{De}_{t,w}(A)-\mathrm{Th}$ is $f^{-1}\sum_{g\notin\Phi}\sum_{\theta}\theta(-g)F(g,\theta)$, where $F=m_t(g)\Psi_{\theta}(A/m_t(g))-b\Psi_{\theta}(A/b)$ at thick nodes and $F=m_t(g)\Psi_{\theta}(A/m_t(g))$ at thin nodes. At a thick node the Lipschitz bound gives $|F|\le3(A/b)(\eta+1)\le3(x+1)(\eta+1)$. At a thin node $A/m_t(g)\ge X'/3$, since $A\ge(x-1)b$, $m_t(g)\le2b'$ and $x\ge3$; so the thin-scale bound gives $|F|\le A\vartheta\le(x+1)b\vartheta$. There are at most $f$ nodes and $2f$ characters, and each character value has modulus $1$, which gives the bound $2f$ times the larger of the two estimates.
+\end{proof}
+
+\begin{lemma}[Moving the argument]\label{bal:move}
+\lean{Deduction.CharacterBalanceMoves.move, Deduction.CharacterBalanceMoves.triv}
+\uses{bal:scales}
+Let $x\ge3$, $C_d\ge0$, assume the derivative bound with constant $C_d$, and let $\theta\ne0$. If $|y-x|\le1$ then $|\Psi_{\theta}(y)-\Psi_{\theta}(x)|\le\log(x+1)+C_d+|\ell(\theta)|$. Moreover $|\Psi_{\theta}(x)|\le x(\log x+C_d+|\ell(\theta)|)$.
+\end{lemma}
+\begin{proof}
+The first is the derivative bound with $|y-x|\le1$ and $\max(y,x)\le x+1$. For the second, $\Psi_{\theta}(1)=\ell(\theta)$ (the sum is $\Lambda(1)\cdot0=0$), and apply the derivative bound between $x$ and $1$.
+\end{proof}
+
+\begin{lemma}[One character at a time]\label{bal:one-char}
+\lean{Deduction.CharacterBalanceMoves.vv, Deduction.CharacterBalanceMoves.sum_vv, Deduction.CharacterBalanceMoves.one_char}
+\uses{bal:kept-chars, bal:move}
+Let $A_0$, $\Xi$, $c$, $T$ be as in Definition~\ref{bal:kept-chars} with $\Xi\subset\Psi(A_0)$. Put $v(\theta)=\mathrm{wt}(\theta)\Re\Psi_{\theta}(x)$ for $\theta\in\Xi$ and $v(\theta)=-|\Psi_{\theta}(x)|$ otherwise; then $\sum_{\theta\in\Psi(A_0)}v(\theta)=G_A(x)-\Sigma_A(x)$.
+
+Let $x\ge3$, $C_d\ge0$, $y\colon T\to\R$ with $|y(t)-x|\le1$, and assume the derivative bound with $C_d$. Let $\varrho\ge0$, $K_o\ge0$, $L$, $R$ be real. Assume: $0\in\Xi$; $\theta(s_0)=1$ for $\theta\in\Xi$; $|\sum_{t\in T}\theta(0,t)-c|T||\le\varrho|T|$ for $\theta\in\Xi$ not trivial on $0\times H$; $|\ell(\theta)|\le K_o$ for $0\ne\theta\in\Xi$; $|\ell(\theta)|\le L$ for $\theta\in\Psi(A_0)\smallsetminus\Xi$; and
+\[C_d\le R,\quad \log(x+1)+C_d+K_o+\varrho x(\log x+C_d+K_o)\le R,\quad \log(x+1)+C_d+L\le R.\]
+Then for every $\theta\in\Psi(A_0)$,
+$|T|\bigl(v(\theta)-R\bigr)\le\sum_{t\in T}\Re\bigl(\theta(e_1(t))\Psi_{\theta}(y(t))\bigr)$.
+\end{lemma}
+\begin{proof}
+For $\theta=0$ use the Lipschitz bound for $\Gz$. For a kept $\theta\ne0$, $\theta(e_1(t))=\theta(s_0)\theta(0,t)=\theta(0,t)$. Split $\sum_t\theta(0,t)\Psi_{\theta}(y(t))-\mathrm{wt}(\theta)|T|\Psi_{\theta}(x)$ into $\sum_t\theta(0,t)(\Psi_{\theta}(y(t))-\Psi_{\theta}(x))$, bounded by Lemma~\ref{bal:move}, and $(\sum_t\theta(0,t)-\mathrm{wt}(\theta)|T|)\Psi_{\theta}(x)$. The second is bounded by the share hypothesis and the bound for $|\Psi_{\theta}(x)|$; it is $0$ when $\theta$ is trivial on $0\times H$, since then $\mathrm{wt}(\theta)=1$. For $\theta\notin\Xi$, bound $\Re(\theta(e_1(t))\Psi_{\theta}(y(t)))\ge-|\Psi_{\theta}(x)|-R$ by Lemma~\ref{bal:move}.
+\end{proof}
+
+\begin{lemma}[Core averaging step]\label{bal:core}
+\lean{Deduction.CharacterBalanceMoves.core}
+\uses{bal:balance, bal:th-le, bal:sum-A, bal:sizes, bal:gap, bal:rest-size, bal:scales-hold}
+Let $A_0\subset H$, $D$ split outside $d$ on $S$, $\ell$, $N$, $m$, $T,T_2$, $a$, $w$, and $x,b,b',\eta,X',\vartheta,E,Y\in\R$. Assume $x\ge3$, $b>0$, the size conditions, the thin-scale bound with $X',\vartheta$, the cost conditions with $f=|\Phi|$, $T_2\subset A_0$, $\mathrm{gap}(u_0)\le E$ for every $u_0\in A_0$, and
+\[|T|\,Y\le\sum_{t\in T}\Re\sum_{\theta\in\Psi(A_0)}\theta(e_1(t))\,\Psi_{\theta}(a(t)/b).\]
+Then $|T|\,m\,b\,(\delta_2/2)\,Y\le E+2|T|mb/x$.
+\end{lemma}
+\begin{proof}
+For $u_0\in A_0$, $t\in T$ and $j<m$, Lemma~\ref{bal:th-le} (with the Lipschitz bound of Lemma~\ref{bal:scales-hold}) and the cost conditions give $\Re\,\mathrm{Th}(b,a(t)/b;u_0,t)\le\Re\,\mathrm{De}_{t,w(u_0,j)}(a(t))+2b/x$. By Theorem~\ref{bal:balance}, $\Re\,\mathrm{De}=\mathrm{ASK}-\Re\,\mathrm{MAIN}$. Summing over $t$ and $j$ gives $\sum_t\sum_j\Re\,\mathrm{Th}\le\mathrm{gap}(u_0)+2|T|mb/x\le E+2|T|mb/x$. Sum over $u_0\in A_0$, evaluate the left side by Lemma~\ref{bal:sum-A}, divide by $|A_0|$, and insert the hypothesis on $Y$.
+\end{proof}
+
+\begin{theorem}[Core estimate]\label{bal:ch-core}
+\lean{Deduction.ch_core}
+\uses{bal:core, bal:one-char, bal:size-bound, bal:size-windows, bal:scales-hold, bal:kept-chars, bal:rest-size, bal:gap, bal:split-outside}
+Let $C\ge0$, $\eps>0$, $|c|\le1$, and $C_E,K_o,M\in\R$. There is $x_1$ such that the following holds for every $x\ge x_1$. Let $H$ be a finite abelian group, $m\in\N$, $D$ arithmetic data split outside $d$ on a finite set $S$, $\ell$ a function on characters, $N\in\N$, $T,T_2\subset H$ finite, $a$, $w$ as in Definition~\ref{bal:sizes}, $b,b',k,a_E,\eta,X',\vartheta\in\R$, $A_0\subset H$ a subgroup and $\Xi$ a finite set of characters. Assume:
+\begin{itemize}
+\item $b>0$, $a_E\ge0$, $k>0$, $m\le x^{1/2+\eps/2}$ and $xm\le k$;
+\item the size conditions, the thin-scale bound with $X',\vartheta$, and the cost conditions with $f=|\Phi|$;
+\item the rest-size conditions with $n=|H|$, $n_T=|T|$, $n_{T_2}=|T_2|$;
+\item $T_2\subset A_0$, and the character conditions for $\ell,A_0,\Xi,T$ with $c,M,K_o,C_E,\eps,x$;
+\item $\mathrm{gap}(u_0)\le x^{C\eps}\mathcal E$ for every $u_0\in A_0$.
+\end{itemize}
+Then $G_A(x)\le x^{1/2+(C+3)\eps}+\Sigma_A(x)$.
+\end{theorem}
+\begin{proof}
+Take $C_d$ from Lemma~\ref{bal:scales-hold} and put $A_1=5+C_d+|K_o|+|M|(4+C_d+|K_o|)+4|C_E|$. Choose $x_1\ge3$ with $x^{3\eps/8}\ge26$ and $x^{1/4}\ge|M|A_1$ for $x\ge x_1$. Apply Lemma~\ref{bal:one-char} with $y(t)=a(t)/b$, $\varrho=|M|x^{-1+\eps}$, $L=|C_E|\log x$ and $R=A_1x^{1/4+\eps}$; the three conditions on $R$ follow from $\log x\le4x^{1/4}$. Sum over $\theta\in\Psi(A_0)$. Since $|\Psi(A_0)|\le M$, $|\Psi(A_0)|R\le x^{1/2+\eps}$, which gives the hypothesis of Lemma~\ref{bal:core} with $Y=G_A(x)-\Sigma_A(x)-4x^{1/2+\eps}$ and $E=x^{C\eps}\mathcal E$. The size windows hold by the assumptions and the choice of $x_1$, so Lemma~\ref{bal:size-bound} applied to $G=G_A(x)-\Sigma_A(x)$ gives the claim.
+\end{proof}
+
+\begin{remark}
+The hypothesis $|c|\le1$ of Theorem~\ref{bal:ch-core} is not used in the proof. The constant $x_1$ depends on $C,\eps,C_E,K_o,M$ and on the universal $C_d$, not on $H$, $D$ or the nodes.
+\end{remark}
+
+\section{The weights of a host}
+
+\begin{definition}[From a host to arithmetic data]\label{bal:to-E}
+\lean{UpperTheory.Comparison₂.toE, UpperTheory.Comparison₂.recH, UpperTheory.Comparison₂.arith, UpperTheory.Comparison₂.chr, UpperTheory.Comparison₂.keptA, UpperTheory.Comparison₂.HostAddCharCompatible, UpperTheory.Comparison₂.koOf}
+\uses{bal:arith-data}
+% uses-lean: Formalism.HC.Frame, Formalism.HC.HostRaw, Formalism.HC.Level, Formalism.LFunctionChainParameters.LHost.cftData, Formalism.HC.An.logDerivativeAtOne
+\uses{an:gchi, an:level, host:frame, host:host-raw} % resolved
+Let $\phi$ be a frame with group $A$ and multiplicative group $\{\pm1\}^2\times A$, and $H$ a host for $\phi$ with conductor $N_H$ and Artin map $\mathrm{art}_H\colon(\Z/N_H)^{\times}\to\{\pm1\}^2\times A$.
+\begin{itemize}
+\item $\mathrm{toE}((s_1,s_2),h)=((\bar s_2,\bar s_1),h)\in V_4\times A$, where $\bar s=0$ if $s=1$ and $\bar s=1$ if $s=-1$. The two sign coordinates are swapped.
+\item $\mathrm{arith}(H)$ is the arithmetic data obtained from $q_1=q$, $d$ and $r=\mathrm{toE}\circ\mathrm{art}_H$: $I_p$ is the image under $r$ of the units congruent to $1$ modulo the prime-to-$p$ part of $N_H$, and $\Frob_p=r(w_p)$ for a unit $w_p$ that is $\equiv p$ modulo the prime-to-$p$ part and $\equiv1$ modulo the $p$-part (the unit $1$ if none exists).
+\item For a character $\psi$ of $V_4\times A$, $\mathrm{chr}(\psi)=\psi\circ\mathrm{toE}$.
+\item For a level $\Lambda$, the kept set $\mathrm{kept}_{\Lambda}(H)$ is the set of $\psi$ such that the primitive Dirichlet character the host attaches to $\mathrm{chr}(\psi)$ lies in the kept set of $\Lambda$.
+\item $\ell$ is \emph{compatible} with $H$ if $\ell(\psi)=L'(1,\chi)/L(1,\chi)$ whenever $\psi\ne0$ and $\chi$ is a primitive Dirichlet character with $\chi(n)=\nu_{\mathrm{arith}(H)}(\psi,n)$ for all $n\ne0$.
+\item $K_o(\Lambda)=\sum_{\chi}|L'(1,\chi)/L(1,\chi)|$, the sum over the kept characters of $\Lambda$.
+\end{itemize}
+\end{definition}
+
+\begin{lemma}[A host is split outside $d$]\label{bal:host-split}
+\lean{UpperTheory.Comparison₂.hostFactsS}
+\uses{bal:to-E, bal:split-outside}
+% uses-lean: Formalism.HC.HostAx
+\uses{host:host-ax} % resolved
+For every frame $\phi$ and every host $H$ satisfying the host axioms, $\mathrm{arith}(H)$ is split outside $d$ on $\{q\}\cup\mathrm{small}(H)$, the set consisting of $q$ and the prime factors of the host's auxiliary modulus $Q_S$.
+\end{lemma}
+\begin{proof}
+Proved in \arch{Development/AutomorphicArithmetic/PrimitiveCosets/hostFactsS.lean} from the host axioms; only the statement and the first step (the set equals the prime factors of $Q_Sq$) were read.
+\end{proof}
+
+\begin{lemma}[Number of characters trivial on $A_0$]\label{bal:card-psiA}
+\lean{UpperTheory.Comparison₂.card_PsiA}
+\uses{bal:kept-chars}
+% uses-lean: Formalism.HC.Frame.o, Formalism.HC.Frame.A0
+\uses{host:frame} % resolved
+For a frame $\phi$ with cyclic subgroup $A_0$ of index $o$, $|\Psi(A_0)|=4o$.
+\end{lemma}
+\begin{proof}
+$\Psi(A_0)$ is the image of the dual of $V_4\times(A/A_0)$ under pullback, which is injective, and $[A:A_0]=o$.
+\end{proof}
+
+\begin{lemma}[Shares give the weights]\label{bal:tops-sum}
+\lean{UpperTheory.Comparison₂.tops_sum}
+\uses{bal:kept-chars}
+% uses-lean: Formalism.HC.Frame.Shares, Formalism.HC.Frame.lam
+Let $\phi$ be a frame, $o$ its index, $T\subset A$ finite and $\delta\in\R$. Assume $T$ has shares up to $\delta$: for every $\gamma\in A$,
+$\bigl|\#\{t\in T:t-\gamma\in A_0\}-\lambda(\gamma)|T|\bigr|\le\delta|T|$, where $\lambda(\gamma)=4/(3o+1)$ for $\gamma\in A_0$ and $3/(3o+1)$ otherwise. Then for every $\psi\in\Psi(A_0)$ not trivial on $0\times A$,
+\[\Bigl|\sum_{t\in T}\psi(0,t)-\frac{|T|}{3o+1}\Bigr|\le o\,\delta\,|T|.\]
+\end{lemma}
+\begin{proof}
+Let $\vartheta(t)=\psi(0,t)$, a nontrivial character of $A$ trivial on $A_0$. Then $\sum_{\gamma\in A}\vartheta(\gamma)\#\{t\in T:t-\gamma\in A_0\}=|A_0|\sum_{t\in T}\vartheta(t)$. Write the count as $\frac{3|T|}{3o+1}+\frac{|T|}{3o+1}[\gamma\in A_0]+e(\gamma)$ with $|e(\gamma)|\le\delta|T|$. The constant term sums to $0$ against $\vartheta$, and the second term gives $|A_0||T|/(3o+1)$. So $|A_0|\bigl(\sum_t\vartheta(t)-|T|/(3o+1)\bigr)=\sum_{\gamma}\vartheta(\gamma)e(\gamma)$, of modulus at most $|A|\delta|T|=o|A_0|\delta|T|$.
+\end{proof}
+
+\begin{lemma}[Character conditions for a host]\label{bal:charsA}
+\lean{UpperTheory.Comparison₂.charsA}
+\uses{bal:to-E, bal:kept-chars, bal:tops-sum, bal:card-psiA}
+% uses-lean: Formalism.HC.EAtH, UpperTheory.Comparison₂.prim_read
+Let $\Lambda$ be a level, $\phi$ a frame, $H$ a host satisfying the host axioms, $T\subset A$ finite, $x>0$, $\eps,C\in\R$ and $\ell$ compatible with $H$. Assume the archive's condition $\mathrm{EAt}(\Lambda,H,T,x,\eps,C)$. Then the character conditions hold for $\ell$, $A_0$, the kept set $\mathrm{kept}_{\Lambda}(H)$ and $T$, with $c=(3o+1)^{-1}$, $M=4o$, $K_o=K_o(\Lambda)$, $C_E=C$, and the given $\eps,x$; here $o=o(\Lambda)$.
+\end{lemma}
+\begin{proof}
+The trivial character is kept. A kept $\psi$ has $\mathrm{chr}(\psi)$ in the frame's set $X_p$, which gives $\psi\in\Psi(A_0)$ and $\psi(s_0)=1$. Lemma~\ref{bal:card-psiA} and $o(\phi)=o(\Lambda)$ give $|\Psi(A_0)|=4o$. The share clause is Lemma~\ref{bal:tops-sum} with $\delta=x^{-1+\eps}$, from the shares field of $\mathrm{EAt}$, since $o\le4o$. Compatibility identifies $\ell(\psi)$ with $L'/L(1,\chi)$ of the attached primitive character, which bounds it by $K_o(\Lambda)$ when kept and by $C\log x$ when not kept, from the field $\mathrm{bdL}$ of $\mathrm{EAt}$.
+\end{proof}
+
+\begin{lemma}[The extracted function is the level's function]\label{bal:gmA-eq}
+\lean{UpperTheory.Comparison₂.gmA_eq}
+\uses{bal:to-E, bal:kept-chars}
+% uses-lean: Formalism.HC.EAtH, Formalism.HC.Level.Gm, Formalism.HC.Level.wt, UpperTheory.Comparison₂.prim_read, UpperTheory.Comparison₂.chr_bij, UpperTheory.Comparison₂.prim_inj, UpperTheory.Comparison₂.Gz_eq
+\uses{an:gz-eq, an:level} % resolved
+Under the hypotheses of Lemma~\ref{bal:charsA} (without $x>0$), for every real $y$,
+$G_A(y)=G_{\Lambda}(y)$, where $G_A$ is formed with $\mathrm{arith}(H)$, $\ell$, $\mathrm{kept}_{\Lambda}(H)$ and $c=(3o+1)^{-1}$, and
+\[G_{\Lambda}(y)=\Gz(y)+\sum_{\chi}\mathrm{wt}_{\Lambda}(\chi)\,\Re g_{\chi}(y),\]
+the sum over the nontrivial kept characters of $\Lambda$, with $\mathrm{wt}_{\Lambda}=1$ on the exceptional character of $\Lambda$ (if any) and $(3o+1)^{-1}$ otherwise.
+\end{lemma}
+\begin{proof}
+By the host's reading of primitive values, $\Psi_{\psi}=g_{\chi}$ for the primitive character $\chi$ attached to $\mathrm{chr}(\psi)$, and $\psi\mapsto\chi$ is a bijection from $\mathrm{kept}_{\Lambda}(H)$ onto the kept set of $\Lambda$. A kept $\psi$ is trivial on $0\times A$ exactly when $\mathrm{chr}(\psi)$ is trivial or is the frame's character $\omega$. The trivial one has weight $1$ and gives $\Gz$. If $\omega$ is kept it is the exceptional character, and weight $1$ matches $\mathrm{wt}_{\Lambda}=1$. Every other kept character has weight $(3o+1)^{-1}$ on both sides.
+\end{proof}
+
+\begin{lemma}[The discarded characters are small]\label{bal:sigA-le}
+\lean{UpperTheory.Comparison₂.sigA_le}
+\uses{bal:to-E, bal:kept-chars, bal:card-psiA}
+% uses-lean: Formalism.HC.EAtH, UpperTheory.Comparison₂.prim_read
+Under the hypotheses of Lemma~\ref{bal:charsA}, $\Sigma_A(x)\le4o\,x^{1/2+\eps}$.
+\end{lemma}
+\begin{proof}
+Each $\psi\in\Psi(A_0)$ that is not kept gives a bounded character of the host, so $|\Psi_{\psi}(x)|=|g_{\chi}(x)|\le x^{1/2+\eps}$ by the field $\mathrm{bdG}$ of $\mathrm{EAt}$. There are at most $|\Psi(A_0)|=4o$ such $\psi$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{bal:gmA-eq} holds for every level, including one with an exceptional character, and for every real $y$. In the archive, Theorem~\ref{bal:ch-core}, Lemmas~\ref{bal:charsA}, \ref{bal:gmA-eq}, \ref{bal:sigA-le} and \ref{bal:host-split}, and the bound on the gap supplied by the geometric inequality are combined in the theorem \texttt{core\_gm} (\arch{Development/AutomorphicArithmetic/PrimitiveCosets/CoreGm.lean}) into $G_{\Lambda}(x)\le x^{1/2+O(\eps)}$.
+\end{remark}

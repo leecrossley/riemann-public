@@ -1,0 +1,22 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, x=1.6cm, y=1cm]
+\foreach \i/\y in {1/1.6, 2/0.2, 3/-1.2} {
+  \node[bi zero box] (N\i) at (0,\y) {$N_{\i}\subset V_{\i}$\\
+  {\scriptsize slope $\mu(N_{\i})$, height $h_{\i}$}};}
+\node[bi bound box, minimum height=2.6cm, text width=2.6cm] (cc) at
+  (4.6,0.2) {$R\subset W$\\ target lattice\\ slope $\mu(R)$};
+\foreach \i in {1,2,3} \draw[->] (N\i) -- node[above, font=\scriptsize,
+  sloped] {$B_{\i}$, $B_{\i}(N_{\i})\subset R$} (cc);
+\node[bi aux box, text width=5.5cm] at (2.2,-3.0)
+  {at one embedding $\sigma$: the weighted family $(c_i\widetilde B_i)$ is
+  near an isometry: Hilbert--Schmidt defect $\le\beta_2\sum\rk N_i$,
+  $\operatorname{tr}Q^2\le(1+\beta_1)(\operatorname{tr}Q)^2/\dim$};
+\node[font=\small, align=center] at (2.2,-5.3)
+  {conclusion:\\[2pt] $s-\log|I|-(1-\beta_0)^{-1}\bigl(4u\log(1+\Delta/u)+
+  (\beta_1+4\sqrt{\beta_2})\Delta\bigr)\le\mu(R)$,\\[2pt]
+  with $s$ the rank-weighted
+  mean of $\mu(N_i)-h_i$};
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

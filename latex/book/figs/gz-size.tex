@@ -1,0 +1,39 @@
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, name=top,
+  xmin=0, xmax=2000, ymin=-1.5, ymax=5.2,
+  xlabel={$x$}, ylabel={$\Gz(x)$},
+  title={\small (a) $\Gz(x)$ for $x\le 2000$},
+  legend pos=north west, legend cell align=left]
+\addplot[name path=up, biRH, line width=0.8pt]
+  table[x=x, y=up] {\bidata{gz-small.dat}};
+\addlegendentry{$\log 2\pi \pm c_0\sqrt x$ (RH)}
+\addplot[name path=lo, biRH, line width=0.8pt, forget plot]
+  table[x=x, y=lo] {\bidata{gz-small.dat}};
+\addplot[biRH!15, forget plot] fill between[of=up and lo];
+\addplot[biZero, line width=0.5pt]
+  table[x=x, y=gz] {\bidata{gz-small.dat}};
+\addlegendentry{$\Gz(x)$, computed from $\Lambda$}
+\addplot[biOther, dashed, domain=0:2000, samples=2] {1.837877};
+\addlegendentry{$\log 2\pi$}
+\end{axis}
+\begin{axis}[bi axis, at={(top.south west)}, anchor=north west,
+  yshift=-2.1cm,
+  xmode=log, xmin=10, xmax=1e7, ymin=-0.06, ymax=0.06,
+  ytick={-0.0462,0,0.0462}, yticklabels={$-c_0$,$0$,$c_0$},
+  xlabel={$x$ (logarithmic)},
+  ylabel={$(\Gz(x)-\log 2\pi)/\sqrt x$},
+  title={\small (b) normalized, $10\le x\le 10^7$},
+  legend style={at={(0.5,-0.32)}, anchor=north, legend columns=3},
+  legend cell align=left]
+\addplot[biRH, line width=0.8pt, domain=10:1e7, samples=2] {0.046191};
+\addlegendentry{$\pm c_0$ (RH)}
+\addplot[biRH, line width=0.8pt, domain=10:1e7, samples=2, forget plot]
+  {-0.046191};
+\addplot[biZero, line width=0.35pt]
+  table[x=x, y=r] {\bidata{gz-large.dat}};
+\addlegendentry{computed from $\Lambda$}
+\addplot[biBound, only marks, mark=triangle*, mark size=1.6pt]
+  table[x=x, y=r] {\bidata{gz-explicit.dat}};
+\addlegendentry{first $500$ zeros}
+\end{axis}
+\end{tikzpicture}

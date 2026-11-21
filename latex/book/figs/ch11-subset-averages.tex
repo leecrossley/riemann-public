@@ -1,0 +1,40 @@
+\begin{tikzpicture}[bi, x=2.3cm, y=1cm,
+  pt/.style={bi zero},
+  lb/.style={font=\footnotesize, inner sep=1pt},
+  ax/.style={->, line width=0.5pt}]
+\foreach \yy/\name/\verd in {0/{\{1,2,4\}}/{lacunary},
+    2.1/{\{1,2,3\}}/{not lacunary}}{
+  \draw[ax] (0.55,\yy) -- (4.45,\yy);
+  \foreach \t in {1,2,3,4}
+    \draw (\t,\yy+0.07) -- (\t,\yy-0.07)
+      node[below, font=\scriptsize, text=biOther, inner sep=1pt] {\t};
+  \node[anchor=east, font=\small, align=right] at (0.5,\yy)
+    {$J=\name$\\[-1pt]{\footnotesize\verd}};
+}
+\def\yy{2.1}
+\foreach \a in {1,1.5,2,2.5,3} \node[pt] at (\a,\yy) {};
+\node[bi fail pt] at (2,\yy) {};
+\node[lb, above] at (1,\yy+0.1) {$\{1\}$};
+\node[lb, above, text=biFail] (t2) at (2,\yy+0.1) {$\{2\}$};
+\node[lb, above, text=biFail] (t13) at (2,\yy+0.45) {$\{1,3\}$};
+\node[lb, above] at (3,\yy+0.1) {$\{3\}$};
+\node[lb, below] at (1.5,\yy-0.42) {$\{1,2\}$};
+\node[lb, below, text=biOther] at (2,\yy-0.42) {$\{1,2,3\}$};
+\node[lb, below] at (2.5,\yy-0.42) {$\{2,3\}$};
+\def\yy{0}
+\foreach \a in {1,1.5,2,2.3333,2.5,3,4} \node[pt] at (\a,\yy) {};
+\node[lb, above] at (1,\yy+0.1) {$\{1\}$};
+\node[lb, above] at (2,\yy+0.1) {$\{2\}$};
+\node[lb, above] at (2.5,\yy+0.1) {$\{1,4\}$};
+\node[lb, above] at (4,\yy+0.1) {$\{4\}$};
+\node[lb, below] at (1.5,\yy-0.42) {$\{1,2\}$};
+\node[lb, below] at (2.3333,\yy-0.42) {$\{1,2,4\}$};
+\node[lb, below] at (3,\yy-0.42) {$\{2,4\}$};
+\end{tikzpicture}
+\caption{The averages of the nonempty subsets of $J$, for the two sets
+of Example~\ref{ex:lacunary}. For $J=\{1,2,3\}$ the disjoint subsets
+$\{2\}$ and $\{1,3\}$ have the same average $2$, so $J$ is not lacunary
+(Definition~\ref{def:lacunary}); the subset $\{1,2,3\}$ also has
+average $2$, but it meets both. For $J=\{1,2,4\}$ the seven averages
+are distinct, so $J$ is lacunary.}
+\label{fig:subset-averages}

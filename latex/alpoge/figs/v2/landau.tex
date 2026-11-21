@@ -1,0 +1,36 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, width=0.7\linewidth, height=0.55\linewidth,
+  xmin=-0.1, xmax=4.2, ymin=-26, ymax=26,
+  xtick={0,0.5,1,3}, xticklabels={$0$,$\tfrac12$,$1$,$\sigma$},
+  extra x ticks={0.75}, extra x tick labels={$\sigma_0$},
+  extra x tick style={tick label style={yshift=-8pt}},
+  xlabel={$\operatorname{Re}s$}, ylabel={$\operatorname{Im}s$},
+  axis lines=left, clip=false]
+\fill[biBound!12] (axis cs:0.75,-26) rectangle (axis cs:4.2,26);
+\draw[biRH, dashed] (axis cs:0.5,-26) -- (axis cs:0.5,26);
+\draw (axis cs:-0.1,0) -- (axis cs:4.2,0);
+\addplot[biPole, only marks, mark=x, mark size=3pt, line width=0.9pt,
+  restrict y to domain=-26:26]
+  table[x=re, y=im] {data/aq2/zeros.dat};
+\node[bi fail pt] at (axis cs:0.85,0) {};
+\node[biFail!80!black, font=\scriptsize, anchor=south west]
+  at (axis cs:0.95,1) {hypothetical zero $\beta$};
+\node[font=\scriptsize, anchor=south] at (axis cs:0.75,26) {$\sigma_0$};
+\node[bi zero] at (axis cs:3,0) {};
+\begin{scope}
+\clip (axis cs:-0.1,-26) rectangle (axis cs:4.2,26);
+\draw[biAux, line width=0.8pt] (axis cs:3,0) ellipse [x radius=2.15,
+  y radius=2.15*13.5];
+\end{scope}
+\node[biAux!80!black, font=\scriptsize, align=left, anchor=west]
+  at (axis cs:3.15,9) {Taylor disc at $\sigma$\\ reaches the\\ nearest
+  pole};
+\node[font=\scriptsize, align=left, anchor=west, fill=white,
+  inner sep=1pt] at (axis cs:1.15,-18) {residue at $\beta$:
+  $-c_\beta/(\beta(\beta-1))>0$};
+\end{axis}
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

@@ -1,0 +1,22 @@
+\setbox0=\hbox{%
+\begin{tabular}{@{}ccc>{\raggedright\arraybackslash}p{3.4cm}%
+  >{\raggedright\arraybackslash}p{4.3cm}@{}}
+\toprule
+$(i,j)$ & character $\theta$ & $\theta(\iota)$ & status for
+$\Kept(\lev_\psi)$ & controlled by \\
+\midrule
+$(0,0)$ & $\xi$ & $+1$ ($X_+$) & kept (proof of
+  Prop.~\ref{prop:bounded-twists}): weights $1$ (trivial) and
+  $(3o+1)^{-1}$ & --- (they are the target) \\
+$(1,0)$ & $\xi\chi_q$ & $+1$ ($X_+$) & bounded when
+  $q\nmid N_\psi$ (then not kept) & good pair, clause (1);
+  clause (2) if $\xi$ is real \\
+$(0,1)$ & $\xi\chi_d$ & $-1$ ($X_-$) & bounded, as
+  $\theta(\iota)=-1$ & same \\
+$(1,1)$ & $\xi\chi_q\chi_d$ & $-1$ ($X_-$) & bounded, as
+  $\theta(\iota)=-1$ & same \\
+\bottomrule
+\end{tabular}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

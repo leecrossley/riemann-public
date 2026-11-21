@@ -1,0 +1,38 @@
+\begin{tikzpicture}[bi, x=1cm, y=1cm]
+\begin{scope}[scale=1.25]
+\draw[biInk, line width=0.8pt] plot[smooth cycle, tension=0.8]
+  coordinates {(0,0) (1.6,-0.5) (3.2,0.1) (3.4,1.4) (2.0,2.1) (0.4,1.7)};
+\foreach \x/\y/\n in {0.3/0.35/1, 1.2/-0.42/2, 2.3/-0.36/3, 3.28/0.55/4,
+  2.85/1.82/5}
+  { \node[bi zero] (P\n) at (\x,\y) {}; }
+\node[bi pole] (X0) at (0.75,1.82) {};
+\node[font=\small] at (1.75,0.75) {$f\ne0$ on $C$};
+\end{scope}
+\node[biPole, font=\footnotesize, anchor=south, align=center]
+  at (0.6,2.75) {$x_0$: one pole,\\ order $\le mA+qB$};
+\draw[biPole, thin] (0.75,2.75) -- (X0);
+\node[biZero, font=\footnotesize, anchor=west, align=left]
+  (lab) at (4.5,0.0) {$P_i\in C(\mathbb F_q)$:\\ order $\ge m$ each};
+\draw[biZero, thin] (lab.west) -- (P4);
+\draw[biZero, thin] (lab.west) -- (P3);
+\begin{scope}[xshift=6.9cm, yshift=1.3cm]
+  \pgfmathsetmacro{\u}{7.0/696}
+  \fill[biPole!25] (0,1.0) rectangle (696*\u,1.45);
+  \draw[biPole, line width=0.8pt] (0,1.0) rectangle (696*\u,1.45);
+  \node[font=\footnotesize, anchor=south west] at (0,1.47)
+    {poles: $mA+qB=8\cdot7+64\cdot10=696$};
+  \foreach \i in {0,...,86} {
+    \pgfmathsetmacro{\a}{\i*8*\u}
+    \pgfmathsetmacro{\c}{mod(\i,2)==0 ? 45 : 22}
+    \fill[biZero!\c] (\a,0.2) rectangle ({\a+8*\u},0.65);
+  }
+  \draw[biZero, line width=0.8pt] (0,0.2) rectangle (87*8*\u,0.65);
+  \node[font=\footnotesize, anchor=north west] at (0,0.15)
+    {zeros: $(N-1)$ blocks of $m=8$; at most $87$ fit};
+  \draw[decorate, decoration={brace, amplitude=3pt, mirror}]
+    (0,-0.45) -- node[below=3pt, font=\footnotesize]
+    {$N\le 88=q+(2g+1)\sqrt q$} (87*8*\u,-0.45);
+\end{scope}
+\node[anchor=north west] at (-0.2,-1.0) {\bischematic[curve schematic;
+  ledger drawn to scale for $q=64$, $g=1$, $m=8$, $A=7$, $B=10$]};
+\end{tikzpicture}

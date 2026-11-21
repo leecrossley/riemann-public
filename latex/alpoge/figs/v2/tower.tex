@@ -1,0 +1,27 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, x=4.1cm, y=1.35cm,
+  sp/.style={bi box, minimum width=2.9cm}]
+\foreach \j in {0,1,2} \node[font=\small\bfseries] at (\j,0.75)
+  {$j=\j$};
+\node[sp, fill=biZero!12] (X0) at (0,0) {$X_0$ definite\\ rank $N(0)=6$};
+\node[sp, fill=biZero!12] (X1) at (1,0) {$X_1$ definite\\ rank $N(1)=20$};
+\node[sp, fill=biZero!12] (X2) at (2,0) {$X_2$ definite\\ rank $N(2)=34$};
+\node[sp] (Y0) at (0,-1.6) {$Y_0$, rank $7$\\ $X_0\oplus\langle-T\rangle$};
+\node[sp] (Y1) at (1,-1.6) {$Y_1$, rank $20$};
+\node[sp] (Y2) at (2,-1.6) {$Y_2\cong X'$, rank $33$};
+\node[sp, fill=biAux!15] (W1) at (1,-3.0) {$W_1$, rank $7$\\ signature
+  $(6,1)$};
+\node[sp, fill=biAux!15] (W2) at (2,-3.0) {$W_2$, rank $7$\\ signature
+  $(7,0)$};
+\node[sp, fill=biOther!10] (V1) at (1,-4.25) {$V_1$, rank $n_V=20$};
+\node[sp, fill=biOther!10] (V2) at (2,-4.25) {$V_2$, rank $20$};
+\draw[->] (X0) -- node[above, font=\scriptsize] {$\Theta_0$} (X1);
+\draw[->] (X1) -- node[above, font=\scriptsize] {$\Theta_1$} (X2);
+\draw[{Hooks[right]}->] (X0) -- (Y0);
+\draw[{Hooks[right]}->] (X1) -- (Y1);
+\draw[{Hooks[left]}->] (Y2) -- node[right, font=\scriptsize, align=left]
+  {$X'\hookrightarrow X_2$,\\ plus an anisotropic $z$} (X2);
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi

@@ -1,0 +1,57 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, x=0.92cm, y=1cm]
+\draw[->, biInk] (0,2.6) -- (12.4,2.6)
+  node[right, font=\footnotesize, align=left] {$w$};
+\node[anchor=south west, font=\footnotesize] at (0,3.45)
+  {weights $w=w(u_0,j,\rho)$, $\rho\in\Phi$ (log scale)};
+\fill[biAux!35] (0.05,2.48) rectangle (3.2,2.72);
+\draw[biAux!70!black, line width=0.8pt] (0.05,2.48) rectangle (3.2,2.72);
+\draw (3.2,2.45) -- (3.2,2.75);
+\node[below, font=\footnotesize] at (3.2,2.45) {$2b'$};
+\node[above, font=\footnotesize, biAux!60!black] at (1.6,2.75)
+  {thin: $w\le2b'$};
+\fill[biPole!30] (8.7,2.48) rectangle (9.5,2.72);
+\draw[biPole, line width=0.8pt] (8.7,2.48) rectangle (9.5,2.72);
+\draw (8.7,2.45) -- (8.7,2.75);
+\node[below, font=\footnotesize] at (8.7,2.45) {$b$};
+\node[above, font=\footnotesize, biPole] at (9.1,2.75)
+  {thick: $b\le w\le b+\eta+1$};
+\draw[->, biInk] (0,0) -- (12.4,0)
+  node[right, font=\footnotesize] {$y$};
+\node[anchor=north west, font=\footnotesize] at (0,-0.75)
+  {arguments $y=a_\tau/w$ of $\GPsi_\theta$ (log scale)};
+\fill[biOther!18] (7.0,-0.95) rectangle (12.3,0.5);
+\draw (7.0,-0.15) -- (7.0,0.15);
+\node[below, font=\footnotesize] at (7.0,-0.15) {$X^\flat/3$};
+\node[font=\scriptsize, anchor=north east, biOther!70!black]
+  at (12.3,-0.55) {thin-scale bound $|\GPsi_\theta(y)|\le\vartheta y$};
+\fill[biPole!30] (1.9,-0.12) rectangle (2.7,0.12);
+\draw[biPole, line width=0.8pt] (1.9,-0.12) rectangle (2.7,0.12);
+\draw (2.3,-0.15) -- (2.3,0.15);
+\node[below, font=\footnotesize] at (2.3,-0.15) {$x$};
+\fill[biAux!35] (8.2,-0.12) rectangle (12.3,0.12);
+\draw[biAux!70!black, line width=0.8pt] (12.3,0.12) -- (8.2,0.12)
+  -- (8.2,-0.12) -- (12.3,-0.12);
+\node[anchor=north west, font=\footnotesize, inner sep=1pt]
+  at (7.95,-0.14) {$(x-1)b/(2b')$};
+\draw[->, biAux!70!black, line width=0.6pt] (0.4,2.45) -- (12.0,0.16);
+\draw[->, biAux!70!black, line width=0.6pt] (3.2,2.45) -- (8.2,0.16);
+\draw[->, biPole, line width=0.6pt] (8.7,2.45) -- (2.7,0.16);
+\draw[->, biPole, line width=0.6pt] (9.5,2.45) -- (1.9,0.16);
+\node[fill=white, inner sep=1.5pt, font=\scriptsize] at (5.6,1.3)
+  {$y=a_\tau/w$ reverses order};
+\node[anchor=north east] at (12.4,-1.0) {\bischematic};
+\end{tikzpicture}%
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi
+\caption{Schematic, not to scale: where the two kinds of weight test the
+functions $\GPsi_\theta$ (Definition~\ref{def:thick}). Since
+$|a_\tau/b-x|\le1$, a thick weight gives an argument $a_\tau/w$ near $x$,
+which the proof moves to exactly $x$. A thin weight gives
+$a_\tau/w\ge(x-1)b/(2b')\ge\frac{x-1}{x}\cdot\frac{X^\flat}{2}$, by
+$b'X^\flat\le xb$, and the thin-scale bound is assumed from $X^\flat/3$
+on (grey). At the sizes used later, $b=\exp(x^\eps)$ and
+$X^\flat=\exp(x^{\eps/3})$, so the true distances are far larger than
+drawn.}
+\label{fig:thick-thin}

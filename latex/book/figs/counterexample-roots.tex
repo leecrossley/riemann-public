@@ -1,0 +1,87 @@
+\pgfplotsset{sb keep kind/.style={x filter/.append code={%
+  \edef\sbtmpa{\thisrow{kind}}\edef\sbtmpb{#1}%
+  \ifx\sbtmpa\sbtmpb\else\def\pgfmathresult{nan}\fi}}}
+\pgfmathsetmacro{\sbw}{0.022}% half-height of the hatched window strips
+\begin{tikzpicture}[sb, trim right=290pt]
+\begin{axis}[sb axis,
+  axis equal image, scale only axis, width=0.86\linewidth,
+  xmin=-0.42, xmax=1.08, ymin=-0.40, ymax=0.40,
+  axis lines=middle,
+  xlabel={$\Real t$}, ylabel={$\operatorname{Im}t$},
+  xlabel style={anchor=north west, at={(ticklabel* cs:1)}},
+  ylabel style={anchor=south, at={(ticklabel* cs:1)}},
+  xtick={0.111111,0.333333,1}, xticklabels={}, ytick=\empty,
+  clip=false,
+  legend style={at={(0.5,-0.03)}, anchor=north, legend columns=2,
+    /tikz/every even column/.append style={column sep=1.2em}},
+]
+\fill[sb fail fill] (axis cs:0.111111,-\sbw) rectangle (axis cs:0.333333,\sbw);
+\draw[sbFail, thin] (axis cs:0.111111,-\sbw) rectangle
+  (axis cs:0.333333,\sbw);
+\fill[pattern={north east lines}, pattern color=sbFail!45]
+  (axis cs:0.333333,-\sbw) rectangle (axis cs:1,\sbw);
+\draw[sbFail!45, thin] (axis cs:0.333333,-\sbw) rectangle
+  (axis cs:1,\sbw);
+\addplot[sb weil line, domain=0:360, samples=181, smooth]
+  ({cos(x)/3},{sin(x)/3});
+\addlegendentry{circle $\lvert t\rvert=q^{-1/2}=\tfrac13$}
+\addplot[sb weil plot, only marks, mark size=2.8pt, sb keep kind=curve]
+  table[x=re, y=im] {\sbdata{tplane.dat}};
+\addlegendentry{zeros of $L=1+5t+9t^2$, the curve $y^2=x^3+ix^2+i$}
+\addplot[sb pole plot, only marks, mark size=3.2pt, line width=1.1pt,
+  sb keep kind=pole]
+  table[x=re, y=im] {\sbdata{tplane.dat}};
+\addlegendentry{poles of $Z$ at $1/q$ and $1$}
+\addplot[sb fail plot, only marks, mark=*, mark size=3pt,
+  mark options={solid, fill=white, draw=sbFail, line width=1pt},
+  sb keep kind=cex]
+  table[x=re, y=im] {\sbdata{tplane.dat}};
+\addlegendentry{zeros $1/\rho$, $1/\rho'$ of $L^*=1-7t+9t^2$}
+\addlegendimage{area legend, pattern={north east lines},
+  pattern color=sbFail, draw=sbFail}
+\addlegendentry{window $(q^{-1},q^{-1/2})$ and its mirror $(q^{-1/2},1)$}
+\node[anchor=north, font=\footnotesize, inner sep=2pt]
+  at (axis cs:0.111111,-0.03) {$\frac19$};
+\node[anchor=north west, font=\footnotesize, inner sep=2pt]
+  at (axis cs:0.333333,-0.03) {$\frac13$};
+\node[anchor=north, font=\footnotesize, inner sep=2pt]
+  at (axis cs:1,-0.03) {$1$};
+\node[anchor=north, font=\footnotesize, sbFail!80!black, inner sep=2pt]
+  at (axis cs:0.188580,-0.03) {$\frac1\rho$};
+\node[anchor=north, font=\footnotesize, sbFail!80!black, inner sep=2pt]
+  at (axis cs:0.589197,-0.03) {$\frac1{\rho'}=\frac\rho q$};
+\draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}, sbFail!80!black, thin]
+  (axis cs:0.20,0.035) to[out=55, in=125]
+  node[above, font=\footnotesize, pos=0.5] {$t\mapsto1/(qt)$}
+  (axis cs:0.578,0.035);
+\node[font=\footnotesize, sbFail!80!black, align=left, anchor=north west]
+  (sbwin) at (axis cs:0.40,-0.13)
+  {by Theorem~\ref{thm:route2-input}, a zero of $L_K$\\
+   off the circle forces a real zero here};
+\draw[sbFail!80!black, thin, -{Stealth[length=1.6mm]}]
+  (sbwin.north west) -- (axis cs:0.25,-0.03);
+\node[font=\footnotesize, align=left, anchor=north east,
+  fill=white, fill opacity=0.85, text opacity=1, inner sep=3pt]
+  at (axis cs:1.08,0.40)
+  {$L^*$: integral, functional equation of genus $1$,\\
+   $N_n^*\ge0$ and $N_n^*\le q^n+1$ for all $n$,\\
+   yet $N_1^*=3<4=q+1-2g\sqrt q$};
+\end{axis}
+\end{tikzpicture}
+\caption{The window of Theorems~\ref{thm:dichotomy}
+and~\ref{thm:route2-input} for $q=9$, and the zeros of $L^*$. Green: the
+circle $\lvert t\rvert=q^{-1/2}=1/3$ and the two zeros of $L=1+5t+9t^2$
+for the curve $y^2=x^3+ix^2+i$ over $\F_9=\F_3[i]$, which has $N_1=15$
+points (counted by brute force). Vermillion crosses: the poles of $Z$ at
+$1/9$ and $1$. Purple hatching: the interval $(q^{-1},q^{-1/2})$, and
+lighter its image $(q^{-1/2},1)$ under $t\mapsto1/(qt)$. By
+Theorem~\ref{thm:route2-input}, $L_K$ has all its zeros on the circle if
+and only if it has no real zero in $(q^{-1},q^{-1/2})$; with the upper
+bound of Section~\ref{sec:upper}, a zero off the circle forces one there
+(Theorem~\ref{thm:dichotomy}). Purple open circles: the zeros
+$1/\rho=0.188\ldots$ and $1/\rho'=0.589\ldots$ of $L^*=1-7t+9t^2$
+(Proposition~\ref{prop:formal-cex}), one in each interval, swapped by
+$t\mapsto1/(qt)$. $L^*$ has every formal property used in
+Section~\ref{sec:route2}, but $N_1^*=3<4=q+1-2g\sqrt q$, so no curve has
+it as its $L$-polynomial.}
+\label{fig:counterexample-roots}

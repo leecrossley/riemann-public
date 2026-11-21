@@ -1,0 +1,35 @@
+\begin{tikzpicture}[bi]
+\begin{axis}[bi axis, width=0.8\linewidth, height=0.62\linewidth,
+  xmin=-0.05, xmax=1.4, ymin=-44, ymax=44,
+  xtick={0,0.5,0.7,1}, xticklabels={$0$,$\tfrac12$,$\theta$,$1$},
+  ytick={-40,-20,0,20,40},
+  xlabel={$\operatorname{Re} s$}, ylabel={$\operatorname{Im} s$},
+  axis lines=left, clip=false]
+\fill[biBound!14] (axis cs:0.7,-44) rectangle (axis cs:1.4,44);
+\node[biBound!60!black, font=\scriptsize, align=left, anchor=north west]
+  at (axis cs:1.03,42) {$\operatorname{Re}s>\theta$:\\ $F$ analytic\\
+  (Landau)};
+\draw[biRH, line width=0.6pt, dashed] (axis cs:0.5,-44) -- (axis cs:0.5,44);
+\draw[biInk, line width=0.4pt] (axis cs:-0.05,0) -- (axis cs:1.4,0);
+\draw[biRH, line width=2.4pt] (axis cs:0.7,0) -- (axis cs:1,0);
+\node[biRH!70!black, font=\footnotesize, anchor=north, fill=white,
+  inner sep=1pt] at (axis cs:0.85,-2.5) {$\zeta(\sigma)\ne0$};
+\addplot[biPole, only marks, mark=x, mark size=3pt, line width=0.9pt]
+  table[x=re, y=im] {\bidata{zeros.dat}};
+\node[bi pole] at (axis cs:0.7,0) {};
+\node[biPole, font=\scriptsize, anchor=south east, fill=white,
+  inner sep=1pt] at (axis cs:0.69,1.5) {pole};
+\node[bi open] at (axis cs:1,0) {};
+\node[font=\scriptsize, anchor=north west, align=left]
+  at (axis cs:1.01,-1.5) {$s=1$: no pole\\ (removed by $\mathrm{Gz}$)};
+\node[bi fail pt] (hz) at (axis cs:0.85,24) {};
+\node[biFail!80!black, font=\scriptsize, anchor=north west, align=left]
+  at (axis cs:0.74,20.5) {a zero here would be\\ a pole of $F$:\\
+  impossible};
+\node[biPole, font=\footnotesize, anchor=east, align=right, fill=white,
+  inner sep=1pt] at (axis cs:0.46,-30) {zeros of $\zeta$\\
+  $=$ poles of $F$};
+\node[anchor=north west] at (axis cs:-0.05,-63) {\bischematic[zeros:
+  data; $\theta$ and the off-line point: illustrative]};
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,44 @@
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,
+  shapes.geometric,shapes.misc,patterns,fit,backgrounds}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=1.18}
+
+\definecolor{biPole}{HTML}{D55E00}  % vermillion: poles, size, budget
+\definecolor{biZero}{HTML}{0072B2}  % blue: zeros, points, divisibility
+\definecolor{biRH}{HTML}{009E73}    % bluish green: what RH predicts
+\definecolor{biFail}{HTML}{CC79A7}  % reddish purple: hypothetical or
+\definecolor{biBound}{HTML}{E69F00} % orange: what the method produces
+\definecolor{biAux}{HTML}{56B4E9}   % sky blue: auxiliary objects
+\definecolor{biOther}{HTML}{888888} % grey: neutral, other
+\colorlet{biInk}{black}
+
+\tikzset{
+  bi/.style={font=\small, >={Stealth[length=2.2mm]}},
+  bi pole/.style={biPole, line width=0.9pt, cross out, draw,
+    minimum size=5pt, inner sep=0pt},
+  bi zero/.style={circle, fill=biZero, draw=biZero, minimum size=4pt,
+    inner sep=0pt},
+  bi fail pt/.style={circle, draw=biFail, fill=white, line width=0.9pt,
+    minimum size=5.5pt, inner sep=0pt},
+  bi open/.style={circle, draw=biInk, fill=white, line width=0.7pt,
+    minimum size=5pt, inner sep=0pt},
+  bi box/.style={draw=biInk, rounded corners=2pt, align=center,
+    inner sep=4pt, font=\small},
+  bi aux box/.style={bi box, fill=biAux!15},
+  bi bound box/.style={bi box, fill=biBound!15},
+  bi zero box/.style={bi box, fill=biZero!12},
+  bi pole box/.style={bi box, fill=biPole!12},
+}
+\pgfplotsset{
+  bi axis/.style={
+    width=0.86\linewidth, height=0.42\linewidth,
+    tick label style={font=\footnotesize},
+    label style={font=\small},
+    legend style={font=\footnotesize, draw=none, fill=white,
+      fill opacity=0.85, text opacity=1, cells={anchor=west}},
+    every axis plot/.append style={line join=round},
+  },
+}
+\newcommand{\bischematic}[1][schematic, not to scale]{%
+  {\scriptsize\itshape\color{biOther}#1}}
+\providecommand{\bidata}[1]{data/#1}

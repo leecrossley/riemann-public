@@ -1,0 +1,54 @@
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[bi,
+  q/.style={bi box, fill=white, text width=2.1cm, font=\footnotesize},
+  leafA/.style={bi bound box, text width=2.75cm, font=\footnotesize},
+  leafN/.style={bi aux box, text width=2.75cm, dashed, font=\footnotesize},
+  e/.style={->, thick}, lab/.style={font=\scriptsize, fill=white, inner
+  sep=1pt}]
+\node[q] (root) at (0,-3.2) {plus part, $l$ odd, $0<e<t$: is
+  $l\in B_\psi$?};
+\node[q] (notB) at (3.0,0) {$(l-1)\mid 2e$?};
+\node[q] (inB) at (3.0,-6.6) {$e=1$?};
+\draw[e] (root) |- node[lab, pos=0.3]{no} (notB);
+\draw[e] (root) |- node[lab, pos=0.3]{yes} (inB);
+\node[leafA] (I) at (6.4,1.4) {\textbf{Case I}: rank 3,
+  automorphy lifting (Theorem~\ref{thm:plus})};
+\node[q] (psi) at (6.4,-1.4) {order of $\eta$?};
+\draw[e] (notB) |- node[lab, pos=0.3]{no} (I);
+\draw[e] (notB) |- node[lab, pos=0.3]{yes} (psi);
+\node[leafN] (Z) at (9.9,0) {\textbf{Case Z}: $\eta=1$;
+  Bernoulli numbers, no automorphy};
+\node[leafA] (III) at (9.9,-1.4) {\textbf{Case III}: $\eta\ne1$ odd;
+  rank 4 ($\mathrm{GSp}_4$)};
+\node[leafA] (IIa) at (9.9,-2.8) {\textbf{Case II}: $\eta$ even
+  ($=\chi'_l(\eta)$, $e\ge2$); rank 4};
+\draw[e] (psi.east) -- (Z.west); \draw[e] (psi) -- (III);
+\draw[e] (psi.east) -- (IIa.west);
+\node[leafA] (V) at (6.4,-5.0) {\textbf{Case V} over $\Q(i)$ (automorphy);
+  sub-case $V_s$: Theorem~\ref{thm:h2-bound}, no automorphy};
+\node[q] (chi) at (6.4,-8.0) {order of $\chi'_l(\eta)$?};
+\draw[e] (inB) |- node[lab, pos=0.3]{yes} (V);
+\draw[e] (inB) |- node[lab, pos=0.3]{no} (chi);
+\node[font=\scriptsize] at (4.6,-8.4) {($e\ge2$)};
+\node[leafA] (IIb) at (9.9,-7.3) {\textbf{Case II}: even; rank 4};
+\node[leafN] (IV) at (9.9,-8.7) {\textbf{Case IV}: odd; tower layer $+$
+  Theorem~\ref{thm:windows-pigeonhole}, no automorphy};
+\draw[e] (chi.east) -- (IIb.west); \draw[e] (chi.east) -- (IV.west);
+\node[bi pole box, dashed, text width=5.2cm, font=\footnotesize,
+  anchor=north west] at (-1.1,-10.0)
+  {\textbf{$l=2$}: outside the case split; first clause of
+   Theorem~\ref{thm:windows-pigeonhole}};
+\node[bi zero box, text width=5.2cm, font=\footnotesize, anchor=north west]
+  at (5.4,-10.0)
+  {\textbf{minus part} ($\eta(-1)=(-1)^{e+1}$):
+   Theorem~\ref{thm:minus}, one-sided Bernoulli bound};
+\node[font=\scriptsize, align=left, text width=12.0cm, anchor=north west]
+  at (-1.1,-11.6)
+  {Solid boxes: an automorphy statement is used. Dashed boxes: no
+   automorphic input. Cases II, III, V and Z:
+   Theorem~\ref{thm:remaining-counts}.
+   $\chi'_l(\eta)=\eta^{(l')}(\eta^{(l')}|_l)^{-1}$, $\eta^{(l')}$ the
+   prime-to-$l$
+   part of $\eta$; for $l\notin B_\psi$ and $(l-1)\mid2e$ one has
+   $\chi'_l(\eta)=\eta$ (Example~\ref{ex:crt}).};
+\end{tikzpicture}}

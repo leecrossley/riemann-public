@@ -1,0 +1,40 @@
+\chapter{About this blueprint}\label{ch:intro}
+
+This blueprint describes, in ordinary mathematical language, the Lean~4
+archive that Levent Alpöge published on his home page (alpo.ge) on
+2026-11-20, claiming a formal proof of the Riemann hypothesis and of the
+Riemann hypothesis for Dirichlet $L$-functions. The archive is a copy at
+commit \texttt{155fd7918} of a Lake project on Lean \texttt{v4.33.1} and
+Mathlib revision \texttt{0df444a3}. It has about 175{,}000 source files
+and no comments, and there is no manuscript.
+
+The direction of work is the reverse of the usual one. A blueprint
+normally comes first and guides a formalization. Here only the Lean
+exists, and the blueprint was written from it: for each node, AI agents
+read the Lean declaration, the definitions it uses and, where stated,
+its proof, and translated them into mathematics. A survey of the
+archive written on 2026-11-20 served as a map, but the Lean source
+decides every statement.
+
+\begin{remark}[status of the nodes]\label{intro:status}
+No node is marked as formalized, and none should be read that way.
+The archive was not compiled for this blueprint and
+\texttt{\#print axioms} was never run, so no \verb|\leanok| mark has
+evidence behind it. Each \verb|\lean| link records only that a
+declaration of that name was found in the source and that the node
+transcribes it. An earlier static scan of the source found no
+\texttt{axiom}, \texttt{sorry}, \texttt{admit}, \texttt{native\_decide},
+\texttt{opaque}, \texttt{extern} or \texttt{unsafe} tokens. That scan
+is not a check that the archive compiles.
+\end{remark}
+
+\begin{remark}[how to read the nodes]\label{intro:reading}
+Definitions transcribe Lean definitions. Lemmas, propositions and
+theorems transcribe statements the archive claims to prove, and a proof
+block describes how the Lean proof is put together as far as it was
+read. Where a Lean name suggests more than the declaration states, a
+remark says so. A dependency edge comes from an identifier seen in the
+Lean body unless a source comment marks it as described only. The
+agents' working tables (declaration locators, formal and described edges,
+reading depth) are kept beside the blueprint source.
+\end{remark}

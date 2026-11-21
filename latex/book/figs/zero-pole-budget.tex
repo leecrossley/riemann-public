@@ -1,0 +1,82 @@
+\pgfplotstableread{\sbdata{twists.dat}}\sbTwTab
+\pgfplotstablegetrowsof{\sbTwTab}%
+\pgfmathtruncatemacro\sbTwLast{\pgfplotsretval-1}%
+\gdef\sbTwRow{-1}%
+\foreach \i in {0,...,\sbTwLast}{%
+  \pgfplotstablegetelem{\i}{q}\of\sbTwTab \let\sbTmpQ\pgfplotsretval
+  \pgfplotstablegetelem{\i}{g}\of\sbTwTab \let\sbTmpG\pgfplotsretval
+  \ifnum\sbTmpQ=121 \ifnum\sbTmpG=2 \xdef\sbTwRow{\i}\fi\fi}%
+\pgfplotstablegetelem{\sbTwRow}{polew}\of\sbTwTab \let\sbPw\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{budget}\of\sbTwTab \let\sbBud\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{Nid}\of\sbTwTab \let\sbNid\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{Ninv}\of\sbTwTab \let\sbNinv\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{bound}\of\sbTwTab \let\sbBound\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{weil}\of\sbTwTab
+\pgfmathtruncatemacro\sbWeil{\pgfplotsretval}%
+\pgfmathtruncatemacro\sbWeilm{\sbWeil-1}%
+\pgfmathtruncatemacro\sbSlack{\sbBud-\sbPw}%
+\begin{tikzpicture}[sb, x=0.062cm, y=1cm,
+    lab/.style={font=\footnotesize, inner sep=1pt},
+    rowlab/.style={font=\footnotesize, anchor=east, align=right}]
+  \def\h{0.36}
+  \newcommand\sbGroup[4]{%
+    \pgfmathtruncatemacro\rest{\sbPw-#2}%
+    \node[font=\small, anchor=south west] at (-58,#1+0.12)
+      {$\sigma=#3$, $N(K,\sigma)=#4$};
+    \fill[sbPole!75] (0,#1) rectangle (\sbPw,#1-\h);
+    \draw[sbPole, line width=0.6pt, dashed] (\sbPw,#1) rectangle (\sbBud,#1-\h);
+    \draw[sbPole, line width=0.6pt] (0,#1) rectangle (\sbPw,#1-\h);
+    \node[lab, text=white, anchor=west] at (2,#1-\h/2)
+      {pole of order $\sbPw$ at $P_0$};
+    \node[rowlab] at (-3,#1-\h/2) {poles of $w$};
+    \fill[sbZero] (0,#1-0.5) rectangle (#2,#1-0.5-\h);
+    \fill[sbOther!40] (#2,#1-0.5) rectangle (\sbPw,#1-0.5-\h);
+    \draw[sbInk!60, line width=0.4pt] (0,#1-0.5) rectangle (\sbPw,#1-0.5-\h);
+    \node[lab, text=white, anchor=west] at (2,#1-0.5-\h/2)
+      {$#2$ places $P\ne P_0$, one zero each};
+    \node[lab, anchor=center] at ({(#2+\sbPw)/2},#1-0.5-\h/2) {$\rest$};
+    \node[rowlab] at (-3,#1-0.5-\h/2) {zeros of $w$};}
+  \pgfmathtruncatemacro\sbZid{\sbNid-1}%
+  \pgfmathtruncatemacro\sbZinv{\sbNinv-1}%
+  \sbGroup{3.25}{\sbZid}{\mathrm{id}}{\sbNid}
+  \sbGroup{1.4}{\sbZinv}{\iota}{\sbNinv}
+  \draw[sb bound line] (\sbBud,4.3) -- (\sbBud,-0.05);
+  \draw[sb weil line] (\sbWeilm,3.85) -- (\sbWeilm,-0.05);
+  \node[lab, text=sbBound, anchor=south east] at (\sbBud+1,4.33)
+    {bound of Step~4: $N(K,\sigma)-1\le a+M'b=\sbBud$};
+  \node[lab, text=sbWeil, anchor=south east] at (\sbWeilm+1,3.88)
+    {Weil: $N(K,\sigma)-1\le q+2g\sqrt q=\sbWeilm$};
+  \node[lab, text=sbPole, anchor=west] at (\sbBud+1.5,3.25-\h/2)
+    {slack $\sbSlack$};
+  \draw[sbInk, line width=0.5pt] (0,0) -- (180,0);
+  \foreach \u in {0,20,...,180}{%
+    \draw[sbInk] (\u,0) -- (\u,-0.08);
+    \node[lab, below] at (\u,-0.08) {$\u$};}
+  \foreach \u in {10,30,...,170} \draw[sbInk] (\u,0) -- (\u,-0.05);
+  \node[lab, anchor=east] at (-3,-0.2) {degree};
+  \node[font=\footnotesize, anchor=north, align=center] at (80,-0.6) {%
+    \tikz\fill[sbPole!75](0,0) rectangle (0.35cm,0.2cm); pole divisor of
+$w$\quad
+    \tikz\draw[sbPole, dashed](0,0) rectangle (0.35cm,0.2cm); allowed by
+$(a+M'b)P_0$, unused\\[2pt]
+    \tikz\fill[sbZero](0,0) rectangle (0.35cm,0.2cm); forced zeros at the
+    $\sigma$-Frobenius places $P\ne P_0$\quad
+    \tikz{\fill[sbOther!40](0,0) rectangle (0.35cm,0.2cm);
+      \draw[sbInk!60](0,0) rectangle (0.35cm,0.2cm);}
+    rest of $(w)_0$, not recorded};
+\end{tikzpicture}
+\caption{The degree count of Step~4 of Theorem~\ref{thm:aux-section} for
+the section computed on a curve of genus $2$ over $\F_{121}$ with
+$M=M'=11$, $(a,b)=(10,15)$, for
+$\sigma=\mathrm{id}$ and for $\sigma=\iota$ the hyperelliptic involution.
+Bars are in degree units. Vermillion: the pole divisor of $w$, of degree
+$172$ at $P_0$ for both $\sigma$, inside the allowed $(a+M'b)P_0$ of degree
+$175$ (dashed). Blue: the forced zeros, one at each of the $N(K,\sigma)-1$
+$\sigma$-Frobenius places other than $P_0$ ($133$ and $109$). Grey: the rest
+of the zero divisor, of degree $172$ minus that number, since
+$\deg(w)_0=\deg(w)_\infty=172$; the computation does not record whether it
+consists of other zeros or higher multiplicities. Orange, dash-dot: the
+bound $N(K,\sigma)-1\le a+M'b=175$, that is $N(K,\sigma)\le176$, of
+Theorem~\ref{thm:aux-section}; green: the Weil bound
+$N(K,\sigma)\le q+1+2g\sqrt q=166$.}
+\label{fig:zero-pole-budget}

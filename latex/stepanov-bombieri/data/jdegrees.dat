@@ -1,0 +1,9 @@
+kind j quotient reslo reshi
+r 0 0 0 31
+s 0 1 32 63
+r 1 1 0 31
+s 1 2 32 63
+r 2 2 0 31
+s 2 3 32 63
+r 3 3 0 31
+s 3 4 32 63

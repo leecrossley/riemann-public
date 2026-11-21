@@ -1,0 +1,48 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, x=0.142cm, y=0.52cm,
+  rowlab/.style={anchor=east, font=\scriptsize, inner sep=1pt},
+  bar/.style={line width=3.2pt},
+  pt/.style={circle, minimum size=5pt, inner sep=0pt}]
+\draw[biOther, densely dotted] (9.903,-7.75) -- (9.903,0.55)
+  node[above, font=\scriptsize, text=black] {$\log\log Y$};
+\draw[biOther, densely dotted] (40,-7.75) -- (40,0.55)
+  node[above, font=\scriptsize, text=black] {$\log Y^{\eps/5}$};
+\node[rowlab] at (-1,0) {prime bound $z=Y^{\eps/5}\approx\log q$};
+\node[pt, fill=biOther, draw=black] at (3.689,0) {};
+\node[rowlab] at (-1,-1) {test points $y\in[Y,Y^\Delta]$};
+\draw[bar, biAux] (9.903,-1) -- (10.597,-1);
+\node[rowlab] at (-1,-2) {truncation $Z=Y^{400\Delta}$};
+\node[pt, fill=biAux, draw=black] at (16.588,-2) {};
+\node[rowlab] at (-1,-3) {$U$, admitted pairs};
+\draw[bar, biOther!60] (33.333,-3) -- (59.807,-3);
+\node[rowlab] at (-1,-4) {auxiliary prime $q$};
+\draw[bar, biBound] (39.307,-4) -- (40,-4);
+\node[rowlab] at (-1,-5) {box height $T_0$};
+\node[pt, fill=biZero, draw=black, diamond, minimum size=6pt] at (40,-5)
+  {};
+\node[rowlab] at (-1,-6) {auxiliary prime $d$};
+\draw[bar, biBound] (59.114,-6) -- (59.807,-6);
+\node[rowlab] at (-1,-7) {box height $T_1$};
+\node[pt, fill=biZero, draw=black, diamond, minimum size=6pt]
+  at (59.807,-7) {};
+\draw[->] (0,-7.75) -- (64,-7.75) node[right, font=\scriptsize]
+  {$\log\log t$};
+\foreach \u in {0,10,20,30,40,50,60}
+  \draw (\u,-7.75) -- (\u,-7.95) node[below, font=\scriptsize] {\u};
+\end{tikzpicture}%
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi
+\caption{The sizes of this chapter on one $\log\log$ axis, to scale,
+for $\eps=1/100$, $\Delta=2$, $M=1$ and $\log Y=20000$; a quantity of
+size $t$ is plotted at $\log\log t$, and a bar is the range allowed by
+the definitions. The test points $y\in[Y,Y^\Delta]$ and the truncation
+$Z=Y^{400\Delta}$ are of polynomial size in $Y$
+(Proposition~\ref{prop:meansq}); the auxiliary primes $q,d$ of a
+window pair (Definition~\ref{def:scales}), the box heights $T_0,T_1$
+(Definition~\ref{def:good-pair}) and the range of $U$ for admitted
+pairs (Definition~\ref{def:headsum}) have logarithm about a power of
+$Y$. Here $\log y/\log\log q$ lies between $500$ and about $1020$, so
+$y$ is polylogarithmic in $q$. The instance is illustrative: the
+results need $Y$ large, with no explicit threshold.}
+\label{fig:hosts-scales}

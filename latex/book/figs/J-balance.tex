@@ -1,0 +1,62 @@
+\begin{tikzpicture}[sb]
+\begin{axis}[sb axis,
+  xmode=log, log basis x=2, ymode=log, log basis y=2,
+  xmin=1.7, xmax=480, ymin=0.0625, ymax=80,
+  xtick={2,4,8,16,64,128,256},
+  extra x ticks={31.765}, extra x tick labels={$\sqrt p\approx31.8$},
+  extra x tick style={tick label style={font=\footnotesize\bfseries,
+    yshift=-1.2ex}, grid=major, major grid style={sbOther, thin}},
+  ytick={0.0625,0.25,1,4,16,64},
+  yticklabels={$\tfrac1{16}$,$\tfrac14$,$1$,$4$,$16$,$64$},
+  xlabel={multiplicity $\ell$, even (logarithmic)},
+  ylabel={term of $B$ $/\sqrt p$ (logarithmic)},
+  height=0.56\linewidth,
+  legend style={at={(0.5,-0.2)}, anchor=north, legend columns=2,
+    /tikz/every even column/.append style={column sep=0.8em}},
+  legend cell align=left,
+  unbounded coords=jump, clip mode=individual,
+]
+\addplot[sb other plot] table[x=ell, y=corrapprox] {\sbdata{jbalance.dat}};
+\addlegendentry{$\frac{\ell d}{2}\frac{p}{p-d-\ell}/\sqrt p$: bound of the
+correction}
+\addplot[sbOther, line width=0.9pt, dashed]
+  table[x=ell, y=over] {\sbdata{jbalance.dat}};
+\addlegendentry{$\frac{(d+1)p-2d-2}{2\ell}/\sqrt p$: overhead}
+\addplot[sbOther, line width=0.9pt, densely dotted]
+  table[x=ell, y expr={\thisrow{corr}>0 ? \thisrow{corr} : nan}]
+  {\sbdata{jbalance.dat}};
+\addlegendentry{$\frac{(t-1)p}{\ell}/\sqrt p$: correction}
+\addplot[sbOther, line width=0.4pt]
+  table[x=ell, y=const] {\sbdata{jbalance.dat}};
+\addlegendentry{$d/\sqrt p$}
+\addplot[sbBound, line width=0.9pt]
+  table[x=ell, y=B] {\sbdata{jbalance.dat}};
+\addlegendentry{total $B/\sqrt p$}
+\addplot[sb bound plot, solid, only marks, mark size=2.6pt, forget plot,
+  restrict expr to domain={\thisrow{ell}}{24:24}]
+  table[x=ell, y=B] {\sbdata{jbalance.dat}};
+\addplot[sb weil line, domain=1.7:480, samples=2] {1};
+\addlegendentry{Weil: $(d-1)/2=1$}
+\node[sbBound!70!black, font=\footnotesize, anchor=south, fill=white,
+  inner sep=1pt] (min) at (axis cs:28,9) {min.\ $2.74$ at $\ell=24$};
+\draw[sbBound!70!black, thin, ->, shorten >=3pt] (min.south) --
+  (axis cs:24,2.736);
+\end{axis}
+\end{tikzpicture}
+\caption{The balance of Remark~\ref{rem:J-balance} for $p=1009$, $d=3$: the
+terms of $B$ in Theorem~\ref{thm:variantJ}, $\lvert S_a\rvert\le p/2+B$,
+divided by $\sqrt p$, against the even multiplicity $\ell\le400$, on
+logarithmic axes. Grey dashed: the overhead $((d+1)p-2d-2)/(2\ell)$, the
+part of $\deg r$ that does not grow with $\ell$, divided by $\ell$; it falls.
+Grey dotted: the correction $(t-1)p/\ell$, forced by the quadratic number of
+jet conditions; it is $0$ while $t=1$ ($\ell\le24$), jumps each time the
+integer $t$ grows, and rises on average. Thin grey: its bound $\frac{\ell
+d}2\frac p{p-d-\ell}$ from
+\eqref{eq:variantJ}, and the constant $d$. Orange: the total $B$, least,
+$2.74\sqrt p$, at $\ell=24$ (triangle), near $\sqrt p\approx31.8$. Green:
+$(d-1)\sqrt p/2$, half of
+Weil's bound $(d-1)\sqrt p$ for $\lvert N^{\mathrm{aff}}-p\rvert$, to compare
+with $B$, since $\lvert N^{\mathrm{aff}}-p\rvert\le2B+d$. The layout matches
+Figure~\ref{fig:sqrtq-valley}. Data: the closed formulas of
+\eqref{eq:variantJ}.}
+\label{fig:J-balance}

@@ -1,0 +1,77 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi,
+  st/.style={v2 step, font=\scriptsize, text width=3.5cm, align=flush center},
+  inp/.style={v2 input, font=\scriptsize, text width=3.5cm, align=flush center},
+  lab/.style={font=\scriptsize, inner sep=1.5pt}]
+\node[inp] (i1) at (-4.3,0)
+  {mean squares of real character sums; PNT in progressions with
+  Deuring--Heilbronn};
+\node[inp] (i2) at (4.3,0)
+  {log-free zero-density estimate near $\operatorname{Re}s=1$};
+\node[st] (p1) at (-4.3,-2.0)
+  {Prop.~\ref{prop:meansq}: mean square
+  $\sum_{q\in P}|S(Z,y,q,\kappa)|^2\le C\,y\log y\,|P|$\\
+  for $y\in[Y,Y^\Delta]$, with $Z=Y^{400\Delta}$};
+\node[st] (p3) at (4.3,-2.0)
+  {Prop.~\ref{prop:zero-box}: at most $CQ^{1/4}$ primes $q$ carry a
+  primitive character modulo $rq$ without a zero-free box of height $Q$};
+\node[st] (p2) at (-4.3,-4.75)
+  {Prop.~\ref{prop:bad-moduli}: all but $r_0|P|$ of the $q$ have
+  $|S|\le y^{1/2+\tau}/2$ for \emph{every} $y\in[Y,X]$\\
+  {\color{biFail!80!black}\itshape account incomplete}};
+\node[st] (p4) at (0.45,-4.75)
+  {Prop.~\ref{prop:box-from-headsum}: head-sum bound and zero-free
+  box give $\mathrm{Box}(Q,C,\tau,Y,Y^\Delta)$, by
+  \eqref{eq:head-tail}\\
+  {\color{biFail!80!black}\itshape $C$ uniform in $\Delta$:
+  not reconstructed}};
+\node[st, text width=4.7cm] (s1) at (-2.85,-7.45)
+  {\textbf{Stage 1.} Average over $q$, with $\kappa=\xi$:
+  twists $(i,j)=(1,0)$.};
+\node[st, text width=4.7cm] (s2) at (2.85,-7.45)
+  {\textbf{Stage 2.} With $q$ fixed, average over
+  $d\equiv-1\bmod q\prod_{3\le p\le Y^{\eps/5}}p$, with
+  $\kappa=\xi\chi_q^i$: twists with $j=1$.};
+\node[lab, text width=11cm, align=center] (gpl) at (0,-8.55)
+  {Theorem~\ref{thm:good-pairs}: a window pair $(q,d)$ good for
+  $(M,\eps,Y,Y^\Delta)$};
+\begin{scope}[on background layer]
+\node[bi box, fill=biBound!12, inner sep=4pt, fit=(s1)(s2)(gpl)] (gp)
+  {};
+\end{scope}
+\node[st, text width=5.0cm] (p5) at (-2.85,-10.15)
+  {Prop.~\ref{prop:bounded-twist-bounds}: at $y=x$, every bounded
+  $\theta$ has $|g_{\chi_\theta}(x)|\le x^{1/2+\eps}$ and
+  $|L'(1,\chi_\theta)/L(1,\chi_\theta)|\le4\log x$};
+\node[inp, text width=4.5cm] (ef) at (3.35,-10.15)
+  {pointwise clause of $\mathrm{EF}$ (Def.~\ref{def:shares-ef}),
+  the hypothesis for Chapter~\ref{ch:balance}; combined in
+  Theorem~\ref{thm:host-supply}};
+\draw[v2 arr] (i1) -- (p1);
+\draw[v2 arr] (i2) -- (p3);
+\draw[v2 arr] (p1) -- node[lab, right=2pt, pos=0.55, text width=1.9cm,
+  align=left] {Chebyshev; dyadic blocks in $y$} (p2);
+\draw[v2 arr] (p2) -- node[lab, above, pos=0.45] {most $q$} (p4);
+\draw[v2 arr] (p3.west) -| node[lab, pos=0.25, above] {most $q$}
+  (p4.north);
+\draw[v2 arr] (p4.south) -- node[lab, right, pos=0.45]
+  {clause~\ref{item:gp-pointwise}} (p4.south |- gp.north);
+\draw[v2 arr] (p3.south) -- node[lab, right, pos=0.5, text width=1.5cm]
+  {clause~\ref{item:gp-box}, real twists} (p3.south |- gp.north);
+\draw[v2 arr] (s1) -- (s2);
+\draw[v2 arr] (p5.north |- gp.south) -- (p5.north);
+\draw[v2 arr] (p5) -- (ef);
+\end{tikzpicture}%
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi
+\caption{How the four averaging estimates of this chapter give a good
+window pair (schematic). Solid boxes are results of the chapter,
+dashed boxes are classical inputs (Remark~\ref{rem:classical-inputs})
+and the place where the output is used. Stage~2 repeats the averaging
+with $d$ in place of $q$. The text gives only an incomplete account of
+Proposition~\ref{prop:bad-moduli}, and does not reconstruct the
+uniformity in $\Delta$ of the constant of
+Proposition~\ref{prop:box-from-headsum}, on which the constant $4$ of
+clause~\ref{item:gp-pointwise} depends.}
+\label{fig:averaging-flow}

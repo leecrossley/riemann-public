@@ -1,0 +1,1062 @@
+\chapter{Host fields and averaging over auxiliary primes}\label{ch:host}
+
+This chapter covers the abelian CM fields that the archive calls hosts, and
+the theorem \texttt{supplyChi}, which supplies a host with all the analytic
+properties that the explicit-formula argument needs, for every primitive
+Dirichlet character $\psi$, assuming only the Galois-cohomological bound
+\texttt{VWinAt}. A host is cut out of a cyclotomic field by the kernel of
+$\psi$, a $2$-power level and the quadratic characters of two auxiliary
+primes $q,d$. The characters of the host that are not powers of $\psi$ are
+twists $\xi\chi_q^i\chi_d^j$ with $(i,j)\ne(0,0)$. The archive bounds their
+prime sums at a scale polylogarithmic in $q$ by choosing $q$ and then $d$
+among the majority of primes for which a mean-square estimate gives the
+bound (the theorem \texttt{QH.pairEx}). The output feeds the analytic
+criterion of the explicit formula and consumes the window bound
+\texttt{VWinAt}; both are treated in other chapters.
+
+Throughout, $\chi_q(a)=\left(\frac aq\right)$ and $\chi_d(a)=\left(\frac
+ad\right)$ are Jacobi symbols, and a \emph{primitive character} is a pair
+$(N,\chi)$ with $\chi$ a primitive Dirichlet character of conductor $N$
+(the archive's \texttt{PChar}).
+
+% ------------------------------------------------------------------
+\section{Frames and hosts}
+
+\begin{definition}[frame]\label{host:frame}
+\lean{Formalism.HC.Frame, Formalism.HC.Frame.A0, Formalism.HC.Frame.n0, Formalism.HC.Frame.o, Formalism.HC.Frame.GG, Formalism.HC.Frame.cc, Formalism.HC.Frame.iod, Formalism.HC.Frame.tau1, Formalism.FrobeniusOrbits.HGrp, Formalism.FrobeniusOrbits.hcl}
+For $e\ge0$ let $H_e=(\Z/2^{e+2}\Z)^{\times}/\{\pm1\}$, and let
+$\operatorname{hcl}_e\colon(\Z/2^{e+2}\Z)^{\times}\to H_e$ be the quotient map.
+A \emph{frame} $\phi$ consists of
+\begin{itemize}
+\item integers $e\ge0$ and $\mathrm{ord}$, and an abelian group structure on
+  $A=\{0,\dots,\mathrm{ord}-1\}$ (so $A$ is a finite abelian group of order
+  $\mathrm{ord}\ge1$);
+\item a surjective homomorphism $h_0\colon A\to H_e$;
+\item an element $g_0\in A$ such that $h_0(kg_0)=0$ implies $kg_0=0$ for all
+  $k\in\Z$, that is $\langle g_0\rangle\cap\ker h_0=0$.
+\end{itemize}
+Put $A_0=\langle g_0\rangle$, $n_0=|A_0|$ and $o=\mathrm{ord}/n_0=[A:A_0]$.
+The \emph{Galois model} of $\phi$ is $\mathfrak G=\{\pm1\}^2\times A$
+(written multiplicatively), with the elements $c=((-1,-1),0)$,
+$\iota=((1,-1),0)$ and $\tau_1(t)=((1,1),t)$ for $t\in A$.
+\end{definition}
+
+\begin{definition}[raw host]\label{host:host-raw}
+\lean{Formalism.HC.HostRaw, Formalism.HC.HostRaw.condN, Formalism.FrobeniusOrbits.HostHyp}
+\uses{host:frame}
+Let $\phi$ be a frame. A \emph{raw host} for $\phi$ consists of
+\begin{enumerate}
+\item primes $q,d$ with $q\equiv3\pmod 8$, $d\equiv7\pmod{16}$ and
+  $\left(\frac{-d}{q}\right)=1$ (the condition \texttt{HostHyp});
+\item the condition $e\ge2$;
+\item an integer $Q_S>0$ with $2^{e+2}\mid Q_S$, $\gcd(Q_S,qd)=1$ and
+  $\left(\frac{-d}{l}\right)=1$ for every odd prime $l\mid Q_S$;
+\item a number field $E$, Galois over $\Q$, with a group isomorphism
+  $\mathrm{gal}\colon\Gal(E/\Q)\to\mathfrak G$;
+\item an element $\sqrt{-d}\in E$ with square $-d$, on which $\sigma$ acts
+  by the second sign of $\mathrm{gal}(\sigma)$;
+\item a $\Q$-embedding $j\colon E\to\Q(\zeta_{N_H})$, where $N_H=Q_Sqd$, and
+  a primitive $N_H$-th root of unity $\zeta$ there;
+\item a homomorphism $\mathrm{art}\colon(\Z/N_H\Z)^{\times}\to\mathfrak G$
+  such that, if $\tau\in\Gal(\Q(\zeta_{N_H})/\Q)$ sends $\zeta$ to $\zeta^u$,
+  then $j(\mathrm{gal}^{-1}(\mathrm{art}(u))x)=\tau(j(x))$ for all $x\in E$;
+\item $\mathrm{art}(-1)=c$;
+\item the $A$-component of $\mathrm{art}(u)$ maps under $h_0$ to
+  $\operatorname{hcl}_e(u\bmod 2^{e+2})$;
+\item if $u\equiv1\pmod{Q_Sq}$ then $\mathrm{art}(u)\in\{1,\iota\}$, and if
+  $u\equiv1\pmod{Q_Sd}$ then $\mathrm{art}(u)^2=1$.
+\end{enumerate}
+The integer $N_H=Q_Sqd$ is the \emph{conductor} of the host.
+\end{definition}
+
+\begin{definition}[derived host properties]\label{host:host-der}
+\lean{Formalism.HC.HostDer, Formalism.HC.HostCore, Formalism.HC.DerOfRaw}
+\uses{host:host-raw}
+For a raw host $H$, the proposition $\mathrm{HostDer}(H)$ is the conjunction
+of the following, among others: $\mathrm{art}$ is surjective; $E$ is a CM
+field and $\mathrm{gal}^{-1}(c)$ is complex conjugation under every complex
+embedding; $[E:\Q]=4\,\mathrm{ord}$ and the maximal real subfield $F$ has
+$[F:\Q]=2\,\mathrm{ord}$ and is the fixed field of $\mathrm{gal}^{-1}(c)$;
+the second sign of $\mathrm{art}(u)$ is $\left(\frac ud\right)$; the set of
+embeddings sending $\sqrt{-d}$ to $i\sqrt d$ is a CM type of size
+$2\,\mathrm{ord}$, stable exactly under $\mathrm{gal}^{-1}(\ker\chi_D)$, with
+$\chi_D$ the second sign; for every prime $p\nmid N_H$ and every prime
+$P\mid p$ of $E$ the arithmetic Frobenius exists and equals
+$\mathrm{gal}^{-1}(\mathrm{art}(p))$; inertia and decomposition groups at
+every prime are the images under $\mathrm{art}$ of the expected subgroups;
+inertia at $d$ is $\{1,\iota\}$; descriptions of splitting in
+$K=\Q(\sqrt{-d})$, of the relative different of $E/K$ as $\mathfrak b\,
+\bar{\mathfrak b}$ with $\mathfrak b+\bar{\mathfrak b}=(1)$, of
+$\operatorname{disc}E=(\operatorname{disc}F)^2$ and of its prime divisors;
+and two-sided bounds for the root discriminant
+$\mathrm{rd}_E=|\operatorname{disc}E|^{1/[E:\Q]}$,
+\[
+2^{e+1-2^{-e}}\sqrt d\le\mathrm{rd}_E\le\tfrac{Q_S}{2}\sqrt{qd},\qquad
+4\,\mathrm{ord}\le\mathrm{rd}_E^2 .
+\]
+The structure \texttt{HostCore} consists of sixteen of these fields:
+surjectivity, the CM and degree statements, the second sign, the
+Frobenius, inertia and decomposition statements, and two statements on
+complex conjugation and decomposition groups.
+The proposition \texttt{DerOfRaw} states that every raw host satisfies
+$\mathrm{HostDer}$.
+\end{definition}
+
+\begin{lemma}[cyclotomic basics of a host]\label{host:cyc-basics}
+\lean{Formalism.HC.Der.art_surj, Formalism.HC.Der.cm, Formalism.HC.Der.conj_iff, Formalism.HC.Der.finrank_E}
+\uses{host:host-raw}
+Let $H$ be a raw host for $\phi$. Then $\mathrm{art}$ is surjective, $E$ is
+a CM field, an automorphism $\sigma$ acts as complex conjugation under a
+complex embedding if and only if $\mathrm{gal}(\sigma)=c$, and
+$[E:\Q]=4\,\mathrm{ord}$.
+\end{lemma}
+\begin{proof}
+Surjectivity: every $\sigma\in\Gal(E/\Q)$ lifts along $j$ to an
+automorphism of the Galois extension $\Q(\zeta_{N_H})$, which is
+$\zeta\mapsto\zeta^u$ for some unit $u$; by the compatibility of
+$\mathrm{art}$ with $j$ and the injectivity of $j$,
+$\mathrm{gal}(\sigma)=\mathrm{art}(u)$. Since $\mathrm{art}(-1)=c$ and
+$\zeta\mapsto\zeta^{-1}$ is complex conjugation on $\Q(\zeta_{N_H})$, the
+automorphism $\mathrm{gal}^{-1}(c)$ is complex conjugation under every
+embedding of $E$ (extend the embedding of $E$ to the cyclotomic field).
+It sends $\sqrt{-d}$ to $-\sqrt{-d}$, so no embedding is real; hence $E$
+is totally complex with an automorphism inducing complex conjugation
+everywhere, which is a CM field. The degree is
+$|\Gal(E/\Q)|=|\mathfrak G|=4\,\mathrm{ord}$.
+\end{proof}
+
+\begin{lemma}[raw hosts have the derived properties]\label{host:raw-der}
+\lean{Formalism.HC.HostRaw.der, Formalism.HC.Der.hostCore}
+\uses{host:host-raw, host:host-der, host:cyc-basics}
+Every raw host $H$ satisfies $\mathrm{HostDer}(H)$. In particular
+\texttt{DerOfRaw} holds.
+\end{lemma}
+\begin{proof}
+\uses{host:cyc-basics}
+The proof assembles the fields one by one: the sixteen fields of
+\texttt{HostCore} come from \texttt{Der.hostCore}, which collects
+Lemma~\ref{host:cyc-basics} and the Frobenius, inertia and decomposition
+statements obtained by restricting the corresponding statements for
+$\Q(\zeta_{N_H})$ along $j$. The remaining fields (among them the CM type, splitting in
+$K$, the different, the discriminant, root-discriminant bounds, and the fields \texttt{ps\_root}, \texttt{ordinary}, \texttt{eta}, \texttt{principal}, \texttt{unimodular} and \texttt{norm\_mu}) are separate
+lemmas of the namespace \texttt{Formalism.HC.Der}. These live in
+\arch{Formalism/SharpRestriction/RamificationFrobenius/TotientGaloisClasses/InertiaGaloisSymmetry/}
+and are not expanded here.
+\end{proof}
+
+\begin{definition}[host with axioms]\label{host:host-ax}
+\lean{Formalism.HC.HostAx, Formalism.HC.HostAx.ofRaw}
+\uses{host:host-raw, host:host-der, host:raw-der}
+A \emph{host with axioms} is a raw host $H$ together with a proof of
+$\mathrm{HostDer}(H)$. By Lemma~\ref{host:raw-der} every raw host extends
+to one (\texttt{HostAx.ofRaw}).
+\end{definition}
+
+\begin{remark}[the derived properties are proved]\label{host:rem-der}
+The name \texttt{HostAx} suggests that the CM and ramification properties
+of a host are assumed. They are not: \texttt{HostAx.ofRaw} supplies them
+from Lemma~\ref{host:raw-der}, so a host with axioms carries no more
+hypotheses than a raw host. The proposition \texttt{DerOfRaw} is stated
+but never used elsewhere in the archive; the derivation enters only through
+\texttt{HostRaw.der}.
+\end{remark}
+
+\begin{definition}[ranks]\label{host:ranks}
+\lean{Formalism.BasicNotions.Ranks}
+\uses{host:frame}
+A \emph{rank datum} $R$ is a frame together with natural numbers $k,m,t$,
+with $k,m$ even, $t$ odd, $2\le m$, $m+3\le k$, $k+m+4\le t$, $3m<t$,
+$m\le2\,\mathrm{ord}\le k$ and $m^2\le k+m(t+1)$. One writes $n=\mathrm{ord}$
+and $f=2n$; the archive also attaches an integer $r$ to $R$.
+\end{definition}
+
+\begin{definition}[full host]\label{host:host-full}
+\lean{Formalism.BasicNotions.Host}
+\uses{host:ranks, host:host-ax}
+For a rank datum $R$, a \emph{host} for $R$ is a host with axioms for the
+frame of $R$ together with: the identity $\psi_q(u)=\left(\frac uq\right)$
+for the first sign $\psi_q$ of $\mathrm{art}(u)$; an element $\sqrt{-q}\in
+E$ on which $\sigma$ acts by the first sign; for every prime $l\mid Q_S$ a
+unit $u\equiv1\pmod{N_H/l}$ with $\mathrm{art}(u)\neq1$; $Q_S\le n^2$;
+$o^{64}\le2^e$; $q\ne3$; $q,d>4tr+1$; a bound $b$ with
+$\left(\frac{-d}{p}\right)=1$ for every odd prime $p\le b$ and $4l\le b$
+for every odd prime $l\mid Q_S$; a CM-type embedding $E\to\CC$; an ideal
+$\mathfrak b$ of $\mathcal O_E$ splitting the different of $E/K$; a finite
+set of level primes containing two distinct primes $g_0,g_1$ and two
+distinct primes $p_{\delta},p'_{\delta}\equiv1\pmod{15}$; a nonzero primitive
+ideal $\mathfrak c$ of $\mathcal O_K$ supported at split primes and prime to
+$2,3,5,q,d$, the level primes and $Q_S$; finite sets $TT\subset A$ and
+$T_2\subset\N$, an element $u_0\in A$, an integer $L_w\ge2$ with
+$4L_ws<n_0$ for $s\in T_2$ and a no-relation condition on $T_2$; and a real
+number $C_{T2}$.
+\end{definition}
+
+% ------------------------------------------------------------------
+\section{Characters of a host}
+
+\begin{definition}[characters of the Galois model]\label{host:chars}
+\lean{Formalism.HC.Frame.Char, Formalism.HC.Frame.TrivialOnFirstFactor, Formalism.HC.Frame.Xp, Formalism.HC.Frame.Xm, Formalism.HC.Frame.psC}
+\uses{host:frame}
+A \emph{character} of $\phi$ is a homomorphism $\theta\colon\mathfrak
+G\to\CC^{\times}$. It is \emph{trivial on the first factor} if
+$\theta(\tau_1(s))=1$ for all $s\in A_0$. Let $X_+$ (resp.\ $X_-$) be the
+set of characters trivial on the first factor with $\theta(\iota)=1$
+(resp.\ $\theta(\iota)=-1$). Let $\omega_q$ be the character given by the
+first sign of $\{\pm1\}^2$.
+\end{definition}
+
+\begin{definition}[the Dirichlet character of a Galois character]\label{host:dir}
+\lean{Formalism.HC.HostRaw.dir, Formalism.HC.HostRaw.dirAt, Formalism.HC.HostRaw.IsPrimOf, Formalism.HC.HostRaw.prim, Formalism.HC.HostRaw.IsCharE}
+\uses{host:host-raw, host:chars}
+% uses-lean: Formalism.HC.An.Induces, Formalism.HC.PChar
+\uses{an:pchar} % resolved
+Let $H$ be a raw host and $\theta$ a character of $\phi$. Then
+$\theta\circ\mathrm{art}$ is a Dirichlet character modulo $N_H$, written
+$\mathrm{dir}(\theta)$. A Dirichlet character $\chi$ modulo $N$ \emph{is
+the primitive character of $\theta$} if $\chi$ is primitive and
+$\chi(a)=\theta(\mathrm{art}(a))$ for every $a$ prime to $N_H$; the
+primitive character inducing $\mathrm{dir}(\theta)$ is written
+$\mathrm{prim}(\theta)$. A character $\chi$ is a \emph{character of $E$} if
+it is the primitive character of some $\theta$.
+\end{definition}
+
+\begin{lemma}[uniqueness of the primitive character]\label{host:prim-unique}
+\lean{Formalism.HC.HostRaw.isPrimOf_iff, Formalism.HC.HostRaw.kept_iff}
+\uses{host:dir}
+For a primitive character $\psi$, $\psi$ is the primitive character of
+$\theta$ if and only if $\psi=\mathrm{prim}(\theta)$.
+\end{lemma}
+\begin{proof}
+% uses-lean: Formalism.HC.An.Induces.unique, Formalism.HC.An.induces_of
+Two primitive characters that agree on all integers prime to a fixed
+nonzero modulus are equal (\texttt{An.Induces.unique}), and
+$\mathrm{prim}(\theta)$ has the defining property by construction.
+\end{proof}
+
+\begin{definition}[kept and bounded characters]\label{host:kept}
+\lean{Formalism.HC.HostRaw.Kept, Formalism.HC.HostRaw.Bounded, Formalism.HC.HostRaw.KeptInXp, Formalism.HC.HostRaw.ExceptionalCharacterKept, Formalism.HC.HostRaw.BoundedCharsPointwise, Formalism.HC.HostRaw.ChebyshevCharacterBound, Formalism.HC.HostRaw.LogDerivativeBound}
+\uses{host:chars, host:dir}
+% uses-lean: Formalism.HC.An.gChi, Formalism.HC.An.logDerivativeAtOne
+\uses{an:gchi} % resolved
+Let $H$ be a raw host and $S$ a finite set of primitive characters. Write
+$g_{\chi}$ for the archive's regularised prime sum of $\chi$ and
+$\lambda(\chi)=L'(1,\chi)/L(1,\chi)$.
+\begin{enumerate}
+\item $\theta$ is \emph{kept} if its primitive character lies in $S$.
+\item $\theta$ is \emph{bounded} if $\theta\in X_+$ and is not kept, or
+  $\theta\in X_-$.
+\item $H$ has \emph{kept characters in $X_+$} if every $\psi\in S$ is the
+  primitive character of some $\theta\in X_+$.
+\item For $\psi_K\in\{\text{none}\}\cup\{\text{primitive characters}\}$, $H$
+  \emph{keeps the exceptional character} if $\psi_K=\psi$ implies that
+  $\psi$ is the primitive character of $\omega_q$, and $\psi_K=\text{none}$
+  implies that $\omega_q$ is not kept.
+\item $H$ has \emph{pointwise bounds at $x$ with exponent $\eps$} if
+  $|g_{\chi}(x)|\le x^{1/2+\eps}$ for the primitive character $\chi$ of every
+  bounded $\theta$.
+\item $H$ has the \emph{Chebyshev bound} $(x,\eps,c)$ if
+  $|g_{\chi}(y)|\le y\exp(-cx^{\eps/8})$ for every character $\chi$ of $E$
+  and every $y\ge\exp(x^{\eps/3})/3$.
+\item $H$ has the \emph{log-derivative bound} $(S,X,x,\eps,C)$ if
+  $|\lambda(\chi)|\le x^{\eps}$ for the primitive character of the second
+  sign, and $|\lambda(\chi)|\le C\log X$ for the primitive character of
+  every bounded $\theta$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[host conditions]\label{host:host-conditions}
+\lean{Formalism.HC.HostConditions}
+\uses{host:kept}
+% uses-lean: Formalism.HC.HType, Formalism.HC.HConst
+For a type $T$ (carrying a kept set $S$, an exceptional slot $\psi_K$ and an
+exponent $\eps$) and constants $(c,C)$, the \emph{host conditions} for a raw
+host $H$ at $(X,x)$ are: kept characters in $X_+$, the Chebyshev bound
+$(x,\eps,c)$, the log-derivative bound $(S,X,x,\eps,C)$, pointwise bounds at
+$x$ with exponent $\eps$, and the exceptional character kept.
+\end{definition}
+
+\begin{remark}[the host conditions are not the live hypothesis]\label{host:rem-hostconditions}
+The structure \texttt{HostConditions} looks like the analytic input of the
+argument, including a pointwise bound for every bounded character. In the
+archive it occurs only as a hypothesis: of
+\texttt{EAtH.explicit\_formula\_error\_of\_host\_conditions} and of one
+lemma in \arch{Development/AutomorphicArithmetic/CoprimeRanks/OfPInjective.lean}.
+No term of this type is built on the path through \texttt{supplyChi}. That
+path builds the explicit-formula condition \texttt{EAtH} directly
+(Theorem~\ref{host:supply-of-adm-of}), with the pointwise and log-derivative
+clauses supplied by Lemma~\ref{host:bounded-tw} and the Chebyshev clause
+supplied inside the condition \texttt{HostGood}.
+\end{remark}
+
+% ------------------------------------------------------------------
+\section{The host attached to a character}
+
+\begin{definition}[kernel condition]\label{host:kerchi}
+\lean{UpperTheory.Top.KerChi}
+\uses{host:host-raw}
+% uses-lean: Formalism.HC.PChar
+\uses{an:pchar} % resolved
+Let $\psi$ be a primitive character of conductor $N_{\psi}$ and $H$ a raw host
+for $\phi$. Then $H$ satisfies the \emph{kernel condition for $\psi$} if
+$N_{\psi}\mid Q_S$ and, for every $a$ prime to $N_H$, $\mathrm{art}(a)=1$ if
+and only if $a\equiv\pm1\pmod{2^{e+2}}$, $\psi(a)=1$,
+$\left(\frac aq\right)=1$ and $\left(\frac ad\right)=1$.
+\end{definition}
+
+\begin{definition}[field of $\psi$]\label{host:ischifield}
+\lean{UpperTheory.Top.IsChiField}
+% uses-lean: Formalism.HC.PChar
+\uses{an:pchar} % resolved
+A number field $E$ is a \emph{field of $\psi$ at $(e,q,d)$} if there are
+$N\ge1$ with $2^{e+2},N_{\psi},q,d\mid N$, a $\Q$-embedding
+$j\colon E\to\Q(\zeta_N)$ and a primitive $N$-th root of unity $\zeta$ such
+that, for every automorphism $\tau$ with $\tau(\zeta)=\zeta^a$, $\tau$ fixes
+$j(E)$ pointwise if and only if $a\equiv\pm1\pmod{2^{e+2}}$, $\psi(a)=1$,
+$\left(\frac aq\right)=1$ and $\left(\frac ad\right)=1$.
+\end{definition}
+
+\begin{lemma}\label{host:ischifield-of-kerchi}
+\lean{UpperTheory.Top.isChiField}
+\uses{host:kerchi, host:ischifield}
+If a raw host $H$ for $\phi$ satisfies the kernel condition for $\psi$, then
+$E$ is a field of $\psi$ at $(e,q,d)$.
+\end{lemma}
+\begin{proof}
+Take $N=N_H$, the embedding $j$ and the root $\zeta$ of the host. The
+divisibilities follow from $2^{e+2}\mid Q_S$ and $N_{\psi}\mid Q_S$. If
+$\tau(\zeta)=\zeta^a$ then $a$ is prime to $N_H$, and $\tau$ fixes $j(E)$
+if and only if $\mathrm{art}(a)=1$, by the compatibility of $\mathrm{art}$
+with $j$; the kernel condition finishes the proof.
+\end{proof}
+
+\begin{definition}[twist form]\label{host:twist-form}
+\lean{UpperTheory.Top.TwistForm, UpperTheory.Top.tw}
+\uses{host:chars, host:dir}
+% uses-lean: Formalism.HC.PChar
+\uses{an:pchar} % resolved
+For $\xi\colon\N\to\CC$ put $\mathrm{tw}(\xi,q,d,i,j)(a)=\xi(a)\chi_q(a)^i
+\chi_d(a)^j$, $i,j\in\{0,1\}$. A raw host $H$ has \emph{twist form for
+$\psi$} if every character $\theta$ trivial on the first factor admits
+$\xi\in\langle\psi\rangle$ and $i,j\in\{0,1\}$ with $\theta(\iota)=(-1)^j$
+and $\theta(\mathrm{art}(a))=\mathrm{tw}(\xi,q,d,i,j)(a)$ for every $a$
+prime to $N_H$.
+\end{definition}
+
+\begin{lemma}[the host of a cyclic group of characters]\label{host:any-grp}
+\lean{UpperTheory.Top.ordAny, UpperTheory.Top.kerChiAny, UpperTheory.Top.twistAny, Formalism.HC.AnyGrp.host, Formalism.HC.AnyGrp.o_eq, Formalism.HC.AnyGrp.keptInXp, Formalism.HC.AnyGrp.exceptional_character_condition}
+\uses{host:host-raw, host:kerchi, host:twist-form, host:kept}
+% uses-lean: Formalism.HC.Level.ofSub
+\uses{an:level-cyc} % resolved
+Let $M\ge1$ and $\Xi$ a subgroup of the Dirichlet characters modulo $M$.
+For every $e\ge2$ and every pair $q,d$ with \texttt{HostHyp}, $\gcd(M,qd)=1$
+and $\left(\frac{-d}{l}\right)=1$ for all odd primes $l\mid M$, the archive
+constructs a frame and a raw host $\mathrm{AnyGrp.host}(\Xi,e)$ with these
+$q,d$ such that
+\begin{itemize}
+\item $o=|\Xi|$;
+\item there are $1\le c\le|\Xi|$ and $e_0$ with $\mathrm{ord}=c\,2^e$ for
+  all $e\ge e_0$;
+\item it has kept characters in $X_+$ and keeps the exceptional character,
+  for the kept set $\{\mathrm{prim}(\chi):\chi\in\Xi\}$ and empty
+  exceptional slot.
+\end{itemize}
+For $\Xi=\langle\psi\rangle$ it moreover satisfies the kernel condition
+for $\psi$ and has twist form for $\psi$.
+\end{lemma}
+\begin{proof}
+The construction and the verification live in
+\arch{Formalism/SharpRestriction/RamificationFrobenius/TotientGaloisClasses/InertiaGaloisSymmetry/AnyLevel.lean},
+\arch{AnyFrame.lean} there, and
+\arch{Development/AutomorphicArithmetic/CharacterBoxes/\{OrdAny,KerChiAny,TwistAny\}.lean};
+they are not expanded here. The field is cut out by the subgroup of the
+kernel condition.
+\end{proof}
+
+\begin{definition}[field rows]\label{host:field-rows}
+\lean{HostParam.Seam.FieldRows}
+\uses{host:host-raw}
+A raw host $H$ has \emph{field rows with bound $b$} if: the first sign of
+$\mathrm{art}(u)$ is $\left(\frac uq\right)$; there is $\sqrt{-q}\in E$ on
+which $\sigma$ acts by the first sign; for every prime $l\mid Q_S$ some
+$u\equiv1\pmod{N_H/l}$ has $\mathrm{art}(u)\ne1$; $Q_S\le\mathrm{ord}^2$;
+$o^{64}\le2^e$; $q\ne3$; $\left(\frac{-d}{p}\right)=1$ for every odd prime
+$p\le b$; and $4l\le b$ for every odd prime $l\mid Q_S$.
+\end{definition}
+
+\begin{theorem}[a host for every character]\label{host:field-chi}
+\lean{UpperTheory.Top.fieldChi}
+\uses{host:any-grp, host:host-ax, host:field-rows, host:kept, host:kerchi, host:twist-form}
+% uses-lean: Formalism.HC.Level.cyc, Formalism.HC.Frame.two_pow_le_ord
+\uses{an:level-cyc} % resolved
+Let $\psi$ be a primitive character of conductor $N_{\psi}$. There are
+integers $c\ge1$ and $e_0$ such that the following holds for all $e\ge e_0$,
+all primes $q,d$ with \texttt{HostHyp}, $q\ne3$ and $\gcd(N_{\psi},qd)=1$, and
+all $b\ge4N_{\psi}$ with $\left(\frac{-d}{p}\right)=1$ for every odd prime
+$p\le b$. There are a frame $\phi$ and a host with axioms $H$ for $\phi$
+with $e(\phi)=e$, $\mathrm{ord}=c\,2^e$, auxiliary primes $q,d$,
+$o(\phi)=|\langle\psi\rangle|$, field rows with bound $b$,
+$Q_S\mid\operatorname{lcm}(2^{e+2},N_{\psi})$, $Q_S\le4N_{\psi}\,\mathrm{ord}$,
+kept characters in $X_+$ and the exceptional character kept for the kept
+set of powers of $\psi$ (with empty exceptional slot), the kernel condition
+for $\psi$ and twist form for $\psi$.
+\end{theorem}
+\begin{proof}
+\uses{host:any-grp, host:host-ax}
+Apply Lemma~\ref{host:any-grp} to $\Xi=\langle\psi\rangle$, with $e_0$
+the maximum of the threshold for $\mathrm{ord}=c2^e$, of $2$, of
+$4N_{\psi}$ and of $64|\langle\psi\rangle|$. The splitting hypothesis for
+primes dividing $N_{\psi}$ follows from the one up to $b\ge4N_{\psi}$. Upgrade
+the raw host with \texttt{HostAx.ofRaw}. For the field rows:
+$o^{64}=|\langle\psi\rangle|^{64}\le2^{64|\langle\psi\rangle|}\le2^e$;
+every odd prime $l\mid Q_S$ divides $N_{\psi}$, so $4l\le4N_{\psi}\le b$; and
+$Q_S\le4N_{\psi}2^e\le4N_{\psi}\,\mathrm{ord}$ because $2^e\le\mathrm{ord}$.
+\end{proof}
+
+\begin{remark}[the exceptional slot is empty]\label{host:rem-exc}
+For the level of powers of $\psi$ the exceptional slot is empty, so
+``keeps the exceptional character'' says only that $\omega_q$, whose
+primitive character is the quadratic character attached to $q$, is not
+the primitive character of a power of $\psi$.
+\end{remark}
+
+% ------------------------------------------------------------------
+\section{Window pairs and good pairs}
+
+\begin{definition}[window pairs]\label{host:win-pair}
+\lean{UpperTheory.Top.WinPair, UpperTheory.Top.PageN}
+Let $\eps,Y>0$. A pair of integers $(q,d)$ is a \emph{window pair} for
+$(\eps,Y)$ if $q$ is a prime with $q\equiv3\pmod8$ and
+$Y^{\eps/5}/2<\log q\le Y^{\eps/5}$; $d$ is a prime with
+$d\equiv7\pmod{16}$ and $Y^{\eps/5}\log^2Y/2<\log d\le Y^{\eps/5}\log^2Y$;
+$q\mid d+1$; and $p\mid d+1$ for every odd prime $p\le Y^{\eps/5}$. An
+integer $e$ is \emph{adapted} to $(\eps,x)$ if
+$x^{2+8\eps}\le2^e\le2x^{2+8\eps}$.
+\end{definition}
+
+\begin{lemma}\label{host:exists-pagen}
+\lean{UpperTheory.Top.exists_pageN}
+\uses{host:win-pair}
+For every $\eps>0$ there is a function $x\mapsto e(x)$ with $e(x)$ adapted
+to $(\eps,x)$ for all $x\ge1$.
+\end{lemma}
+\begin{proof}
+For $x\ge1$, $x^{2+8\eps}\ge1$, so there is $n$ with
+$2^n\le x^{2+8\eps}<2^{n+1}$; take $e(x)=n+1$.
+\end{proof}
+
+\begin{lemma}[window pairs give host primes]\label{host:pair-hyp}
+\lean{UpperTheory.Top.pairHyp}
+\uses{host:win-pair, host:host-raw}
+Let $(q,d)$ be a window pair for $(\eps,Y)$. Then $(q,d)$ satisfies
+\texttt{HostHyp}; $\left(\frac{-d}{p}\right)=1$ for every odd prime
+$p\le Y^{\eps/5}$; and $\left(\frac{-q}{a}\right)=\left(\frac aq\right)$ and
+$\left(\frac{-d}{a}\right)=\left(\frac ad\right)$ for every odd $a>0$.
+\end{lemma}
+\begin{proof}
+If $p\mid d+1$ then $-d\equiv1\pmod p$, so $\left(\frac{-d}{p}\right)=1$;
+this gives $\left(\frac{-d}{q}\right)=1$ and the splitting of small primes.
+The last identities are quadratic reciprocity for the Jacobi symbol, using
+$q\equiv d\equiv3\pmod4$.
+\end{proof}
+
+\begin{definition}[good pairs]\label{host:pair-good}
+\lean{UpperTheory.Top.PairGood, UpperTheory.Top.ZeroBox, UpperTheory.Top.height, UpperTheory.Top.PairEx}
+\uses{host:win-pair, host:twist-form}
+% uses-lean: Formalism.HC.An.Induces, Formalism.HC.An.gChi, Formalism.HC.An.logDerivativeAtOne, Formalism.HC.PChar.IsReal
+\uses{an:gchi, an:pchar} % resolved
+Let $M\ge1$, $\eps>0$ and $Y\le X$. A Dirichlet character $\chi$ has a
+\emph{zero-free box of height $Q$} if $L(s,\chi)\ne0$ whenever
+$\Re s>1-1/400$ and $|\Im s|\le Q$. Put
+$H_j=8M\exp(Y^{\eps/5})\exp(Y^{\eps/5}\log^2Y)^j$ for $j\in\{0,1\}$. A
+pair $(q,d)$ is \emph{good} for $(M,\eps,Y,X)$ if it is a window pair for
+$(\eps,Y)$, $\gcd(M,qd)=1$, and
+\begin{enumerate}
+\item for every Dirichlet character $\xi$ modulo $M$, every $(i,j)\ne(0,0)$
+  and every primitive $\chi$ agreeing with $\mathrm{tw}(\xi,q,d,i,j)$ on
+  integers prime to $2Mqd$, and every $y\in[Y,X]$:
+  $|g_{\chi}(y)|\le y^{1/2+\eps/2}$ and $|L'(1,\chi)/L(1,\chi)|\le4\log y$;
+\item for every real primitive $\varrho$ with conductor dividing $8M$,
+  every $(i,j)\ne(0,0)$ and every primitive $\chi$ agreeing with
+  $\mathrm{tw}(\varrho,q,d,i,j)$ on integers prime to $2Mqd$, $\chi$ has a
+  zero-free box of height $H_j$.
+\end{enumerate}
+The proposition \texttt{PairEx} states: for every $M>0$, every
+$\eps\in(0,1/52)$ and every $A\ge1$ there is $Y_1$ such that for every
+$Y\ge Y_1$ some pair is good for $(M,\eps,Y,Y^A)$.
+\end{definition}
+
+\begin{lemma}[bounded characters are proper twists]\label{host:bounded-tw-key}
+\lean{UpperTheory.Top.boundedTw_key}
+\uses{host:twist-form, host:kept, host:prim-unique}
+% uses-lean: Formalism.HC.Level.cyc, Formalism.HC.Level.mem_ofSub, Formalism.HC.An.induces_of
+\uses{an:level-cyc} % resolved
+Let $\psi$ be primitive of conductor $N_{\psi}$ and $H$ a raw host with twist
+form for $\psi$, $N_{\psi}\mid Q_S$ and every prime divisor of $Q_S$ dividing
+$2N_{\psi}$. Let $S$ be the set of primitive characters of the powers of
+$\psi$. If $\theta$ is bounded for $S$ and $\chi$ is the primitive
+character of $\theta$, then there are a character $\xi$ modulo $N_{\psi}$ and
+$(i,j)\ne(0,0)$ such that $\chi$ agrees with $\mathrm{tw}(\xi,q,d,i,j)$ on
+integers prime to $2N_{\psi} qd$.
+\end{lemma}
+\begin{proof}
+A bounded $\theta$ is trivial on the first factor, so twist form gives
+$\xi\in\langle\psi\rangle$ and $i,j$. If $(i,j)=(0,0)$, then either
+$\theta\in X_-$, contradicting $\theta(\iota)=(-1)^0=1$, or $\theta\in X_+$
+is not kept; but then $\chi$ agrees with $\xi$ on integers prime to $N_H$,
+so $\chi=\mathrm{prim}(\xi)\in S$ and $\theta$ is kept, a contradiction.
+For the agreement: an integer $a$ prime to $2N_{\psi} qd$ is prime to $Q_S$,
+since every prime divisor of $Q_S$ divides $2N_{\psi}$, hence prime to $N_H$,
+and there $\chi(a)=\theta(\mathrm{art}(a))=\mathrm{tw}(\xi,q,d,i,j)(a)$.
+\end{proof}
+
+\begin{lemma}[bounds for the bounded characters]\label{host:bounded-tw}
+\lean{UpperTheory.Top.boundedTw}
+\uses{host:bounded-tw-key, host:pair-good, host:kept}
+Let $\psi$, $H$ and $S$ be as in Lemma~\ref{host:bounded-tw-key}, let
+$\eps>0$, $x\ge1$, $Y\le x$, and assume that the auxiliary primes $(q,d)$
+of $H$ are good for $(N_{\psi},\eps,Y,x)$. Then $H$ has pointwise bounds at
+$x$ with exponent $\eps$ for $S$, and $|L'(1,\chi)/L(1,\chi)|\le4\log x$
+for the primitive character $\chi$ of every bounded $\theta$.
+\end{lemma}
+\begin{proof}
+\uses{host:bounded-tw-key}
+By Lemma~\ref{host:bounded-tw-key}, $\chi$ is a proper twist to which
+clause (1) of Definition~\ref{host:pair-good} applies at $y=x\in[Y,x]$.
+This gives $|g_{\chi}(x)|\le x^{1/2+\eps/2}\le x^{1/2+\eps}$, as $x\ge1$, and
+the log-derivative bound.
+\end{proof}
+
+% ------------------------------------------------------------------
+\section{Averaging over the auxiliary primes}
+
+\begin{definition}[head sums and prime families]\label{host:head-sum}
+\lean{QH.S, QH.J, QH.MeanSq, QH.admitted, Formalism.HermitianLattices.ZeroFreeRegionGL2.cN, Formalism.HermitianLattices.ZeroFreeRegionGL2.PPset, Formalism.HermitianLattices.ZeroFreeRegionGL2.oddM}
+Let $\Lambda$ be the von Mangoldt function.
+\begin{enumerate}
+\item For $Z,y>0$, an integer $q\ge1$ and $\kappa\colon\N\to\CC$, the
+  \emph{head sum} is
+  $S(Z,y,q,\kappa)=\sum_{1\le n\le Z}\Lambda(n)\min(1,y/n)\,\kappa(n)
+  \left(\frac nq\right)$.
+\item For integers $m_0,a_0$ and $U>0$, $P(m_0,a_0,U)$ is the set of primes
+  $q$ with $U^{1/2}<q\le U$ and $q\equiv a_0\pmod{m_0}$.
+\item For $y>0$ and an integer $q$, $\mathrm{oddM}(y,q)=q\prod_{3\le p\le
+  y}p$, the product over primes.
+\item $(m_0,a_0)$ is \emph{admitted} for $(\eps,Y,U)$ if $m_0>0$, $8\mid
+  m_0$, $\gcd(a_0,m_0)=1$, $\frac14(\log Y)^2\log m_0\le\log U$ and
+  $Y^{\eps/6}\le\log U\le Y^{\eps/5}(\log Y)^2$.
+\item For $C,Z\in\R$, a finite set $P$ and $I\subset\R$, the
+  \emph{mean-square bound} $\mathrm{MeanSq}(C,Z,P,I)$ holds if
+  $\sum_{q\in P}|S(Z,y,q,\kappa)|^2\le C\,y\log y\,|P|$ for all $y\in I$
+  and all $\kappa$ with $|\kappa(n)|\le1$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[boxes]\label{host:box}
+\lean{QH.Ind, QH.GoodC, QH.Box, QH.BoxAll, Formalism.HermitianLattices.ZeroFreeRegionGL2.ZeroFreeBox, Formalism.HermitianLattices.ZeroFreeRegionGL2.Gchi, Formalism.HermitianLattices.ZeroFreeRegionGL2.logDerivLAtOne}
+\uses{host:pair-good}
+Let $\chi$ be a Dirichlet character modulo $N$, and let
+$G_{\chi}(y)=\sum_{n\le y}\Lambda(n)\chi(n)(y/n-1)+y\,L'(1,\chi)/L(1,\chi)$.
+\begin{enumerate}
+\item $\chi$ is \emph{good at height $Q$} if $\chi\ne1$, $N\le Q$ and
+  $\chi$ has a zero-free box of height $Q$.
+\item $\chi$ \emph{has a box} $\mathrm{Box}(Q,C,\tau,Y,X)$ if it is good at
+  height $Q$, $|L'(1,\chi)/L(1,\chi)|\le C\log Y$ and
+  $|G_{\chi}(y)|\le y^{1/2+\tau}$ for all $y\in[Y,X]$.
+\item For $f\colon\N\to\CC$ and $M$, $\mathrm{BoxAll}(Q,C,\tau,Y,X,f,M)$
+  holds if every primitive $\chi$ agreeing with $f$ on integers prime to
+  $M$ has a box $\mathrm{Box}(Q,C,\tau,Y,X)$.
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[good auxiliary primes]\label{host:good-qd}
+\lean{QH.GoodQ, QH.GoodD, QH.Rows, QH.primePairSetFirst, QH.primeSetTwoBounds}
+\uses{host:box, host:head-sum}
+Let $N_0\ge1$, $C,\tau,Y,X,z,z'\in\R$ and $J_q(n)=\left(\frac nq\right)$.
+\begin{enumerate}
+\item $q$ is \emph{good} if $\mathrm{BoxAll}(N_0e^z,C,\tau,Y,X,\xi J_q,
+  N_0q)$ for every character $\xi$ modulo $N_0$.
+\item $d$ is \emph{good for $q$} if $\mathrm{BoxAll}(N_0e^{z+z'},C,\tau,Y,X,
+  \xi J_q^aJ_d,N_0qd)$ for every $\xi$ modulo $N_0$ and $a\in\{0,1\}$.
+\item The first family is $P(8,3,e^z)$. For $q$, the second family is the
+  set of primes $d\le e^{z'}$ with $d>e^{z'/2}$, $d\equiv7\pmod{16}$ and
+  $\mathrm{oddM}(z,q)\mid d+1$.
+\item $(q,d)$ are \emph{rows} for $(z,z')$ if $q$ is a prime, $q\equiv3
+  \pmod8$, $z/2<\log q\le z$; $d$ is a prime, $d\equiv7\pmod{16}$,
+  $z'/2<\log d\le z'$; $q<d$; and $p\mid d+1$ for every odd prime $p$ with
+  $p\le z$ or $p=q$.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}[mean square over prime moduli]\label{host:mean-sq}
+\lean{QH.meanSqK}
+\uses{host:head-sum}
+There is $C>0$ such that for all $\eps\in(0,1]$ and $K\ge1$ there is $Y_0$
+with the following property. Let $Y\ge Y_0$, $U>0$, let $(m_0,a_0)$ be
+admitted for $(\eps,Y,U)$, and assume every prime $p\mid m_0$ satisfies
+$p\le Y^{\eps/5}$ or $p>Y^{400K}$. Then
+$\mathrm{MeanSq}(C,Y^{400K},P(m_0,a_0,U),[Y,Y^K])$ holds.
+\end{lemma}
+\begin{proof}
+The proof is in \arch{Development/AutomorphicArithmetic/MeanSquareBounds/meanSqK.lean}
+and its imports (\texttt{QH.twistK}, a prime number theorem in progressions
+with relative error); it was not read here.
+\end{proof}
+
+\begin{lemma}[few bad moduli for the head sum]\label{host:bad-share}
+\lean{QH.bad_share}
+\uses{host:head-sum}
+Let $C\ge0$, $\tau>0$ and $\eta>0$. There is $Y_0$ such that for all
+$Y\ge Y_0$, all $X,Z$, all finite sets $B\subseteq P$ of natural numbers and
+all $\kappa$ with $|\kappa(n)|\le1$: if $\mathrm{MeanSq}(C,Z,P,[Y,X])$ holds
+and every $q\in B$ has some $y\in[Y,X]$ with
+$|S(Z,y,q,\kappa)|>y^{1/2+\tau}/2$, then $|B|\le\eta|P|$.
+\end{lemma}
+\begin{proof}
+In \arch{Development/AutomorphicArithmetic/MeanSquareBounds/BadShare.lean};
+not read here.
+\end{proof}
+
+\begin{lemma}[few moduli without a zero-free box]\label{host:count-bad}
+\lean{QH.count_bad}
+\uses{host:pair-good}
+% uses-lean: Formalism.HermitianLattices.Ext.PrimitiveCharacterCasts.ZD.zero_density_box, QH.count_bad_core
+There is $C$ such that for all $Q\ge3$, all $F$ and every finite set $B$ of
+natural numbers the following holds. Assume each $q\in B$ is a prime with
+$q>F$ for which there are an integer $f\le F$ with $fq\le Q$ and a primitive
+character modulo $fq$ without a zero-free box of height $Q$. Then
+$|B|\le CQ^{1/4}$.
+\end{lemma}
+\begin{proof}
+From \texttt{count\_bad\_core}, which rests on the zero-density statement
+\texttt{ZD.zero\_density\_box}; not read here.
+\end{proof}
+
+\begin{lemma}[small head sum gives a box]\label{host:box-of-s}
+\lean{QH.box_of_S}
+\uses{host:box, host:head-sum}
+There is $C>0$ such that for all $\eps\in(0,1/4]$, $\tau>0$, $K\ge1$ there
+is $Y_0$ with the following property. Let $Y\ge Y_0$, let $\chi$ be a
+character modulo $N$, $q$ an integer and $\kappa\colon\N\to\CC$ with
+$\chi(n)=\kappa(n)\left(\frac nq\right)$ for all $n$, and let $Q$ satisfy
+$Y^{\eps/6}\le\log Q\le Y^{\eps/4}$. If $\chi$ is good at height $Q$ and
+$|S(Y^{400K},y,q,\kappa)|\le y^{1/2+\tau}/2$ for all $y\in[Y,Y^K]$, then
+$\chi$ has a box $\mathrm{Box}(Q,C,\tau,Y,Y^K)$.
+\end{lemma}
+\begin{proof}
+% uses-lean: QH.kappaC, QH.tailK
+Uses \texttt{QH.kappaC} (a zero-free box bounds $L'(1,\chi)/L(1,\chi)$ by
+$C\log Y$) and a tail estimate showing that the part of $G_{\chi}(y)$ beyond
+$Y^{400K}$ is negligible under the zero-free box; proof in
+\arch{Development/AutomorphicArithmetic/MeanSquareBounds/BoxOfS.lean}, not
+read in detail.
+\end{proof}
+
+\begin{lemma}[the constant four]\label{host:kappa4}
+\lean{QH.kappa4}
+\uses{host:box}
+For all $\eps\in(0,1/52)$ and $A>0$ there is $Y_0$ such that for all
+$Y\ge Y_0$, all $Q$ with $Y^{\eps/6}\le\log Q\le AY^{\eps/5}\log^2Y$ and
+every character $\chi$ good at height $Q$,
+$|L'(1,\chi)/L(1,\chi)|\le4\log Y$.
+\end{lemma}
+\begin{proof}
+From \texttt{kappa4\_loglog} in
+\arch{Development/AutomorphicArithmetic/MeanSquareBounds/Kappa4Loglog.lean};
+not read here.
+\end{proof}
+
+\begin{lemma}[one stage of the averaging]\label{host:stage}
+\lean{QH.stage}
+\uses{host:mean-sq, host:bad-share, host:count-bad, host:box-of-s, host:head-sum, host:box}
+% uses-lean: Formalism.HermitianLattices.Ext.LogarithmicIntegralBounds.count_a, Formalism.HermitianLattices.Ext.PrimesInProgressions.pnt_progressions_relative_weak_holds, Formalism.ZeroFreeDirichlet.excBound
+There is $C>0$ such that for all $\eps\in(0,1/4]$, $\tau>0$, $K\ge1$,
+$\eta>0$ and $R\in\N$ there is $Y_0$ with the following property. Let
+$Y\ge Y_0$, $(m_0,a_0)$ admitted for $(\eps,Y,U)$ with every prime
+$p\mid m_0$ satisfying $p\le Y^{\eps/5}$ or $p>Y^{400K}$, let $1\le F\le
+U^{1/2}$, and let $\Xi$ be a set of at most $R$ primitive characters of
+conductor at most $F$. Then $P(m_0,a_0,U)$ is nonempty, and every subset
+$B\subseteq P(m_0,a_0,U)$ such that each $q\in B$ has some $\xi\in\Xi$ and
+$M\ne0$ with $\mathrm{BoxAll}(FU,C,\tau,Y,Y^K,\xi J_q,M)$ false satisfies
+$|B|\le\eta\,|P(m_0,a_0,U)|$.
+\end{lemma}
+\begin{proof}
+\uses{host:mean-sq, host:bad-share, host:count-bad, host:box-of-s}
+By a prime number theorem in progressions (\texttt{count\_a}),
+$|P(m_0,a_0,U)|\ge U^{9/10}$. For $q\in B$ and the offending $\xi$, the
+primitive character $\chi$ inducing $\xi J_q$ has conductor
+$\mathrm{cond}(\xi)\,q\le FU$. Split $B$ into $B_1$, the $q$ for which
+some primitive character of conductor $fq\le FU$ with $f\le F$ has no
+zero-free box of height $FU$, and for each $\xi\in\Xi$ the set $B_2(\xi)$
+of $q$ for which $|S(Y^{400K},y,q,\xi)|>y^{1/2+\tau}/2$ for some
+$y\in[Y,Y^K]$. If $q$ is in neither, Lemma~\ref{host:box-of-s} gives
+$\chi$ a box, and by uniqueness of primitive characters
+$\mathrm{BoxAll}$ holds, so $B\subseteq B_1\cup\bigcup_{\xi} B_2(\xi)$.
+Lemma~\ref{host:count-bad} gives $|B_1|\le C_b(FU)^{1/4}\le
+C_bU^{3/8}\le\frac\eta2U^{9/10}$ for $U$ large. Lemma~\ref{host:mean-sq}
+and Lemma~\ref{host:bad-share} (with $\eta/(2(R+1))$) give
+$|B_2(\xi)|\le\frac{\eta}{2(R+1)}|P|$, and summing over at most $R$
+characters gives $|\bigcup B_2(\xi)|\le\frac\eta2|P|$.
+\end{proof}
+
+\begin{lemma}[the two stages]\label{host:stages}
+\lean{QH.stage1, QH.stage2}
+\uses{host:stage, host:good-qd}
+There is $C>0$ such that for all $\eps\in(0,1/52)$, $\tau>0$, $K\ge1$,
+$\eta>0$ and $N_0>0$ there is $Y_0$ such that for $Y\ge Y_0$ and
+$z=Y^{\eps/5}$:
+\begin{enumerate}
+\item the first family $P(8,3,e^z)$ is nonempty and each subset of it
+  consisting of primes $q$ that are not good (for $(N_0,C,\tau,Y,Y^K,z)$)
+  has at most $\eta$ times its size;
+\item for every $z'$ with $z\log^2Y\le z'\le K^2z\log^2Y$ and every $q$ in
+  the first family, the second family for $q$ is nonempty and each subset
+  of it consisting of $d$ not good for $q$ has at most $\eta$ times its
+  size.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\uses{host:stage}
+Both are instances of Lemma~\ref{host:stage}: the first with
+$(m_0,a_0)=(8,3)$, $U=e^z$, the second with $m_0=16\,\mathrm{oddM}(z,q)$,
+$U=e^{z'}$, exponent $6\eps/5$ in place of $\eps$, a residue class $a_0$
+realising the second family, and the characters $\xi J_q^a$. The prime
+divisors of $16\,\mathrm{oddM}(z,q)$ are $2$, odd primes at most $z$, and
+$q$, which exceeds $Y^{400K}$ for $Y$ large.
+The proofs are in \arch{.../MeanSquareBounds/Stage1Succ.lean} and
+\arch{.../MeanSquareBounds/CharOf.lean}; only their opening lines were read.
+\end{proof}
+
+\begin{lemma}[most pairs are good]\label{host:pair-share}
+\lean{QH.pair_share}
+\uses{host:stages}
+There is $C>0$ such that for all $\eps\in(0,1/52)$, $\tau>0$, $K\ge1$,
+$\eta>0$ and $N_0>0$ there is $Y_0$ such that for all $Y\ge Y_0$, $X\le
+Y^K$ and $z'$ with $z\log^2Y\le z'\le K^2z\log^2Y$, $z=Y^{\eps/5}$: there is
+a subset $G_1$ of the first family, of size at least $(1-\eta)$ times its
+positive size, all of whose elements $q$ are good for $(N_0,C,\tau,Y,X,z)$
+and admit a subset $G_2$ of the second family for $q$, of size at least
+$(1-\eta)$ times its positive size, all of whose elements are good for $q$.
+\end{lemma}
+\begin{proof}
+\uses{host:stages}
+Take $G_1$ (resp.\ $G_2$) to be the good elements; the complement is a bad
+set, bounded by Lemma~\ref{host:stages}. Monotonicity of $\mathrm{BoxAll}$
+in $X$ passes from $Y^K$ to $X\le Y^K$.
+\end{proof}
+
+\begin{lemma}[existence of a good pair of rows]\label{host:pair-exists}
+\lean{QH.pair_exists}
+\uses{host:pair-share, host:good-qd}
+% uses-lean: QH.rows_of_mem
+There is $C>0$ such that for all $\eps\in(0,1/52)$, $\tau>0$, $K\ge1$ and
+$N_0>0$ there is $Y_0$ such that for all $Y\ge Y_0$, $X\le Y^K$ and $z'$
+with $z\log^2Y\le z'\le K^2z\log^2Y$, $z=Y^{\eps/5}$, there are rows $(q,d)$
+for $(z,z')$ with $q>N_0$, $q$ good and $d$ good for $q$.
+\end{lemma}
+\begin{proof}
+\uses{host:pair-share}
+Apply Lemma~\ref{host:pair-share} with $\eta=1/2$. Both good sets are
+nonempty because they have at least half of a positive size; pick $q\in
+G_1$, then $d\in G_2$. Membership in the two families gives rows. For $Y$
+large, $2N_0\le Y^{\eps/5}<2\log q$, so $q>N_0$.
+\end{proof}
+
+\begin{theorem}[good pairs exist]\label{host:pair-ex}
+\lean{QH.pairEx}
+\uses{host:pair-exists, host:kappa4, host:pair-good, host:good-qd}
+The proposition \texttt{PairEx} of Definition~\ref{host:pair-good} holds:
+for every $M>0$, $\eps\in(0,1/52)$ and $A\ge1$ there is $Y_1$ such that for
+every $Y\ge Y_1$ some pair is good for $(M,\eps,Y,Y^A)$.
+\end{theorem}
+\begin{proof}
+\uses{host:pair-exists, host:kappa4}
+Apply Lemma~\ref{host:pair-exists} with $\tau=\eps/2$, $K=A$, $N_0=8M$
+and $z'=Y^{\eps/5}\log^2Y$, and Lemma~\ref{host:kappa4} with $A=3$. Rows
+give a window pair: $q\mid d+1$ and the small primes divide $d+1$. Since
+$q,d>8M$ are primes, $\gcd(M,qd)=1$. For clause (1), lift $\xi$ to modulus
+$8M$; goodness of $q$ (for $j=0$) or of $d$ for $q$ (for $j=1$) gives every
+primitive $\chi$ inducing the twist a box of height
+$8Me^{z}e^{z'j}=H_j$, hence $|g_{\chi}(y)|\le y^{1/2+\eps/2}$ on $[Y,Y^A]$.
+The height satisfies $Y^{\eps/6}\le\log H_j\le3Y^{\eps/5}\log^2Y$, so
+Lemma~\ref{host:kappa4} gives $|L'(1,\chi)/L(1,\chi)|\le4\log Y\le4\log y$.
+Clause (2) is the zero-free-box part of the same boxes, applied to the
+real character $\varrho$ lifted to modulus $8M$.
+\end{proof}
+
+\begin{remark}[where the constant four comes from]\label{host:rem-four}
+The constant $4$ in $|L'(1,\chi)/L(1,\chi)|\le4\log y$ is not produced by
+Lemma~\ref{host:box-of-s}, whose constant $C$ is unspecified. It is
+inserted in the proof of Theorem~\ref{host:pair-ex} by
+Lemma~\ref{host:kappa4} with $A=3$.
+\end{remark}
+
+\begin{remark}[character of the averaging]\label{host:rem-averaging}
+Lemma~\ref{host:bounded-tw} and Theorem~\ref{host:pair-ex} need no
+hypothesis of Riemann type. The scales $y\in[Y,Y^A]$ satisfy $\log q\asymp
+Y^{\eps/5}$, so $y$ is polylogarithmic in the conductor, and the head sums
+have length $Y^{400A}$, far below $q$. The zero-free boxes reach a height
+that is a power of the conductor, but only in the region
+$\Re s>1-1/400$. Which classical theorems the unread proofs of
+Lemmas~\ref{host:mean-sq}--\ref{host:kappa4} use was not determined here;
+\texttt{QH.stage} names the prime number theorem in progressions with
+relative error and the Siegel-type bound \texttt{excBound}.
+\end{remark}
+
+% ------------------------------------------------------------------
+\section{The supply theorem}
+
+\begin{definition}[scales and windows]\label{host:scale}
+\lean{Formalism.BasicNotions.Scale, GlobalTheory.EX.Scales, GlobalTheory.EX.Scales.Mem, GlobalTheory.EX.PairWin}
+A \emph{scale} $s$ is $(x,\eps,J)$ with $x>1$, $0<\eps<1/52$ and $J\ge1$;
+put $b=\exp(x^{\eps})$. A \emph{system of windows} of exponent $\lambda$ is
+$J\ge1$ and a set $W\subset\R$ such that for every $y$ there is $Y\ge y$
+with $[Y,Y^{\lambda}]\subseteq W$; a scale is a \emph{member} if its $J$ is
+the system's $J$ and $x\in W$. A real $Y$ is a \emph{pair window} for $s$ if
+$x^{1/J}\le Y\le x$.
+\end{definition}
+
+\begin{definition}[rank values]\label{host:rank-val}
+\lean{GlobalTheory.EX.RankVal}
+\uses{host:ranks, host:scale}
+A rank datum $R$ has \emph{values for the scale $s$} if
+$x^{2+8\eps}\le n\le2x^{2+8\eps}$, $\sqrt{x\delta_1}\le m\le2\sqrt{x\delta_1}$,
+$x^{9/2+10\eps}\le k\le2x^{9/2+10\eps}$, and $r+t$ equals an explicit
+expression in $f,r$ and $s$ (here $\delta_1$ is a quantity attached to $s$).
+\end{definition}
+
+\begin{definition}[good host]\label{host:host-good}
+\lean{GlobalTheory.EX.HostGood, GlobalTheory.EX.HostVal, GlobalTheory.EX.ThinOK, GlobalTheory.EX.BoxW, GlobalTheory.EX.dlogH}
+\uses{host:host-full, host:scale, host:kept}
+% uses-lean: Formalism.MainNotions.Inhab.QDq, GlobalTheory.EX.BadOK, GlobalTheory.EX.HostArith
+For a scale $s$, constants $C_8,C_5,c_6,C_b$, a host $H$ for $R$ and an
+integer $q_0$, $\mathrm{HostGood}(s,C_8,C_5,c_6,C_b,H,q_0)$ is the
+conjunction of: size conditions (a pair window $Y$ for which $q,d$ lie in
+the ranges $(\sqrt{X_1},X_1]$, $(\sqrt{X_2},X_2]$ with
+$X_1=\exp(Y^{\eps/5})$, $X_2=\exp(Y^{\eps/5}\log^2Y)$, small primes split
+in $K$, $\log N_H\le2Y^{\eps/5}\log^2Y$; sizes of $TT$, $T_2$, $g_i$,
+$p_{\delta}$; $J\le C_8$, $o\le C_8$, $Q_S\le C_8n$); arithmetic of the level
+primes; bounds with constant $C_5$ for the three real characters attached
+to $q$, $d$ and $qd$ at $x$; zero-free boxes for the real characters of $E$
+whose conductor is divisible by $q$ or $d$; $|\Re\,L'(1,\chi_{-d})/
+L(1,\chi_{-d})|\le x^{\eps}$; the Chebyshev bound $(x,\eps,c_6)$ for every
+character of $E$ (\texttt{ThinOK}, equivalent to
+\texttt{ChebyshevCharacterBound} by \texttt{thinScales\_iff\_hostBound});
+a count of bad Frobenius classes with constant $C_b$; and congruence and
+size conditions making $q_0$ a prime $\equiv1\pmod{N_H}$ with $q_0\le
+N_H^{C_8}$, and fixing the level primes as $\{g_0,g_1,p_{\delta},p'_{\delta},
+q_0\}$.
+\end{definition}
+
+\begin{definition}[host supply]\label{host:host-exw}
+\lean{GlobalTheory.EX.HostExW, GlobalTheory.EX.HostReq, GlobalTheory.EX.HostEx}
+\uses{host:host-good, host:rank-val, host:scale}
+A \emph{requirement} $P$ is a predicate on $(C_5,s,R,H,q_0)$. For
+$\lambda\in\R$, $\mathrm{HostExW}(\lambda,P)$ states: for every
+$\eps\in(0,1/52)$ there are constants $C_{T2}$, $C_8\ge1$, $C_5>0$,
+$c_6>0$, $C_b>0$, $x_0$ and a system of windows of exponent $\lambda$ such
+that every member scale $s$ with $\eps(s)=\eps$ and $x\ge x_0$ admits a rank
+datum $R$ with values for $s$, a host $H$ for $R$ with
+$C_{T2}(H)=C_{T2}$ and an integer $q_0$ with
+$\mathrm{HostGood}(s,C_8,C_5,c_6,C_b,H,q_0)$ and $P(C_5,s,R,H,q_0)$.
+\texttt{HostEx} is the variant with some $\lambda>1$ and $P$ always true.
+\end{definition}
+
+\begin{definition}[the requirement of a character]\label{host:gchi}
+\lean{UpperTheory.Top.GChi, UpperTheory.Top.FReq.req}
+\uses{host:host-exw}
+% uses-lean: Formalism.HC.EAtH, Formalism.HC.Level.cyc, UpperTheory.Top.VVle
+\uses{an:level-cyc, sha:vwin} % resolved
+For a primitive character $\psi$, the requirement $\mathrm{GChi}(\psi)$
+holds at $(s,R,H)$ if $H$ satisfies the explicit-formula condition
+\texttt{EAtH} for the level of powers of $\psi$, the set $TT$ of $H$, the
+point $x$, the exponent $\eps$ and the constant $4$; and the field $E$ of
+$H$ satisfies the Sha-length bound \texttt{VVle} with $t(R)$ twists and
+budget $\sqrt b$.
+\end{definition}
+
+\begin{definition}[window datum]\label{host:win-datum}
+\lean{UpperTheory.Top.WinDatum}
+\uses{host:pair-good, host:ischifield}
+% uses-lean: UpperTheory.Top.VVle
+\uses{sha:vwin} % resolved
+For $\psi$, reals $\eps,J,c,x,Y$ and integers $q,d,e$, a \emph{window
+datum} consists of: $x^{1/J}\le Y\le x$; $(q,d)$ good for
+$(N_{\psi},\eps,Y,x)$; $x^{2+8\eps}\le c2^e\le2x^{2+8\eps}$; and the bound
+\texttt{VVle} with $\lfloor x^{400}\rfloor$ twists and budget
+$\sqrt{\exp(x^{\eps})}$ for every field of $\psi$ at $(e,q,d)$.
+\end{definition}
+
+\begin{lemma}[window data exist on windows]\label{host:win-pairs}
+\lean{UpperTheory.Top.winPairs}
+\uses{host:win-datum, host:exists-pagen, host:pair-good}
+% uses-lean: UpperTheory.Top.VWinAt, UpperTheory.Top.VVle.mono, UpperTheory.Top.PairGood.mono
+\uses{sha:vwin} % resolved
+Let $\psi$ be primitive, $\eps\in(0,1/52)$ and $c\ge1$. Assume
+\texttt{VWinAt}$(\psi,401)$ and \texttt{PairEx}. Then there is $J\ge1$ such
+that for every $y$ there is $Z\ge y$ with: every $x\in[Z,Z^{3/2}]$ admits
+$Y,q,d,e$ forming a window datum for $(\psi,\eps,J,c,x)$.
+\end{lemma}
+\begin{proof}
+\uses{host:exists-pagen}
+Fix an adapted function $e(\cdot)$ (Lemma~\ref{host:exists-pagen}), and
+let \texttt{VWinAt} give $J$ and $X_0$. Write $c=k^{2+8\eps}$ with $k\ge1$.
+Given $y$, choose $M$ above $y$, $1$, the threshold $Y_1$ of \texttt{PairEx}
+(for $N_{\psi}$, $\eps$, exponent $J$), $k^3$ and $k^{400}$, and $X\ge X_0$
+with $X\ge M^J$. \texttt{PairEx} at $X^{1/J}$ gives a pair good for
+$(N_{\psi},\eps,X^{1/J},X)$, in particular a window pair, so \texttt{VWinAt}
+gives $W\in[X^{1/J},X^{1/2}]$ with the Sha bound for all $x'\in[W,W^2]$.
+Put $Z=kW$. Since $k^3\le W$, $(kW)^{3/2}\le W^2$. For $x\in[Z,Z^{3/2}]$
+write $x=kx'$ with $x'\in[W,W^2]$, and take $Y=X^{1/J}$ and $e=e(x')$.
+Then $c2^{e}$ lies between $x^{2+8\eps}$ and $2x^{2+8\eps}$, the good pair
+restricts from $X$ to $x$, and the Sha bound at $x'$ with $\lfloor
+x'^{401}\rfloor\ge\lfloor x^{400}\rfloor$ twists (as $k^{400}\le x'$) and
+budget $\sqrt{\exp(x'^{\eps})}\le\sqrt{\exp(x^{\eps})}$ gives the required
+one by monotonicity.
+\end{proof}
+
+\begin{lemma}\label{host:rank-le}
+\lean{UpperTheory.Top.eventually_rank_le_rpow_of_lt_one_div_fiftytwo}
+\uses{host:rank-val}
+For $\eps\in(0,1/52)$ there is $x_0$ such that every rank datum $R$ with
+values for a scale $s$ with $\eps(s)=\eps$ and $x\ge x_0$ has $t(R)\le
+x^{400}$.
+\end{lemma}
+
+\begin{definition}[admissible rank datum]\label{host:admitted}
+\lean{UpperTheory.Top.admitted}
+\uses{host:host-full, host:field-rows}
+% uses-lean: HostParam.Seam.Choices
+A rank datum $R$ with a host with axioms $H_0$ for its frame is
+\emph{admitted} if for every bound $b$ and every choice of auxiliary data
+$c$ (level primes, $g_i$, $p_{\delta}$, $\mathfrak c$), field rows with bound
+$b$ and $q,d>4tr+1$ imply the existence of a host $D$ for $R$ extending
+$H_0$ with splitting bound $b$ and auxiliary data $c$.
+\end{definition}
+
+\begin{lemma}[rank data for hosts]\label{host:adm-classes}
+\lean{UpperTheory.Top.admissibleClassesTwistedChar, UpperTheory.Top.admissible_ranks_of_CMDatum}
+\uses{host:admitted, host:rank-val}
+% uses-lean: GlobalTheory.EX.exists_ranks_rankVal_frame
+Every rank datum with a host with axioms is admitted. For $\eps\in(0,1/52)$
+there is $x_0$ such that for every scale $s$ with $\eps(s)=\eps$ and
+$x\ge x_0$, every frame $\phi$ with $x^{2+8\eps}\le\mathrm{ord}\le
+2x^{2+8\eps}$ and every host with axioms $H_0$ for $\phi$, there is a rank
+datum with frame $\phi$ and values for $s$, which is admitted.
+\end{lemma}
+
+\begin{definition}[short norms and small primes]\label{host:short-norm}
+\lean{UpperTheory.T3.ShortNorm, UpperTheory.T3.SmallOne, UpperTheory.T3.shortNorm, UpperTheory.T3.smallOne}
+\texttt{SmallOne} states: there is $A\ge1$ such that for every $M\ge2$ some
+prime $p\equiv1\pmod M$ has $p\le M^A$ (a Linnik-type bound).
+\texttt{ShortNorm} is a lower bound, in short intervals $[X,X(1+h)]$, for
+the number of primes that are norms of suitable elements of an imaginary
+quadratic order of discriminant attached to a prime $d\equiv3\pmod4$ and a
+modulus $M$. Both are proved in the archive (\texttt{shortNorm},
+\texttt{smallOne}).
+\end{definition}
+
+\begin{lemma}[completing a host]\label{host:host-of-field}
+\lean{UpperTheory.Top.hostOfField, UpperTheory.T3.hostOfFieldOf}
+\uses{host:host-good, host:pair-good, host:field-rows, host:admitted, host:short-norm, host:rank-val}
+% uses-lean: Formalism.HC.Frame.Shares
+For all $\eps\in(0,1/52)$ and $C_0\ge1$ there are $C_{T2}$, $C_8\ge C_0$,
+$c_6>0$, $C_b>0$ and $x_0$ such that the following holds. Let $s$ be a
+scale with $\eps(s)=\eps$, $x\ge x_0$, $R$ a rank datum with values for $s$,
+$H_0$ a host with axioms for its frame, $0<M\le C_0$ an integer and $Y$
+real, with $J\le C_0$, $o\le C_0$, $Q_S\le C_0n$,
+$Q_S\mid\operatorname{lcm}(2^{e+2},M)$, $Y$ a pair window for $s$, $(q,d)$
+good for $(M,\eps,Y,x)$, field rows with bound $\lfloor Y^{\eps/5}\rfloor$,
+and $(R,H_0)$ admitted. Then there are a host $H$ for $R$ extending $H_0$
+and an integer $q_0$ with $C_{T2}(H)=C_{T2}$,
+$\mathrm{HostGood}(s,C_8,4,c_6,C_b,H,q_0)$, and $TT(H)$ having shares up
+to $x^{-1+\eps}$.
+\end{lemma}
+\begin{proof}
+\texttt{hostOfField} is \texttt{hostOfFieldOf} applied to \texttt{shortNorm}
+and \texttt{smallOne}. The proof is in
+\arch{Development/AutomorphicArithmetic/ShortNorms/hostOfFieldOf.lean} and
+was not read here.
+\end{proof}
+
+\begin{theorem}[supply from admissible classes]\label{host:supply-of-adm-of}
+\lean{UpperTheory.T3.supplyOfAdmOf}
+\uses{host:field-chi, host:win-pairs, host:pair-ex, host:pair-hyp, host:bounded-tw, host:ischifield-of-kerchi, host:rank-le, host:host-exw, host:gchi, host:host-of-field}
+% uses-lean: UpperTheory.Top.VWinAt, Formalism.HC.EAtH, UpperTheory.Top.VVle.mono, Formalism.HC.Level.cyc
+\uses{an:level-cyc, sha:vwin} % resolved
+Assume the conclusion of Lemma~\ref{host:host-of-field}. Let $\psi$ be a
+primitive character with \texttt{VWinAt}$(\psi,401)$, and assume: for every
+$\eps\in(0,1/52)$ there is $x_0$ such that for every scale $s$ with
+$\eps(s)=\eps$, $x\ge x_0$, every frame $\phi$ with
+$x^{2+8\eps}\le\mathrm{ord}\le2x^{2+8\eps}$ and $o(\phi)=|\langle\psi
+\rangle|$, and every host with axioms $H_0$ for $\phi$ with the kernel
+condition for $\psi$, there is an admitted rank datum with frame $\phi$ and
+values for $s$. Then $\mathrm{HostExW}(3/2,\mathrm{GChi}(\psi))$ holds, with
+$C_5=4$.
+\end{theorem}
+\begin{proof}
+\uses{host:field-chi, host:win-pairs, host:pair-ex, host:pair-hyp, host:bounded-tw, host:ischifield-of-kerchi, host:rank-le, host:host-of-field}
+Fix $\eps$. Theorem~\ref{host:field-chi} gives $c,e_0$, and
+Lemma~\ref{host:win-pairs} with Theorem~\ref{host:pair-ex} gives $J$ and
+windows of exponent $3/2$. Take $C_0=J+|\langle\psi\rangle|+8N_{\psi}$ and
+apply Lemma~\ref{host:host-of-field} for $C_0$; collect the thresholds of
+the admissibility hypothesis and of Lemma~\ref{host:rank-le}. Choose
+$A$ with $A^{\eps/5}=K$, where $K\ge\max(5,4N_{\psi})$, and let $x_1$ exceed
+all thresholds, $A^J$ and $c2^{e_0}$. The system of windows is $J$ with
+$W=\{x:\text{a window datum exists at }x\}$.
+
+Let $s$ be a member scale with $x\ge x_1$ and take its window datum
+$(Y,q,d,e)$. Then $Y\ge x^{1/J}\ge A$, so $Y^{\eps/5}\ge K$. By
+Lemma~\ref{host:pair-hyp}, $(q,d)$ satisfies \texttt{HostHyp} and small
+primes split in $K$; $q\ne3$ because $\log q>Y^{\eps/5}/2\ge5/2>\log3$;
+and $e\ge e_0$ because $c2^e\ge x^{2+8\eps}\ge x>c2^{e_0}$.
+Theorem~\ref{host:field-chi} with $b=\lfloor Y^{\eps/5}\rfloor\ge4N_{\psi}$
+gives $\phi$ and $H_0$, the hypothesis gives an admitted $R$ with values
+for $s$, and Lemma~\ref{host:host-of-field} (with $M=N_{\psi}$; the bound
+$Q_S\le C_0n$ follows from $Q_S\le4N_{\psi} c2^e\le8N_{\psi} x^{2+8\eps}$)
+gives the host $H$, the prime $q_0$, \texttt{HostGood} and the shares.
+
+The explicit-formula condition \texttt{EAtH}: the index $o$, the kept
+characters and the exceptional character come from
+Theorem~\ref{host:field-chi}, the shares from
+Lemma~\ref{host:host-of-field}, and the pointwise and log-derivative
+clauses from Lemma~\ref{host:bounded-tw}, whose hypothesis on the prime
+divisors of $Q_S$ holds because $Q_S\mid\operatorname{lcm}(2^{e+2},
+N_{\psi})$. The Sha bound: by Lemma~\ref{host:ischifield-of-kerchi} the field
+$E$ of $H$ is a field of $\psi$ at $(e,q,d)$, so the window datum gives
+\texttt{VVle} with $\lfloor x^{400}\rfloor$ twists and budget
+$\sqrt{\exp(x^{\eps})}=\sqrt b$, and Lemma~\ref{host:rank-le} gives
+$t(R)\le x^{400}$.
+\end{proof}
+
+\begin{theorem}[supply]\label{host:supply-of-adm}
+\lean{UpperTheory.Top.supplyOfAdm}
+\uses{host:supply-of-adm-of, host:host-of-field}
+Under the admissibility hypothesis of Theorem~\ref{host:supply-of-adm-of},
+\texttt{VWinAt}$(\psi,401)$ implies $\mathrm{HostExW}(3/2,\mathrm{GChi}(\psi))$.
+\end{theorem}
+\begin{proof}
+Theorem~\ref{host:supply-of-adm-of} applied to Lemma~\ref{host:host-of-field}.
+\end{proof}
+
+\begin{theorem}[supply for every character]\label{host:supply-chi}
+\lean{UpperTheory.Top.supplyChi}
+\uses{host:supply-of-adm, host:adm-classes, host:gchi, host:host-exw}
+% uses-lean: UpperTheory.Top.VWinAt
+\uses{sha:vwin} % resolved
+For every primitive character $\psi$, \texttt{VWinAt}$(\psi,401)$ implies
+$\mathrm{HostExW}(3/2,\mathrm{GChi}(\psi))$.
+\end{theorem}
+\begin{proof}
+\uses{host:supply-of-adm, host:adm-classes}
+Apply Theorem~\ref{host:supply-of-adm}; its admissibility hypothesis is
+Lemma~\ref{host:adm-classes}, which does not need the conditions on $o$ or
+the kernel.
+\end{proof}
+
+\begin{remark}[what the supply theorem assumes]\label{host:rem-supply}
+Apart from \texttt{VWinAt}, every input of Theorem~\ref{host:supply-chi}
+is a theorem of the archive: the host construction, \texttt{QH.pairEx},
+\texttt{hostOfField} and the admissibility lemma. Whether those theorems
+depend on further hypotheses through their unread proofs was not checked
+here.
+\end{remark}

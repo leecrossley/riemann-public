@@ -1,0 +1,64 @@
+\begin{tikzpicture}[bi,
+    st/.style={draw=biInk, rounded corners=2pt, align=center,
+      inner sep=2.5pt, font=\footnotesize, text width=2.45cm},
+    proved/.style={st, line width=0.9pt, fill=biAux!15},
+    report/.style={st, dashed, fill=biOther!10},
+    interp/.style={st, densely dotted, line width=0.8pt, fill=white},
+    ar/.style={->, line width=0.7pt}]
+\node[report, text width=2.4cm] (N) at (-0.1,0.1)
+  {theta coefficients\\ $\partial^a\vartheta(0)/\Omega^a$};
+\node[report, text width=2.4cm] (P) at (-0.1,2.0)
+  {CM types of $\Q(\zeta_\ell)$:\\ every $p$ with\\
+  $p\not\equiv\pm1\bmod\ell$};
+\node[report, text width=2.85cm] (D) at (3.2,1.1)
+  {forced divisibility\\ $p^{\,a/p+a/p^3+\cdots}$ at inert $p$,\\
+  up to $O(\log a)$;\\ in all, $\log d\approx b\,\Sz(a/b)$};
+\node[report, text width=2.85cm] (S) at (3.2,-0.75)
+  {archimedean size\\ $\approx a\log a-a-a\log\Omega$};
+\node[proved] (SL) at (6.45,0.1)
+  {$\log d\le$ size:\\ Prop.~\ref{prop:slope}(b)};
+\node[proved] (G) at (9.6,0.1)
+  {$\Gz(a/b)\le\mathfrak E/b$\\ by \eqref{eq:smoothed-factorial}};
+\node[interp, text width=2.85cm] (T) at (3.2,-3.1)
+  {chain of $m$ theta lifts collects the divisibility
+  $m$ times};
+\node[report] (M) at (6.45,-3.1)
+  {$\Gz(x)\ll x^{o(1)}\bigl(\tfrac xm+\tfrac{xm}k$\\[1pt]
+  ${}+\tfrac x\ell+k\ell\bigr)$};
+\node[proved] (L) at (9.6,-3.1)
+  {Prop.~\ref{prop:idea-landau}: if $\Gz(x)\le x^\theta$, then
+  $\zeta(s)\ne0$ on $\operatorname{Re}s>\theta$};
+\draw[ar] (N.east) -- (D.west);
+\draw[ar] (N.east) -- (S.west);
+\draw[ar] (P.east) -- (D.west);
+\draw[ar] (D.east) -- (SL.west);
+\draw[ar, biFail, dashed] (S.east) -- (SL.west);
+\draw[ar] (SL) -- (G);
+\draw[ar] (T) -- (M);
+\draw[ar] (M) -- (L);
+\draw[ar] (G) -- (L);
+\node[font=\scriptsize, biFail!80!black, align=center, anchor=north]
+  at (3.2,-1.45)
+  {main term $a\log a$, not $a\log\frac ab$:\\ unresolved};
+\node[proved, text width=2.0cm, minimum height=0.45cm] at (0.75,-4.6)
+  {proved here};
+\node[report, text width=3.5cm, minimum height=0.45cm] at (4.5,-4.6)
+  {report (note, archive)};
+\node[interp, text width=2.0cm, minimum height=0.45cm] at (8.15,-4.6)
+  {interpretation};
+\end{tikzpicture}
+\caption{The outline of
+Sections~\ref{sec:idea-landau}--\ref{sec:theta}, in the abelian form
+reported in Section~\ref{sec:slope}, with the status the chapter gives
+each step (schematic). Solid boxes are proved in this chapter; dashed
+boxes report the note \cite{AlpogeRemark2026} or statements of the
+archive \cite{AlpogeArchive2026} that are not on its proof path; the
+dotted box is an interpretation. The inequality
+$\Gz(a/b)\le\mathfrak E/b$ holds if the divisibility at each $p$ is
+at least $\sum_i(a/p^i-b)_+$ and the size is $a(\log(a/b)-1-\gamma)+\mathfrak E$; the readable
+statements do not show how $b$ enters the size (dashed arrow).
+Balancing the four terms gives at best $x^{3/4}$, and the exponent
+$\frac12$ needs $m\approx\sqrt x$. The book replaces $\Q(\zeta_\ell)$
+by an imaginary quadratic field inside a host field;
+Table~\ref{tab:idea-roadmap} says where each step is developed.}
+\label{fig:outline-status}

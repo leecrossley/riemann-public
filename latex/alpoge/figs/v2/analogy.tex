@@ -1,0 +1,40 @@
+\vtwofit{%
+\centering\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.6cm}
+  >{\raggedright\arraybackslash}p{5.4cm}
+  >{\raggedright\arraybackslash}p{7.6cm}@{}}
+\toprule
+& Chebyshev 1852 & The present argument\\
+\midrule
+Object & the integer $n!$ (or $\binom{2n}{n}$) & periods of
+$m$ successive theta lifts of algebraic forms of weight $a\approx xb$ on
+definite unitary groups (Definitions~\ref{def:column}
+and~\ref{def:period-lattice})\\
+Archimedean size & Stirling: $\log n!=n\log n-n+O(\log n)$ &
+Stirling's term $m(a\log a-a)$ minus $a\log\Omega$, with
+$\log\Omega=\gamma+\log(\pi/v)-L'(1,\chi_{-d})/L(1,\chi_{-d})$
+(clause (ii) of Definition~\ref{def:size-data},
+Remark~\ref{rem:stirling})\\
+$p$-adic size & Legendre: $v_p(n!)=\sum_i\lfloor n/p^i\rfloor$ &
+Legendre-type gains $2\log p\sum_{i}(a/p^i-m_\tau)_+$ at primes $p$
+inert in $K=\Q(\sqrt{-d})$, over $i$ with $i\Frob_p\notin\Phi$
+(Definition~\ref{def:ask}, Remark~\ref{rem:legendre})\\
+How the sides are linked & unique factorisation: an identity &
+inequalities between hermitian lattices: an archimedean upper link and a
+slope clause of the shape of the frame theorem; $\mu(R^\vee)$ cancels
+(Theorem~\ref{thm:frame}, Remark~\ref{rem:cancel})\\
+Characters & none & characters of $\Gal(E/\Q)$; the balance identity
+and the shares give positive weights $1$, $(3o+1)^{-1}$
+(Propositions~\ref{prop:balance} and~\ref{prop:shares})\\
+Multiplicity & one factorial & a chain of $m\approx\sqrt x$ lifts;
+errors $\asymp x/m$ and $m$ balance at $\sqrt x$
+(Proposition~\ref{prop:sqrtx})\\
+Output & $c_1x\le\mathrm{Ch}(x)\le c_2x$, two-sided, $c_1<1<c_2$ &
+one-sided $G_\lev(x)\le x^{1/2+O(\eps)}$, only on windows of scales
+(Theorem~\ref{thm:chebyshev-windows})\\
+To zeros & not reached: the constants are not $1$ &
+the windowed Landau criterion (Theorem~\ref{thm:windowed-landau})\\
+\bottomrule
+\end{tabular}%
+}

@@ -1,0 +1,113 @@
+\pgfplotstableread{\sbdata{twists.dat}}\sbTwTab
+\pgfplotstablegetrowsof{\sbTwTab}%
+\pgfmathtruncatemacro\sbTwLast{\pgfplotsretval-1}%
+\gdef\sbTwRow{-1}%
+\foreach \i in {0,...,\sbTwLast}{%
+  \pgfplotstablegetelem{\i}{q}\of\sbTwTab \let\sbTmpQ\pgfplotsretval
+  \pgfplotstablegetelem{\i}{g}\of\sbTwTab \let\sbTmpG\pgfplotsretval
+  \ifnum\sbTmpQ=121 \ifnum\sbTmpG=2 \xdef\sbTwRow{\i}\fi\fi}%
+\pgfplotstablegetelem{\sbTwRow}{M}\of\sbTwTab \let\sbM\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{a}\of\sbTwTab \let\sbA\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{b}\of\sbTwTab \let\sbB\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{g}\of\sbTwTab \let\sbG\pgfplotsretval
+\pgfplotstablegetelem{\sbTwRow}{Nid}\of\sbTwTab \let\sbNid\pgfplotsretval
+\pgfmathtruncatemacro\sbCond{\sbM*\sbA+\sbB+1-\sbG}%
+\pgfmathtruncatemacro\sbNpl{\sbNid-1}%
+\pgfmathtruncatemacro\sbHeur{\sbM*\sbNpl}%
+\begin{tikzpicture}[sb, x=0.52cm, y=0.55cm,
+    may/.style={draw=sbInk!70, fill=sbOther!30},
+    kept/.style={draw=sbInk!70, fill=sbAux},
+    zero/.style={draw=sbInk!40, fill=white},
+    rowlab/.style={font=\footnotesize, anchor=east, align=right}]
+  \def\M{5}
+  \node[font=\small, anchor=west] at (-7.4,1.75)
+    {(a) the expansion at a place $P$ in a uniformizer $t$, for $M=5$};
+  \foreach \j in {0,...,14}
+    \node[font=\scriptsize] at (\j+0.5,0.95) {$\j$};
+  \node[rowlab] at (-0.2,0.95) {exponent $j$ of $t^j$:};
+  \foreach \j in {0,...,14} \draw[may] (\j,-0.4) rectangle ++(1,-0.8);
+  \node[rowlab] at (-0.2,-0.8) {a general $z\in\calO_P$};
+  \foreach \j in {0,...,14}{%
+    \pgfmathtruncatemacro\r{mod(\j,\M)}%
+    \ifnum\r=0 \draw[kept] (\j,-1.6) rectangle ++(1,-0.8);
+    \else \draw[zero] (\j,-1.6) rectangle ++(1,-0.8);
+      \draw[sbInk!40] (\j,-2.4) -- ++(1,0.8);\fi}
+  \node[rowlab] at (-0.2,-2.0) {$w^M$};
+  \foreach \j in {0,...,14}{%
+    \pgfmathtruncatemacro\r{mod(\j,\M)}%
+    \ifnum\j>0 \ifnum\r=0 \draw[kept] (\j,-2.8) rectangle ++(1,-0.8);
+      \else \draw[zero] (\j,-2.8) rectangle ++(1,-0.8);
+        \draw[sbInk!40] (\j,-3.6) -- ++(1,0.8);\fi
+    \else \draw[zero] (\j,-2.8) rectangle ++(1,-0.8);
+      \draw[sbInk!40] (\j,-3.6) -- ++(1,0.8);
+      \draw[sbZero, line width=0.9pt] (\j,-2.8) rectangle ++(1,-0.8);\fi}
+  \node[rowlab] at (-0.2,-3.2) {$w^M$ with $w(P)=0$};
+  \draw[decorate, decoration={brace, mirror, amplitude=4pt}, sbInk]
+    (0,-3.75) -- (5,-3.75)
+    node[midway, below=5pt, font=\footnotesize, align=center]
+    {$v_P(w^M)\ge M$ from the one condition $w(P)=0$};
+  \node[font=\footnotesize, anchor=west, align=left] at (15.4,-2.0)
+    {$\Bigl(\sum_j c_jt^j\Bigr)^{M}=\sum_j c_j^{M}t^{jM}$\\[1pt]
+     ($M$ a power of $p$)};
+  \node[font=\footnotesize, anchor=north west, align=left] at (-7.4,-5.0) {%
+    \tikz\draw[may](0,0) rectangle (0.3cm,0.22cm); coefficient may be
+nonzero\quad
+    \tikz\draw[kept](0,0) rectangle (0.3cm,0.22cm); coefficient $c_j^M$ of
+$w^M$\quad
+    \tikz{\draw[zero](0,0) rectangle (0.3cm,0.22cm);
+      \draw[sbInk!40](0,0)--(0.3cm,0.22cm);} coefficient $0$\quad
+    \tikz\draw[zero, draw=sbZero, line width=0.9pt](0,0) rectangle
+(0.3cm,0.22cm);
+      value at $P$, set to $0$\quad
+    \sbschematic[schematic]};
+\end{tikzpicture}
+
+\medskip
+\begin{tikzpicture}[sb]
+  \begin{axis}[sb axis, width=0.8\linewidth, height=0.36\linewidth,
+      xmin=0, xmax=150, ymin=0, ymax=1700,
+      xlabel={$N$, the number of places where $w^M$ must vanish to order $M$},
+      ylabel={linear conditions},
+      title={(b) conditions imposed, for $q=121$, $g=2$, $M=\sbM$,
+        $(a,b)=(\sbA,\sbB)$},
+      title style={font=\small, yshift=8pt},
+      clip=false]
+    \addplot[sb other plot, sbInk!55, line width=0.9pt, domain=0:150,
+      samples=2] {\sbM*x};
+    \addplot[sb aux line, line width=1.1pt, domain=0:150, samples=2]
+      {\sbCond};
+    \draw[sb zero line] (axis cs:\sbNpl,0) -- (axis cs:\sbNpl,1700);
+    \node[sb zero] at (axis cs:\sbNpl,\sbHeur) {};
+    \node[sb zero] at (axis cs:\sbNpl,\sbCond) {};
+    \node[font=\footnotesize, anchor=north west, text=sbInk!70, align=left]
+      at (axis cs:4,1640)
+      {characteristic-$0$ heuristic: about $MN$ conditions\\
+       for independent jets (item (B1)); at $N=\sbNpl$: $\sbHeur$};
+    \node[font=\footnotesize, anchor=south west, text=sbInk, align=left,
+      inner sep=1pt]
+      at (axis cs:40,\sbCond+20)
+      {Step~1, characteristic $p$: $\ell(MaP_0+bP_0)=\sbCond$\\
+       conditions, for any $N$};
+    \node[font=\footnotesize, anchor=south, text=sbZero]
+      at (axis cs:\sbNpl,1700) {$N=\sbNpl$};
+    \node[font=\footnotesize, anchor=south east, text=sbZero, align=right,
+      fill=white, inner sep=1pt, fill opacity=0.85, text opacity=1]
+      at (axis cs:\sbNpl-2,560)
+      {Frobenius places $P\ne P_0$\\of the computed curve};
+  \end{axis}
+\end{tikzpicture}
+\caption{Multiplicity in characteristic $p$ (Step~3 of
+Theorem~\ref{thm:aux-section}). (a) The local expansion at a place $P$, in a
+uniformizer $t$, for $M=5$: a general function may have every coefficient
+nonzero (grey); an $M$-th power has nonzero coefficients only in degrees
+divisible by $M$ (sky blue), because $(\sum_jc_jt^j)^M=\sum_jc_j^Mt^{jM}$
+for $M$ a power of $p$; if it also vanishes at $P$ (blue outline), its first
+nonzero coefficient is in degree at least $M$. One condition gives order
+$M$. Schematic. (b) Linear conditions imposed to make $w^M$ vanish to order
+$M$ at $N$ places, for $q=121$, $g=2$, $M=11$, $(a,b)=(10,15)$: in Step~1
+the number is $\ell(MaP_0+bP_0)=124$, whatever $N$ is (sky blue, dotted);
+for independent jets, as in characteristic~$0$, it would be about $MN$
+(grey; a heuristic count, item~(B1) of Section~\ref{sec:dictionary}, not a
+theorem). Blue: the $133$ Frobenius places other than $P_0$ of the curve of
+Figure~\ref{fig:zero-pole-budget}.}
+\label{fig:jets}

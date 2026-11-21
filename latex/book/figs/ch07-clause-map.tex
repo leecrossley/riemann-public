@@ -1,0 +1,66 @@
+\begin{tikzpicture}[bi, font=\scriptsize,
+  side/.style={draw=biInk, rounded corners=2pt, align=center, inner sep=3pt,
+    font=\scriptsize, minimum width=4.0cm},
+  core/.style={bi box, font=\footnotesize, text width=2.4cm}]
+\node[core] (M) at (0,0)
+  {$\mu_M(u)$, $\mu_M^{\max}(u)$\\ form lattice of $u$};
+\node[core] (N) at (0,-2.5)
+  {$\mu_N(u)$, $\mu_N^{\max}(u)$\\ slopes of $N_u$};
+\node[core] (S) at (0,-4.9)
+  {frame slope $s$:\\ mean of $\mu_N(u)-h(u)$,\\ weights $\rk(u)$;
+   excess $u_F$};
+\node[core, line width=0.9pt] (R) at (0,-7.7)
+  {$\mu_R$, slope of $R^\vee$};
+\draw[v2 arr] (M) -- coordinate[pos=0.5] (mn) (N);
+\draw[v2 arr] (N) -- (S);
+\draw[v2 arr, biZero, line width=0.9pt] (S) -- coordinate[pos=0.5] (sr)
+  node[pos=0.5, right=2pt, align=left, text=biZero]
+  {(ix) lower bound:\\ $s-\log|\Words(u_0)|-\text{slack}\le\mu_R$} (R);
+\node[side, anchor=west] (fs) at (-6.2,0)
+  {(vi) form slopes:\\ $\mu_M(u)\ge-c_{\mathrm{fs}}n_Ta\Upsilon_a(1+\tfrac mk)$,\\
+   $\mu_M^{\max}(u)\le c_{\mathrm{fs}}n_Ta\Upsilon_a$};
+\node[side, anchor=west] (fin) at (-6.2,-2.5)
+  {(iii) $|\Cg(u)-m\,\Sigma a\,\lgv|$\\ $\le c_{\mathrm{cg}}mB_0$;\\[1pt]
+   (viii) $\PS-\Ga\le\Lo_P$, $\IO\le\Lo_P$};
+\node[side, dashed, anchor=west] (hyp) at (-6.2,-6.3)
+  {(i), (x), (xi) give the\\ hypotheses of (ix):\\
+   $s-\mu_R^{\min}\le\Delta_R$,\\ $0<\Delta_R\le x^{c_{\mathrm{sp}}}b$,\\
+   $0\le\beta_i\le\bar\beta_i$};
+\draw[v2 arr] (fs) -- (M);
+\draw[v2 arr] (fin.north east) -- (mn);
+\draw[v2 arr, dashed] (hyp.east) -- (sr);
+\node[side, anchor=east] (qs) at (6.2,-1.25)
+  {(vii) quotient slopes:\\ shift by $\Ga+\Fo-\Cg(u)$,\\
+   up to $+c_{\mathrm{qs}}mB_0$ for $\mu_N^{\max}$\\
+   and $-\Lo_Q(u)$ for $\mu_N$};
+\node[side, fill=white, anchor=east] (ht) at (6.2,-4.1)
+  {(iv) $h(u)+\Sigma a\log T(u)$\\ varies little with $u$;\\
+   (v) bounds for $\log T(u)$};
+\node[side, fill=biPole!12, anchor=east] (div) at (6.2,-7.7)
+  {(ii) divisor bound\\ (upper bound):\\
+   $\mu_R+h(u)-\Fo\le A(u)+\text{err}$};
+\draw[biOther, densely dotted, line width=0.7pt] (qs.west) -- (mn);
+\draw[v2 arr] (ht.west) -- (S.east);
+\draw[v2 arr] (ht.south) -- (div.north);
+\draw[v2 arr, biPole, line width=0.9pt] (div) -- (R);
+\end{tikzpicture}
+\caption{Schematic map of the clauses of Definition~\ref{def:size-data}
+at one shift $u_0$ and one word $u$. Arrows show which quantities each
+clause relates; they are not implications. Clause~\ref{item:sd-fs}
+bounds the slopes of the form lattice, clause~\ref{item:sd-qs} passes
+to the slopes of $N_u$, shifted by the gain $\Ga$, the field term
+$\Fo$ and the congruence size $\Cg(u)$, and the frame slope $s$ and the
+excess $u_F$ are formed from the slopes of $N_u$ and the heights $h(u)$
+(Definition~\ref{def:record}). Clause~\ref{item:sd-slope} (blue)
+bounds $\mu_R$ from below by $s$ minus the slack
+$\log|\Words(u_0)|+(1-\beta_0)^{-1}\bigl(4u_F\log(1+\Delta_R/u_F)
++(\beta_1+4\sqrt{\beta_2})\Delta_R\bigr)$, and
+clause~\ref{item:sd-div} (vermillion) bounds $\mu_R$ from above; there
+$A(u)$ is the archimedean main term of Definition~\ref{def:upper-link}
+and err the remaining terms of the clause. In
+Chapter~\ref{ch:covolume} the second inequality of
+clause~\ref{item:sd-qs} and clause~\ref{item:sd-div} give a lower bound
+for $s$, clause~\ref{item:sd-slope} gives an upper bound, and $\mu_R$
+and the heights cancel (Remark~\ref{rem:cancel} and
+Figure~\ref{fig:sandwich}).}
+\label{fig:clause-map}

@@ -1,0 +1,15 @@
+% Web (plasTeX) preamble; maintained by hand.
+\documentclass{report}
+\def\pgfsysdriver{pgfsys-dvisvgm.def}  % tikz arrows in dvisvgm images
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[showmore, dep_graph, thms=theorem+proposition+lemma+corollary+conjecture+question+definition+example+remark]{blueprint}
+\input{macros/paper}
+\input{macros/web}
+\input{title}
+\begin{document}
+\maketitle
+\input{content}
+\end{document}

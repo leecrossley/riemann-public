@@ -1,0 +1,58 @@
+\begin{tikzpicture}[sb]
+\begin{axis}[sb axis, height=0.62\linewidth,
+  xmin=-0.3, xmax=15.6, ymin=-0.3, ymax=14.5,
+  xtick={0,...,15}, ytick={0,2,...,14},
+  xlabel={$j$}, ylabel={$\ell(jP_0)$},
+  legend style={at={(0.985,0.025)}, anchor=south east, font=\scriptsize},
+  legend cell align=left,
+  unbounded coords=jump,
+]
+\addplot[sbInk, line width=0.5pt] table[x=j, y=rr] {\sbdata{filtration.dat}};
+\addlegendentry{Riemann--Roch $j+1-g$}
+\addplot[sbInk, line width=0.7pt, dotted]
+  table[x=j, y=clifford] {\sbdata{filtration.dat}};
+\addlegendentry{Clifford $j/2+1$, $j\le2g-2$ (cited)}
+\addplot[sbPole, line width=1.1pt, const plot]
+  table[x=j, y=hyp] {\sbdata{filtration.dat}};
+\addlegendentry{$P_0=\infty$, $y^2=f(x)$, $\deg f=7$: gaps $1,3,5$}
+\addplot[sbOther, line width=1.1pt, dashed, const plot]
+  table[x=j, y=generic] {\sbdata{filtration.dat}};
+\addlegendentry{a point with gaps $1,2,3$}
+\addplot[sb pole plot, only marks, forget plot,
+  point meta=explicit symbolic,
+  nodes near coords={$\pgfplotspointmeta$},
+  every node near coord/.append style={font=\scriptsize, text=sbPole,
+    anchor=south east, inner sep=1.5pt},
+] table[x=pole, y expr=\coordindex+1, meta=name]
+  {\sbdata{filtration_basis.dat}};
+\draw[sbInk, thin, decorate, decoration={brace, amplitude=2.5pt, mirror}]
+  (axis cs:2.15,1) -- (axis cs:2.15,2);
+\draw[sbInk, thin, ->] (axis cs:1.6,5.0) to[out=-90, in=150]
+  (axis cs:2.4,1.6);
+\node[font=\footnotesize, anchor=south, align=center] at (axis cs:1.6,5.0)
+  {$\ell(2P_0)=2$\\ against $1$};
+\node[font=\scriptsize, anchor=north west, inner sep=1pt]
+  at (axis cs:9.05,7) {$\ell(9P_0)=7$};
+\node[font=\scriptsize, anchor=north west, inner sep=1pt]
+  at (axis cs:15.05,13) {$13$};
+\node[draw=sbOther, fill=white, font=\footnotesize, align=left,
+  anchor=north west, inner sep=3pt] at (axis cs:0.1,14.1)
+  {$\{1+x,\,x\}$ is a basis of $\calL(2P_0)$ that is not\\
+   adapted: both elements have pole order $2$.\\
+   An adapted basis $\{1,x\}$ has pole orders $0<2$.};
+\end{axis}
+\end{tikzpicture}
+\caption{The staircase $j\mapsto\ell(jP_0)$, $0\le j\le15$, for $g=3$
+(Proposition~\ref{prop:adapted-basis}). Vermillion: $P_0$ the place at
+infinity of $y^2=f(x)$ with $\deg f=7$, whose gaps are $1,3,5$; each jump
+($\times$) is the pole order of the labelled element of an adapted basis
+($x$ has a pole of order $2$ and $y$ one of order $7$). Grey dashed: a point
+with gaps $1,2,3$, where $\ell(jP_0)=\max(1,j+1-g)$; the two staircases
+agree for $j\ge2g-1=5$. Black: the Riemann--Roch value $j+1-g$, a lower bound
+that is exact for $j\ge2g-1$ (fact~\ref{S3}). Dotted: Clifford's bound
+$j/2+1$ for $j\le2g-2$, not proved here; the vermillion staircase meets it
+at $j=0,2,4$. The box gives the non-adapted basis of
+Remark~\ref{rem:basis-cex}. At $j=2$ the staircases differ; this is why
+$(a,b)=(2,9)$ satisfies (S) at infinity, $2\cdot7>13$, although
+$q_0=3\le(g+1)^2$ (Remark~\ref{rem:special-admissible}).}
+\label{fig:pole-filtration}

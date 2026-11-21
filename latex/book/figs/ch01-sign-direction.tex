@@ -1,0 +1,63 @@
+\begin{tikzpicture}[bi,
+    lab/.style={font=\footnotesize, inner sep=1.5pt},
+    hd/.style={font=\footnotesize, align=center, anchor=south,
+      text width=3.55cm},
+    vd/.style={font=\footnotesize, align=center, anchor=north,
+      text width=3.55cm}]
+\def\pw{3.7}   % panel spacing
+\def\bnd{1.15} % height of the bound
+\def\sdpanel#1#2#3#4#5#6#7{%
+  \begin{scope}[xshift=#1*\pw cm]
+    \fill[pattern=north east lines, pattern color=biBound!70]
+      (-1.15,\bnd) rectangle (1.15,2.1);
+    \draw[biBound, line width=1.1pt] (-1.15,\bnd) -- (1.15,\bnd);
+    \node[lab, biBound!75!black, fill=white, anchor=south west]
+      at (-1.12,\bnd+0.06) {#4};
+    \draw[->, biInk, line width=0.5pt] (-1.15,-1.6) -- (-1.15,2.25)
+      node[lab, above] {#3};
+    \draw[biOther, line width=0.4pt] (-1.22,0) -- (1.15,0);
+    \node[lab, biOther, anchor=east] at (-1.2,0) {$0$};
+    \node[hd] at (0.1,2.6) {#2};
+    \ifnum#5=1
+      \draw[->, biFail, line width=1.6pt] (0.15,0) -- (0.15,1.95);
+      \node[lab, biFail!80!black, align=center, anchor=north, fill=white]
+        at (0.15,-0.08) {#6};
+    \else
+      \draw[->, biFail, line width=1.6pt] (-0.55,0) -- (-0.55,-1.45);
+      \node[lab, biFail!80!black, align=left, anchor=west]
+        at (-0.4,-0.72) {#6};
+    \fi
+    \node[vd] at (0.1,-1.75) {#7};
+  \end{scope}}
+\sdpanel{0}{$\zeta$\\ (Prop.~\ref{prop:idea-landau})}{$\Gz(x)$}{$x^\theta$}{1}
+  {$\dfrac{m\,x^\beta}{\beta(1-\beta)}>0$\\[1pt] zero $\beta\in(\theta,1)$}
+  {crosses the bound:\\ excluded}
+\sdpanel{1}{curve, point count\\ (Prop.~\ref{prop:stepanov})}{$E_n$}{$(2g{+}1)q^{n/2}{-}1$}{0}
+  {$-\alpha_i^n<0$\\[1pt] real $\alpha_i$,\\
+  $\lvert\alpha_i\rvert>\sqrt q$,\\ $n$ even}
+  {moves away:\\ not seen}
+\sdpanel{2}{curve, counterpart of $\Gz$\\
+  (Thm.~\ref{thm:route2prime})}{$G(T)$}{$Aq^{T/2}$}{1}
+  {$c(\alpha)\,\alpha^T>0$\\[1pt] real $\alpha\in(\sqrt q,q)$}
+  {crosses the bound:\\ excluded}
+\end{tikzpicture}
+\caption{The direction of the inequality (schematic; only signs are
+drawn). Each panel shows a one-sided upper bound (orange line, the
+hatched values are forbidden) and the term that a bad real zero or
+reciprocal root adds to the bounded quantity. For $\zeta$ a zero
+$\beta\in(\theta,1)$ of multiplicity $m$ adds a positive term to the
+explicit formula for $\Gz$; in the proof of
+Proposition~\ref{prop:idea-landau} the same sign appears as the
+negative residue $m/(\beta(\beta-1))$ of the Mellin transform of
+$x^\theta-\Gz(x)$. For a curve, with $E_n=\#C(\F_{q^n})-q^n-1
+=-\sum_i\alpha_i^n$, a real root of modulus above $\sqrt q$ pushes
+$E_n$ down for even $n$, away from the bound of
+Proposition~\ref{prop:stepanov} over $\F_{q^n}$
+(Remark~\ref{rem:one-sided-curves}). The counterpart $G(T)$ of $\Gz$
+(Definition~\ref{def:smoothed-sum}) receives $c(\alpha)\alpha^T$ with
+$c(\alpha)>0$ (Proposition~\ref{prop:explicit-G}), so an upper bound
+for $G(T)$, which corresponds to a lower bound for point counts,
+excludes it (Remark~\ref{rem:smoothed-sign});
+Figure~\ref{fig:smoothed-sign} shows this reversal with data for
+$q=9$.}
+\label{fig:sign-direction}

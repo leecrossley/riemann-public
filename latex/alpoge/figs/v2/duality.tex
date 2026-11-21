@@ -1,0 +1,22 @@
+\resizebox{0.8\linewidth}{!}{%
+\begin{tikzcd}[ampersand replacement=\&, column sep=3.4cm,
+  cells={font=\small}]
+\Sha^1\bigl(G_{E,S_l},\Q_l/\Z_l(-e)\bigr)
+  \arrow[r, "\cong", "\text{\scriptsize Poitou--Tate}"'] \&
+\Sha^2\bigl(G_{E,S_l},\Z_l(e+1)\bigr)^{\vee}
+\end{tikzcd}}
+
+\medskip
+\resizebox{\linewidth}{!}{%
+\begin{tikzcd}[ampersand replacement=\&, column sep=1.6cm,
+  cells={font=\small}]
+\Sha^2\bigl(G_{E,S_l},\Z_l(e+1)\bigr) \arrow[r, hook] \&
+H^2\bigl(G_{E,S_l},\Z_l(e+1)\bigr)
+  \arrow[r, dashed, "\cong", "\text{\scriptsize QL, odd }l"'] \&
+K_{2e}(\mathcal O_E)\otimes\Z_l
+\end{tikzcd}}
+
+\smallskip\noindent{\small The quantity bounded by the Sha bound on windows:
+$\sum_l\log l\sum_{1\le e<x^{401}}\shalen_l(e)\le
+e^{x^\eps/2}$ on a window. Heuristic size:
+$\log|K_{2e}(\mathcal O_E)|\approx e[E:\Q]\log(e\,\mathrm{rd}_E)$.}

@@ -1,0 +1,17 @@
+\setbox0=\hbox{%
+\begin{tikzpicture}[bi, x=1.25cm, y=1.1cm]
+\node[font=\small] at (-1.5,1) {$\Phi$ ($g_1=0$)};
+\node[font=\small] at (-1.5,0) {$\mathfrak G\smallsetminus\Phi$};
+\foreach \g in {0,1} \foreach \h in {0,1,2} {
+  \pgfmathtruncatemacro{\c}{3*\g+\h}
+  \node[bi zero, label={[font=\tiny]above:$((0,\g),\h)$}] (p\c) at
+  (3*\g+\h,1) {};
+  \node[bi open, label={[font=\tiny]below:$((1,\g),\h)$}] (n\c) at
+  (3*\g+\h,0) {};}
+\draw[->, biBound] (n0) -- (p4); \draw[->, biBound] (n1) -- (p5);
+\draw[->, biBound] (n2) -- (p3); \draw[->, biBound] (n3) -- (p1);
+\draw[->, biBound] (n4) -- (p2); \draw[->, biBound] (n5) -- (p0);
+\end{tikzpicture}
+}%
+\ifdim\wd0>\linewidth\resizebox{\linewidth}{!}{\box0}%
+\else\leavevmode\box0\fi
