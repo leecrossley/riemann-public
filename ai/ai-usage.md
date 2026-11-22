@@ -6,6 +6,36 @@ This is the repository master AI provenance record, not a roll-up index.
 
 The contributor citation for the three-scale window criterion was checked against the deposited version 1.0.4 and its tagged Lean source. The declaration at line 114 transfers the pole data. The declaration at line 176 proves the zero-free conclusion for the same positive character family from a one-sided upper bound on arbitrarily late windows. The multiplier is nonzero in the open critical strip and positive on its real interval, so it preserves the signs of the real residues. [Deposited version](https://doi.org/10.5281/zenodo.24410863) [Pole data](https://github.com/leecrossley/dirichlet-window-transfer/blob/fa94718cf9d65ee5b143ded4c91dc3873222cfdf/DelayedPole.lean#L114) [Window theorem](https://github.com/leecrossley/dirichlet-window-transfer/blob/fa94718cf9d65ee5b143ded4c91dc3873222cfdf/DelayedPole.lean#L176)
 
+<!-- task-entry-begin: 2026-11-21T21:22:13-05:00__session__gamma-kernel-correction -->
+## 2026-11-21T21:22:13-05:00 — session/gamma-kernel-correction
+[id: 2026-11-21T21:22:13-05:00__session__gamma-kernel-correction]
+
+**Record type:** Written directly by the working agent (fork; master entry only).
+**Prompt:** Taylor Dupuy forwarded Hilaf Hasson's report (an AI-assisted reading by Hasson) that step (2) of the proof of Theorem 4.3.3 (windowed Landau criterion, `thm:windowed-landau`) in `latex/riemann-book.tex` claims a false Gamma-kernel concentration rate $C'/\sigma^k$, and asked: "Please fork an agent to make this correction."
+**Agents:**
+
+| Role | Agent ID | Requested model | Observed model | Harness | Effort |
+| --- | --- | --- | --- | --- | --- |
+| caller | side session `3e5c034f-35e2-4c1b-9134-0465d684420b` | claude-opus-5-5 | claude-opus-5-5 | Claude Code 2.1.330, desktop app | not recorded |
+| primary | fork `a292882c96edb5439` | claude-opus-5-5 (inherited) | claude-opus-5-5 | Claude Code 2.1.330 (Agent tool, fork) | not recorded |
+
+**Skill chain:** using-latexpowers → update-ai-usage → update-tokens
+**Inputs:** `latex/riemann-book.tex` §4.3 (AI-drafted outline of Alpöge's argument); Hasson's report as pasted by Taylor (human, AI-assisted).
+**Work performed:** Verified Hasson's counterexample (both cases: $(k+1)!\le(2k)^{k+1}$, $e^{-1/2}\ge1/2$, $k^k\ge k!$). Replaced step (2) of the proof outline with a correct concentration argument, and step (3) with an explicit window/off-window estimate; made step (4)'s comparison explicit (lower bound $c\,r^{-(k+1)}$ for large $k$, $r<\sigma-\sigma_0$). Added Proposition `prop:gamma-tails` (Chernoff bound for Gamma tails, rate $e^{-(k+1)h(t)}$, $h(t)=t-\log(1+t)$, with proof), Proposition `prop:gamma-no-sigma-gain` (Hasson's lower bound $8^{-(k+1)}$, with proof; the refutation kept per LX11), and Remark `rem:gamma-correction` crediting Hasson. Rebuilt: 273 pages, no errors or undefined references.
+**AI-results:**
+
+| # | Result | Produced by (model / harness / skill) | Derivation account | Literature search | Refs verified |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `prop:gamma-tails` | claude-opus-5-5 / Claude Code / using-latexpowers | Markov's inequality on $e^{\pm\theta Z}$ with the Gamma moment generating function; standard Chernoff bound | not run: textbook Chernoff bound for Gamma variables | — |
+| 2 | `prop:gamma-no-sigma-gain` | Hilaf Hasson (AI-assisted, model not recorded); checked by claude-opus-5-5 | Hasson's two-case argument, re-derived line by line | not run | — |
+| 3 | corrected steps (2)–(4) of the outline of `thm:windowed-landau` | claude-opus-5-5 / Claude Code / using-latexpowers | choose $k+1=\lceil(\sigma-2)(1+\delta/2)U\rceil$; off-window mass $\le2e^{-(k+1)h(t)}$ with $t=\delta/(4+3\delta)$; trivial bound $|g(u)|\le Ae^{2u}$ from $\Ch(t)\le2t$; $\sigma$ large in terms of $\delta$ gives $e^{-h}(\sigma-\sigma_0)<\sigma-2$ | not run | — |
+
+**Negative results (AI14):** The earlier step (2), "all but a proportion $C'/\sigma^k$ of the mass lies in the window", is false (Prop. `prop:gamma-no-sigma-gain`); the mass outside a window decays only like $e^{-c_\delta k}$, independent of $\sigma$.
+**Review:** agent review only (the fork re-derived each inequality). Human verification: none yet.
+**Integration:** `latex/riemann-book.tex` §4.3 (`thm:windowed-landau` proof outline, two new propositions, one remark). Not yet exported to `tdupu/riemann-public`.
+**Scope limits / withheld:** Step (4) (the lower bound from the pole, including the choice of $t_0$ when the nearest pole is not real) remains an outline and was not checked. Hasson's second point, Question 12.1.3 (the window exponent $3/2$ and the scale transfer, p. 225), is a separate open issue and was not addressed. Alpöge's Lean archive was not consulted.
+<!-- task-entry-end: 2026-11-21T21:22:13-05:00__session__gamma-kernel-correction -->
+
 <!-- task-entry-begin: 2026-11-21T16:18:40-05:00__session__publish-riemann-public -->
 ## 2026-11-21T16:18:40-05:00 — session/publish-riemann-public
 [id: 2026-11-21T16:18:40-05:00__session__publish-riemann-public]
@@ -18,14 +48,15 @@ The contributor citation for the three-scale window criterion was checked agains
 | --- | --- | --- | --- | --- | --- |
 | primary | side session (started by `local_37ca1408`) | claude-opus-5-5 | claude-opus-5-5 | Claude Code 2.1.330, desktop app (Code tab) | not recorded |
 
-**Skill chain:** using-latexpowers (wording-fix route) → update-ai-usage → update-tokens → authorize-git-operation (pending at write time)
+**Skill chain:** using-latexpowers (wording-fix route) → update-ai-usage → update-tokens → authorize-git-operation (authorized by Taylor: "Authorize, strip comments"; later pushes each authorized again)
 **Inputs:** `latex/riemann-book.tex`, `latex/notes.tex` (AI-drafted manuscripts, human-directed); `~/repos/algebraic-geometry`, `~/repos/diff-alg-public`, `~/repos/tdupu.github.io` (human); Taylor's dictated titles and author line (human).
 **Work performed:** Compared the publishing setups: both reference repos are public with GitHub Pages (legacy, `master` root); `diff-alg-public` tracks its PDF, `algebraic-geometry` untracked its PDF in `9fdc38c` and its published link now returns 404. Chose (Taylor-approved) a fresh public twin `tdupu/riemann-public` so `riemann` stays private and LY9 holds here. Edited title pages: `notes.tex` retitled; both files carry `\author{Printed by Taylor Dupuy \\ AI GENERATED}` and date 21 November 2026 (in the book also as an author-block line, since `amsbook` does not typeset `\date`). Wrote `export-public.sh`; added rows to `LAYOUT.md` and `LATEX.md`. Built `riemann-book.pdf` (271 pp) and `notes.pdf` (153 pp), no errors or undefined references; exported to `~/repos/riemann-public` with its own README and `.gitignore`, and rebuilt both PDFs from the exported `latex/` alone (same page counts, clean). Drafted entries in `tdupu.github.io/papers.html` (new "Notes on the Riemann Hypothesis" section) and `index.html` (AI resources list), uncommitted.
 **Sources & computations:** WebSearch (one query) for Sutherland's verification page; no URL found, Taylor supplied it. No mathematical computation.
 **AI-results:** none (repository and publishing work only; no mathematical claims produced).
 **Negative results (AI14):** The `algebraic-geometry` course-notes link on the website is broken since `9fdc38c` (PDF untracked under LY9); not fixed in this task. A first `notes.tex` build failed because the agent redirected latexmk output onto hyperref's `build/notes.out`; the file was removed and the build rerun cleanly.
 **Review:** agent review: rendered title pages inspected; standalone export build checked. Human verification: none yet.
-**Integration:** title-page edits in `latex/riemann-book.tex`, `latex/notes.tex`; published copies in `tdupu/riemann-public` once pushed.
+**Integration:** title-page edits in `latex/riemann-book.tex`, `latex/notes.tex`; published in public `tdupu/riemann-public` (`9a92fde`, Pages live). Website `tdupu.github.io`: `22c640d`, then `f3ba877` (section "Riemann Hypothesis Resources" with Taylor-dictated items: Alpöge's statement https://alpo.ge/remark.pdf, Sutherland's page, Alpöge's Lean archive https://alpo.ge/lean.tar.gz.part01 chosen by Taylor, the two PDFs), then moved to the top of the front page and mirrored under "Miscellaneous notes" in `papers.html`.
+**Amended 2026-11-21 (same session):** authorization status corrected from "pending"; public export now strips full-line `%` comments (PDF text identical); follow-up fixed the broken `algebraic-geometry` PDF link by tracking `/curves-and-surfaces.pdf` as a named LY9 exception there (rebuilt, 181 pp, clean; LAYOUT.md, POLICY.md, .gitignore amended on branch `publish-pdf`). That repo has no AI-POLICY.md or ai-usage ledger (its LY5 register row), so the work is recorded here.
 **Scope limits / withheld:** Dated `ai/` packages, `scratch/`, `refs/` not exported. The exported `ai/ai-usage.md` and `ai/tokens.md` contain local `/Users/...` paths. Lean READMEs reference unexported `ai/` packages (noted in the twin README). The blueprint website is not built or served.
 <!-- task-entry-end: 2026-11-21T16:18:40-05:00__session__publish-riemann-public -->
 

@@ -82,14 +82,45 @@
 
 **Plus the riemann-book figure centring pass** (task `2026-11-21T15:37:03-05:00__session__riemann-book-figure-centring`: deletion of the rejected `latex/book/figs/ch11-good-regions.tex`, re-measurement of all 87 floats, book-local `counterexample-roots.tex` with trim, `zeta-plane.tex` trim, `figtest.sh` caption whitening): coordinator main session from 20:37:03Z and its record keeper (snapshot), claude-opus-5-5, measured from transcripts, standard speed: **7,391,034 tokens, Standard USD 2.638768**. Added to the centring-verification paragraph's subtotal (2,804,342,074 tokens, USD 1241.998255): **2,811,733,108 tokens, conditional USD 1244.637023**, token charges only. The record keeper's last turns and later coordinator turns are not counted (not zero). The figure-fixes task's uncounted tail (coordinator 20:23:43Z–20:37:03Z, 807,134 tokens / USD 0.251792; its record keeper after the snapshot, 302,207 / USD 0.159185; measured) is not added. Same incompleteness caveats; the transcription task and the Masullo estimate stay excluded.
 
-**Plus the riemann-public publishing task** (task `2026-11-21T16:18:40-05:00__session__publish-riemann-public`: title pages, `export-public.sh`, public twin `riemann-public`, website drafts): side session `3e5c034f`, claude-opus-5-5, measured from its transcript up to 21:19:08Z, standard speed: **6,205,696 tokens, Standard USD 2.806198**. Added to the figure-centring paragraph's subtotal (2,811,733,108 tokens, USD 1244.637023): **2,817,938,804 tokens, conditional USD 1247.443221**, token charges only. Messages after 21:19:08Z (this record and the git authorization) are not measured (not zero); one WebSearch request is not in the figure.
+**Plus the riemann-public publishing task** (task `2026-11-21T16:18:40-05:00__session__publish-riemann-public`: title pages, `export-public.sh`, public twin `riemann-public`, website drafts): side session `3e5c034f`, claude-opus-5-5, measured from its transcript up to 22:46:50Z (amended in place; was: snapshot to 21:19:08Z, 6,205,696 tokens, USD 2.806198), standard speed, including the website follow-ups and the algebraic-geometry LY9 fix: **15,459,393 tokens, Standard USD 6.643982**. Added to the figure-centring paragraph's subtotal (2,811,733,108 tokens, USD 1244.637023): **2,827,192,501 tokens, conditional USD 1251.281005**, token charges only. Messages after 22:46:50Z are not measured (not zero); one WebSearch request is not in the figure.
+
+**Plus the Gamma-kernel correction** (task `2026-11-21T21:22:13-05:00__session__gamma-kernel-correction`: correction of step (2) of the proof of `thm:windowed-landau` after Hilaf Hasson's report): fork `a292882c96edb5439`, claude-opus-5-5, measured from its transcript up to 02:25:29Z (snapshot; later messages, including this record and the commit, unmeasured, not zero), standard speed: **2,999,923 tokens, Standard USD 1.140372**. Added to the riemann-public paragraph's subtotal (2,827,192,501 tokens, USD 1251.281005): **2,830,192,424 tokens, conditional USD 1252.421377**, token charges only.
+
+<!-- task-entry-begin: 2026-11-21T21:22:13-05:00__session__gamma-kernel-correction -->
+## 2026-11-21T21:22:13-05:00__session__gamma-kernel-correction
+
+**Record type:** Token ledger written directly by the working agent (fork); provenance entry with the same ID in `ai-usage.md`. Token charges only.
+
+**Measurement:** Per-message `usage` summed from `~/.claude/projects/-Users-tdupuy-repos-riemann/3e5c034f-35e2-4c1b-9134-0465d684420b/subagents/agent-a292882c96edb5439.jsonl`, deduplicated by message id (12 API messages), cache writes split by `cache_creation.ephemeral_5m/1h_input_tokens`. Snapshot at 2026-11-22T02:25:29Z; later messages unmeasured.
+
+**Rates (USD per million tokens):** the claude-opus-5-5 row checked 2026-11-21 on `https://platform.claude.com/docs/en/about-claude/pricing` (no effective date shown), reused; not re-fetched.
+
+| model | input | output | cache write 5m | cache write 1h | cache read |
+| --- | --- | --- | --- | --- | --- |
+| claude-opus-5-5 | 4.00 | 20.00 | 5.00 | 8.00 | 0.20 |
+
+### primary (fork)
+
+| field | value |
+| --- | --- |
+| agent | fork `a292882c96edb5439` of side session `3e5c034f` |
+| date | 2026-11-22T02:22:13Z – 2026-11-22T02:25:29Z (UTC, snapshot) |
+| model | claude-opus-5-5 (every billed message) |
+| tokens | in 28 · out 19,104 · cache write 5m 28,839 · cache write 1h 3,025 · cache read 2,948,927 (total 2,999,923) |
+| source | measured (transcript) |
+| rates | claude-opus-5-5 row above |
+| rate basis | checked 2026-11-21 |
+| cost (USD) | 1.140372 — token charges only |
+| duration | 00:03:16 (snapshot span) |
+| notes | no web searches; messages after the snapshot unmeasured |
+<!-- task-entry-end: 2026-11-21T21:22:13-05:00__session__gamma-kernel-correction -->
 
 <!-- task-entry-begin: 2026-11-21T16:18:40-05:00__session__publish-riemann-public -->
 ## 2026-11-21T16:18:40-05:00__session__publish-riemann-public
 
 **Record type:** Token ledger written directly by the working agent; provenance entry with the same ID in `ai-usage.md`. No earlier block is edited. Token charges only.
 
-**Measurement:** Per-message `usage` summed from `~/.claude/projects/-Users-tdupuy-repos-riemann/3e5c034f-35e2-4c1b-9134-0465d684420b.jsonl`, deduplicated by message id (46 API messages), cache writes split by `cache_creation.ephemeral_5m/1h_input_tokens`. Snapshot at 2026-11-21T21:19:08Z; later messages unmeasured.
+**Measurement:** Per-message `usage` summed from `~/.claude/projects/-Users-tdupuy-repos-riemann/3e5c034f-35e2-4c1b-9134-0465d684420b.jsonl`, deduplicated by message id (46 API messages), cache writes split by `cache_creation.ephemeral_5m/1h_input_tokens`. Snapshot at 2026-11-21T22:46:50Z (amended from 21:19:08Z); later messages unmeasured.
 
 **Rates (USD per million tokens):** the claude-opus-5-5 row checked 2026-11-21 on `https://platform.claude.com/docs/en/about-claude/pricing` (no effective date shown), reused from the figure-centring block; not re-fetched. Cache read 0.05x, cache write 5m 1.25x, 1h 2x.
 
@@ -102,14 +133,14 @@
 | field | value |
 | --- | --- |
 | agent | side session `3e5c034f-35e2-4c1b-9134-0465d684420b`, started by session `local_37ca1408` |
-| date | 2026-11-21T21:05:38Z – 2026-11-21T21:19:08Z (UTC, snapshot) |
+| date | 2026-11-21T21:05:38Z – 2026-11-21T22:46:50Z (UTC, snapshot) |
 | model | claude-opus-5-5 (every billed message) |
-| tokens | in 110 · out 31,185 · cache write 5m 0 · cache write 1h 121,433 · cache read 6,052,968 (total 6,205,696) |
+| tokens | in 216 · out 55,476 · cache write 5m 0 · cache write 1h 314,469 · cache read 15,089,232 (total 15,459,393; 91 API messages; was: total 6,205,696 at the 21:19:08Z snapshot) |
 | source | measured (transcript) |
 | rates | claude-opus-5-5 row above |
 | rate basis | checked 2026-11-21 |
-| cost (USD) | 2.806198 — token charges only |
-| duration | 00:13:30 (snapshot span) |
+| cost (USD) | 6.643982 — token charges only |
+| duration | 01:41:13 (snapshot span) |
 | notes | 1 WebSearch request, billed per call, not in the figure; messages after the snapshot unmeasured |
 <!-- task-entry-end: 2026-11-21T16:18:40-05:00__session__publish-riemann-public -->
 

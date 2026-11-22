@@ -7160,6 +7160,76 @@ $s$ with $\operatorname{Re}s>\sigma_0$, where $s\ne1$ when $\chi_i$ is
 the character modulo~$1$.
 \end{theorem}
 
+Step~(2) of the proof below uses how much of the mass of a Gamma
+kernel lies in one window. The next two statements give the correct
+rate and show that it does not improve as the expansion point moves
+to the right.
+
+For $k\ge0$ and $\lambda>0$ let $\mu_{k,\lambda}$ be the probability
+measure $\frac{\lambda^{k+1}}{k!}u^ke^{-\lambda u}\,du$ on $(0,\infty)$.
+It is the law of $Z/\lambda$, where $Z$ has the Gamma distribution
+with density $z^ke^{-z}/k!$; its mean is $(k+1)/\lambda$.
+
+\begin{proposition}[Gamma tails]\label{prop:gamma-tails}
+Let $k\ge0$, $\lambda>0$ and $0<t<1$, and put $h(t)=t-\log(1+t)$.
+Then $h(t)>0$ and
+\[
+\mu_{k,\lambda}\Bigl(\Bigl\{u:\Bigl|\frac{\lambda u}{k+1}-1\Bigr|
+\ge t\Bigr\}\Bigr)\le2e^{-(k+1)h(t)}.
+\]
+\end{proposition}
+
+\begin{proof}
+The function $h$ vanishes at $0$ and has derivative $t/(1+t)>0$, so
+$h(t)>0$. The variable $Z=\lambda u$ has moment generating function
+$\int_0^\infty e^{\theta z}z^ke^{-z}\,dz/k!=(1-\theta)^{-(k+1)}$ for
+$\theta<1$. Put $n=k+1$. For $0<\theta<1$, Markov's inequality applied
+to $e^{\theta Z}$ gives
+$\mu_{k,\lambda}(Z\ge n(1+t))\le(1-\theta)^{-n}e^{-\theta n(1+t)}$;
+with $\theta=t/(1+t)$ the right side is $e^{-nh(t)}$. Applied to
+$e^{-\theta Z}$ with $\theta=t/(1-t)$, it gives
+$\mu_{k,\lambda}(Z\le n(1-t))\le(1+\theta)^{-n}e^{\theta n(1-t)}
+=e^{-n(-t-\log(1-t))}$. The power series
+$-t-\log(1-t)=\sum_{j\ge2}t^j/j$ and $t-\log(1+t)=\sum_{j\ge2}
+(-1)^jt^j/j$ show $-t-\log(1-t)\ge h(t)$. Adding the two tails gives
+the claim.
+\end{proof}
+
+The rate $e^{-(k+1)h(t)}$ does not depend on $\lambda$, and nothing
+better is true: the next proposition shows that the mass outside a
+window is not $O(\lambda^{-k})$, which is what an earlier version of
+step~(2) asserted.
+
+\begin{proposition}\label{prop:gamma-no-sigma-gain}
+For every $\lambda>0$, $U>0$ and $k\ge1$,
+\[
+\mu_{k,\lambda}\bigl((0,\infty)\setminus[U,2U]\bigr)\ge8^{-(k+1)}.
+\]
+In particular, for fixed $\lambda>8$ there is no constant $C'$ such
+that, for arbitrarily large $U$, some $k\ge U$ has
+$\mu_{k,\lambda}((0,\infty)\setminus[U,2U])\le C'\lambda^{-k}$.
+\end{proposition}
+
+\begin{proof}
+Put $a=\lambda U$; in the variable $z=\lambda u$ the claim is that
+$Z\notin[a,2a]$ with probability at least $8^{-(k+1)}$. If
+$a\ge k/2$, then
+\[
+\mu(Z<a)\ge\frac1{k!}\int_0^{k/2}z^ke^{-z}\,dz
+\ge\frac{e^{-k/2}(k/2)^{k+1}}{(k+1)!}\ge e^{-k/2}4^{-(k+1)}
+\ge8^{-(k+1)},
+\]
+using $(k+1)!\le(k+1)^{k+1}\le(2k)^{k+1}$ and $e^{-1/2}\ge1/2$. If
+$a<k/2$, then $2a<k$ and
+\[
+\mu(Z>2a)\ge\frac1{k!}\int_k^{k+1}z^ke^{-z}\,dz
+\ge\frac{k^k}{k!}e^{-(k+1)}\ge e^{-(k+1)}\ge8^{-(k+1)} .
+\]
+For the second sentence, $8^{-(k+1)}\le C'\lambda^{-k}$ forces
+$C'\ge(\lambda/8)^k/8$, which is unbounded as $k\ge U\to\infty$ when
+$\lambda>8$.
+\end{proof}
+
 The proof compares two estimates for the Taylor coefficients of a
 Laplace transform at a point far to the right: one coming from the
 bound on windows, the other from a hypothetical zero. Its steps are
@@ -7188,28 +7258,69 @@ $-c_\rho/(\rho(\rho-1))$, where $c_\rho>0$ is the sum of the weights
 times the multiplicities. For real $\rho\in(0,1)$ this residue is
 positive.
 \item \emph{The Gamma kernel.} Up to the sign $(-1)^k$, the $k$-th
-Taylor coefficient of $\widehat g_F$ at a real point $\sigma$ is
-$c_k(\sigma)=\frac1{k!}\int_0^\infty g(u)u^ke^{-\sigma u}\,du$. The
-kernel $u^ke^{-\sigma u}$ peaks at $u=k/\sigma$. For $\sigma$ large
-in terms of $\delta$ and for every $U\ge1$, some $k\ge U$ puts all but
-a proportion $C'/\sigma^k$ of the mass of the kernel in
-$[U,(1+\delta)U]$. In the variable $y=e^u$ this interval is a window
-$[Y,Y^{1+\delta}]$ (Figure~\ref{fig:gamma-kernel}).
+Taylor coefficient of $\widehat g_F$ at a point $s_0$ with
+$\operatorname{Re}s_0=\sigma>2$ is
+$c_k(s_0)=\frac1{k!}\int_0^\infty g(u)u^ke^{-s_0u}\,du$. The
+kernel $u^ke^{-\sigma u}$ peaks at $u=k/\sigma$. Fix the window
+$W=[U,(1+\delta)U]$ with $U\ge1$; in the variable $y=e^u$ it is the
+window $[Y,Y^{1+\delta}]$ with $Y=e^U$
+(Figure~\ref{fig:gamma-kernel}). Put $\lambda=\sigma-2$, assume
+$\lambda\ge4/\delta$, and choose $k$ with
+$k+1=\lceil\lambda(1+\delta/2)U\rceil$, so that $k+1\ge\lambda U$.
+With $t=\delta/(4+3\delta)$, every $u\notin W$ has
+$|\lambda u/(k+1)-1|\ge t$, so by Proposition~\ref{prop:gamma-tails}
+\[
+\mu_{k,\lambda}\bigl((0,\infty)\setminus W\bigr)\le
+2e^{-(k+1)h(t)} .
+\]
+The rate depends on $\delta$ but not on $\sigma$; by
+Proposition~\ref{prop:gamma-no-sigma-gain} no bound of the form
+$C'\sigma^{-k}$ holds.
 \item\label{item:landau-s3}
-\emph{The window bound.} On a window where $g\le R$, with
-$R\ge0$, the inequality $|g|\le2R-g$ bounds
-$|c_k(\sigma+it_0)|+\operatorname{Re}c_k(\sigma)$ by
-$C_\eta e^{\eta U}(\sigma-\sigma_0)^{-k}$ for every $\eta>0$.
+\emph{The window bound.} We may take $C\ge0$. By
+Proposition~\ref{prop:realcomplex}\ref{item:rc-integral} and
+$\Ch(t)\le2t$, there is $A$ with $|g(u)|\le Ae^{2u}$ for $u\ge0$.
+On $W$ we have $g\le R(u):=Ce^{\sigma_0u}$, hence
+$|g|+g\le2R$ there, and off $W$ we have $|g|+g\le2Ae^{2u}$. Since
+$g$ is real,
+\[
+|c_k(\sigma+it_0)|+\operatorname{Re}c_k(\sigma)
+\le\frac1{k!}\int_0^\infty(|g|+g)u^ke^{-\sigma u}\,du
+\le\frac{2C}{(\sigma-\sigma_0)^{k+1}}
++\frac{4Ae^{-(k+1)h(t)}}{(\sigma-2)^{k+1}} .
+\]
+If $\sigma$ is so large in terms of $\delta$ that
+$e^{-h(t)}(\sigma-\sigma_0)<\sigma-2$, the right side is at most
+$C''(\sigma-\sigma_0)^{-(k+1)}$ with $C''=2C+4A$.
 \item \emph{The contradiction.} A zero with $\operatorname{Re}\rho>
 \sigma_0$ gives, through the pole of $\widehat g_F$ nearest to
 $\sigma$ (real, or an isolated nearest complex pole after a choice
-of $t_0$), a lower bound on \emph{every} Taylor coefficient, which
-contradicts step~\ref{item:landau-s3}. One window per coefficient suffices,
+of $t_0$), a lower bound $c\,r^{-(k+1)}$ on the Taylor coefficients
+for all large $k$, with $c>0$ and $r$ the distance from the expansion
+point to the pole used. That pole has real part $>\sigma_0$, so
+$r<\sigma-\sigma_0$, and the lower bound contradicts
+step~\ref{item:landau-s3} once $k$ is large, that is, once $U$ is
+large ($k+1\ge(\sigma-2)U$). One window per coefficient suffices,
 because the
-lower bound holds for all $k$ and not only along a subsequence.
+lower bound holds for all large $k$ and not only along a subsequence.
 \qedhere
 \end{enumerate}
 \end{proof}
+
+\begin{remark}[a correction]\label{rem:gamma-correction}
+An earlier version of step~(2) asserted that all but a proportion
+$C'/\sigma^k$ of the kernel's mass lies in the window. That is false
+(Proposition~\ref{prop:gamma-no-sigma-gain}). Hilaf Hasson found the
+error, with an AI-assisted reading of the earlier version, and gave
+the counterexample of Proposition~\ref{prop:gamma-no-sigma-gain}.
+Steps~(2) and~(3) above use the correct rate of
+Proposition~\ref{prop:gamma-tails} instead. The rate
+$e^{-(k+1)h(t)}$ suffices because $k+1$ is of size $\sigma U$, so it
+beats the trivial growth $e^{2u}$ of $g$ once $\sigma$ is large in
+terms of~$\delta$. Steps~(1) and~(4) are unchanged, and the outline
+remains an outline: step~(4), including the choice of $t_0$ when the
+nearest pole is not real, is not written out here.
+\end{remark}
 
 \begin{remark}[why the weights must be positive]\label{rem:positivity}
 Theorem~\ref{thm:windowed-landau} assumes only an upper bound for
